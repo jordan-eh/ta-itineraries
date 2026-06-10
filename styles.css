@@ -526,12 +526,21 @@
       width: 18px;
       height: 18px;
       flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+
+    .explore-activities.is-open .activities-toggle svg {
+      transform: rotate(180deg);
     }
 
     .activities-list {
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 23px;
+    }
+
+    .explore-activities.is-open .activities-list {
+      display: flex;
     }
 
     /* Activity card */
