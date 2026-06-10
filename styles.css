@@ -142,13 +142,13 @@
     .breadcrumb span { color: var(--gray-text); }
 
     .page-title {
-      padding: 60px var(--content-pad) 16px;
+      padding: 60px var(--content-pad) 54px;
     }
 
     .page-title h1 {
       font-size: 47.8px;
       font-weight: 700;
-      line-height: 1.1;
+      line-height: 1.17;
       max-width: 773px;
     }
 
@@ -177,65 +177,66 @@
     .intro-headline {
       font-size: 36.3px;
       font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 28px;
+      line-height: 44.38px;
+      margin-bottom: 32px;
     }
 
     .intro-body {
       font-size: 20.2px;
       font-weight: 400;
-      line-height: 1.65;
-      margin-bottom: 36px;
+      line-height: 26.22px;
+      margin-bottom: 60px;
     }
 
     .best-for-section {
-      margin-bottom: 36px;
+      margin-bottom: 86px;
     }
 
     .best-for-label {
       font-size: 18px;
       font-weight: 500;
       display: block;
-      margin-bottom: 14px;
+      margin-bottom: 24px;
     }
 
     .best-for-content {
       background: #F5F5F5;
-      padding: 22px 26px;
+      padding: 32px;
       font-size: 18px;
       font-weight: 400;
-      line-height: 1.55;
+      line-height: 26px;
     }
 
     .at-a-glance {
       background: var(--mint-bg);
-      padding: 32px 32px 36px;
+      padding: 32px;
       width: 380px;
     }
 
     .at-a-glance h3 {
       font-size: 27.9px;
       font-weight: 700;
-      margin-bottom: 28px;
+      line-height: 30px;
+      margin-bottom: 68px;
     }
 
     .glance-list {
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
     .glance-item {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 20px;
       font-size: 18px;
       font-weight: 400;
     }
 
     .glance-icon {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       flex-shrink: 0;
     }
 
@@ -251,7 +252,7 @@
       height: 753px;
       position: relative;
       overflow: hidden;
-      border-radius: 2px;
+      border-radius: 24px;
     }
 
     /* Map placeholder styled to approximate Google Maps terrain */
@@ -323,8 +324,8 @@
       background: #000;
       color: #fff;
       border: none;
-      border-radius: 40px;
-      padding: 11px 26px;
+      border-radius: 100px;
+      padding: 8px 24px;
       font-size: 18px;
       font-weight: 500;
       font-family: var(--font);
@@ -343,7 +344,7 @@
       display: flex;
       gap: 80px;
       align-items: flex-start;
-      margin-bottom: 80px;
+      margin-bottom: 120px;
     }
 
     /* ── Itinerary column ── */
@@ -439,13 +440,13 @@
     /* Day panel */
     .day-panel {
       background: #fff;
-      border: 1px solid #E4EDEA;
-      border-radius: 4px;
+      border: 1px solid #00A79A;
+      border-radius: 8px;
       overflow: hidden;
     }
 
     .day-panel-inner {
-      padding: 28px 28px 0;
+      padding: 15px 38px 0;
     }
 
     .day-label {
@@ -453,21 +454,21 @@
       font-weight: 500;
       color: var(--gray-text);
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .day-title {
       font-size: 34.4px;
       font-weight: 700;
       line-height: 1.1;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
     }
 
     .day-body {
       font-size: 19.1px;
       font-weight: 400;
-      line-height: 1.6;
-      margin-bottom: 26px;
+      line-height: 26.72px;
+      margin-bottom: 23px;
     }
 
     .day-carousel {
@@ -477,9 +478,9 @@
 
     .carousel-img {
       width: 100%;
-      height: 240px;
-      background: #CDD6E6;
-      border-radius: 8px;
+      height: 327px;
+      background: #E2E8F0;
+      border-radius: 9px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -487,66 +488,85 @@
       overflow: hidden;
     }
 
-    .carousel-img svg {
-      width: 40px;
-      height: 40px;
+    .carousel-img svg.placeholder-icon {
+      width: 47px;
+      height: 47px;
       fill: #9FAEC0;
+    }
+
+    .carousel-nav-right {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
     }
 
     .carousel-counter {
       position: absolute;
       bottom: 14px;
       right: 14px;
-      background: rgba(0,0,0,0.55);
+      background: #000;
       color: #fff;
       font-size: 18.9px;
       font-weight: 400;
-      padding: 3px 12px;
-      border-radius: 4px;
+      padding: 5px 9px;
+      border-radius: 100px;
     }
 
     /* Explore activities accordion */
     .explore-activities {
-      margin-top: 20px;
+      margin-top: 53px;
+      background: var(--mint-bg);
+      padding: 11px 38px;
+      border-top: 1px solid #00A79A;
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
     }
 
     .activities-toggle {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 18px 28px;
-      border-top: 1px solid #E0E8E6;
       font-size: 17.2px;
       font-weight: 500;
       cursor: pointer;
-      background: #fff;
+      min-height: 28px;
     }
 
     .activities-toggle svg {
       width: 18px;
       height: 18px;
+      flex-shrink: 0;
     }
 
-    .activities-container {
-      background: var(--mint-bg);
-      padding: 24px;
-      border-top: 1px solid #D8EFEC;
+    .activities-list {
+      display: flex;
+      flex-direction: column;
+      gap: 23px;
     }
 
     /* Activity card */
     .activity-card {
-      background: #fff;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
-
-    .activity-card:last-child { margin-bottom: 0; }
 
     .activity-img {
       width: 100%;
-      height: 240px;
-      background: #CDD6E6;
+      height: 360px;
+      background: #D5D8EB;
       position: relative;
       display: flex;
       align-items: center;
@@ -554,33 +574,36 @@
     }
 
     .activity-img svg.placeholder-icon {
-      width: 40px;
-      height: 40px;
+      width: 47px;
+      height: 47px;
       fill: #9FAEC0;
     }
 
     .activity-heart {
       position: absolute;
-      top: 14px;
-      left: 14px;
-      color: #8090A4;
+      top: 7px;
+      left: 8px;
     }
 
     .activity-heart svg {
-      width: 22px;
-      height: 22px;
-      fill: #8090A4;
+      width: 23px;
+      height: 21px;
+      fill: rgba(97,97,97,0.68);
+      stroke: #fff;
+      stroke-width: 1.2px;
     }
 
-    .activity-body-wrap {
-      padding: 18px 20px 20px;
+    .activity-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
 
     .activity-title-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 6px;
+      flex-wrap: wrap;
     }
 
     .activity-title {
@@ -594,34 +617,10 @@
       color: #000;
     }
 
-    .activity-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .activity-reviews {
-      font-size: 13.4px;
-      font-weight: 400;
-      color: #000;
-    }
-
-    .activity-tag {
-      font-size: 13.4px;
-      font-weight: 400;
-      color: #000;
-      border: 1px solid #CCC;
-      border-radius: 3px;
-      padding: 2px 8px;
-    }
-
     .activity-desc {
       font-size: 19.1px;
       font-weight: 400;
-      line-height: 1.5;
-      margin-bottom: 12px;
+      line-height: 1.4;
     }
 
     .activity-location {
@@ -666,27 +665,28 @@
        DISCOVER MORE SECTION
     ───────────────────────────────────────────── */
     .discover-more-section {
-      padding: 40px var(--wide-pad) 80px;
+      padding: 18px var(--wide-pad) 108px;
     }
 
     .discover-more-section h2 {
       font-size: 36px;
       font-weight: 700;
-      margin-bottom: 48px;
+      line-height: 42px;
+      margin-bottom: 36px;
     }
 
     .itinerary-cards-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
+      gap: 36px;
     }
 
     .itinerary-card-img {
       width: 100%;
-      height: 300px;
-      background: #C8CADE;
+      height: 366px;
+      background: #D5D9EB;
       position: relative;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
     }
 
     .days-badge {
@@ -694,11 +694,11 @@
       bottom: 0;
       right: 0;
       background: #fff;
-      padding: 8px 16px;
+      padding: 6px 22px;
       font-size: 12px;
       font-weight: 700;
       color: var(--red);
-      letter-spacing: 1.5px;
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
 
@@ -706,15 +706,15 @@
       font-size: 16.6px;
       font-weight: 700;
       margin-bottom: 12px;
-      line-height: 1.35;
+      line-height: 22.5px;
     }
 
     .card-desc {
       font-size: 15px;
       font-weight: 400;
-      line-height: 1.6;
-      color: #333;
-      margin-bottom: 18px;
+      line-height: 22.5px;
+      color: #000;
+      margin-bottom: 12px;
     }
 
     .learn-more-link {
@@ -731,19 +731,19 @@
     ───────────────────────────────────────────── */
     .know-before-section {
       background: var(--mint-bg);
-      padding: 64px var(--wide-pad) 80px;
+      padding: 48px var(--wide-pad) 48px;
     }
 
     .know-before-section h2 {
       font-size: 27px;
       font-weight: 700;
-      margin-bottom: 52px;
+      margin-bottom: 48px;
     }
 
     .know-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 52px 80px;
+      gap: 48px 0;
     }
 
     .know-item {
@@ -806,14 +806,14 @@
       background: var(--teal);
       color: #fff;
       border: none;
-      padding: 10px 20px;
+      padding: 9px 12px;
       font-size: 13.5px;
       font-weight: 700;
       font-family: var(--font);
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .back-to-top-btn svg {
