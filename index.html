@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1440">
+  <title>Landscapes and Cultural Discovery | Canada's Alberta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #9C0F00;
+      --teal: #00A79A;
+      --mint-bg: #E6F7F5;
+      --footer-bg: #073142;
+      --gray-text: #69727A;
+      --dark-gray: #555555;
+      --border: #E2E8ED;
+      --font: 'Futura PT', Futura, 'Outfit', 'Century Gothic', 'Trebuchet MS', sans-serif;
+      --content-pad: 112px;
+      --wide-pad: 214px;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      color: #000;
+      background: #fff;
+      min-width: 1440px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ─────────────────────────────────────────────
+       NAV
+    ───────────────────────────────────────────── */
+    .nav {
+      width: 100%;
+      height: 100px;
+      background: #fff;
+      border-bottom: 1px solid #E0E0E0;
+      display: flex;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .nav-logo {
+      width: 190px;
+      height: 100px;
+      background: #8B1717;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      gap: 1px;
+      padding: 10px 16px;
+    }
+
+    .nav-logo .logo-top {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .nav-logo .logo-symbol {
+      font-size: 18px;
+      line-height: 1;
+      margin: 2px 0;
+    }
+
+    .nav-logo .logo-bottom {
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .nav-inner {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 44px 0 52px;
+    }
+
+    .nav-main-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      flex: 1;
+    }
+
+    .nav-main-links a {
+      font-size: 17.9px;
+      font-weight: 500;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    .nav-secondary {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .nav-secondary .sec-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 15.9px;
+      font-weight: 400;
+      color: #000;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .nav-search {
+      width: 20px;
+      height: 20px;
+      margin-left: 12px;
+      cursor: pointer;
+    }
+
+    /* ─────────────────────────────────────────────
+       HEADER AREA (breadcrumb + title + hero)
+    ───────────────────────────────────────────── */
+    .page-header {
+      width: 100%;
+    }
+
+    .breadcrumb {
+      padding: 25px var(--content-pad) 0;
+      font-size: 16px;
+      font-weight: 400;
+      color: #000;
+    }
+
+    .breadcrumb span { color: var(--gray-text); }
+
+    .page-title {
+      padding: 60px var(--content-pad) 16px;
+    }
+
+    .page-title h1 {
+      font-size: 47.8px;
+      font-weight: 700;
+      line-height: 1.1;
+      max-width: 773px;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 462px;
+      background: #C4C4C4;
+    }
+
+    /* ─────────────────────────────────────────────
+       INTRO SECTION
+    ───────────────────────────────────────────── */
+    .intro-section {
+      padding: 120px var(--content-pad) 0;
+      display: flex;
+      gap: 135px;
+      align-items: flex-start;
+      max-width: 1440px;
+    }
+
+    .intro-left {
+      width: 557px;
+      flex-shrink: 0;
+    }
+
+    .intro-headline {
+      font-size: 36.3px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 28px;
+    }
+
+    .intro-body {
+      font-size: 20.2px;
+      font-weight: 400;
+      line-height: 1.65;
+      margin-bottom: 36px;
+    }
+
+    .best-for-section {
+      margin-bottom: 36px;
+    }
+
+    .best-for-label {
+      font-size: 18px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .best-for-content {
+      background: #F5F5F5;
+      padding: 22px 26px;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    .at-a-glance {
+      background: var(--mint-bg);
+      padding: 32px 32px 36px;
+      width: 380px;
+    }
+
+    .at-a-glance h3 {
+      font-size: 27.9px;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    .glance-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .glance-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .glance-icon {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+    }
+
+    .glance-item a { text-decoration: underline; }
+
+    .intro-right {
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .intro-map {
+      width: 524px;
+      height: 753px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    /* Map placeholder styled to approximate Google Maps terrain */
+    .map-bg {
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(135deg,
+          #d8e8d0 0%,
+          #c8ddb8 15%,
+          #dce9d4 30%,
+          #e8f0e0 45%,
+          #d4e4c8 60%,
+          #c4d8b0 75%,
+          #dae8d2 90%,
+          #e0ecd8 100%);
+      position: relative;
+    }
+
+    .map-overlay-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-label {
+      position: absolute;
+      font-family: 'DIN Pro', 'DIN Condensed', Arial, sans-serif;
+      font-size: 16.8px;
+      font-weight: 500;
+      color: #000;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .map-label .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 2px solid #333;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .map-time-badge {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .expand-map-btn {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      padding: 11px 26px;
+      font-size: 18px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─────────────────────────────────────────────
+       MAP + ITINERARY SECTION
+    ───────────────────────────────────────────── */
+    .map-itinerary-section {
+      padding: 120px var(--content-pad) 0;
+      display: flex;
+      gap: 80px;
+      align-items: flex-start;
+      margin-bottom: 80px;
+    }
+
+    /* ── Itinerary column ── */
+    .itinerary-col {
+      width: 611px;
+      flex-shrink: 0;
+    }
+
+    /* "Starts in" header */
+    .location-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 0;
+    }
+
+    .location-circle-img {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #D8E0EA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .location-circle-img svg {
+      width: 24px;
+      height: 24px;
+      fill: #9FAEC0;
+    }
+
+    .location-details .loc-label {
+      font-size: 17.2px;
+      font-weight: 500;
+      color: var(--gray-text);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .location-details .loc-title {
+      font-size: 34.4px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    /* Drive connector */
+    .drive-connector {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 4px 0;
+      min-height: 99px;
+    }
+
+    .connector-dots {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      padding-left: 24px;
+    }
+
+    .connector-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #B8C4CE;
+      flex-shrink: 0;
+    }
+
+    .drive-pill {
+      background: #fff;
+      border: 1px solid #D8E0E8;
+      border-radius: 40px;
+      padding: 9px 20px;
+      font-size: 15.3px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .drive-pill .dist {
+      color: var(--gray-text);
+      margin-left: 2px;
+    }
+
+    /* Day panel */
+    .day-panel {
+      background: #fff;
+      border: 1px solid #E4EDEA;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .day-panel-inner {
+      padding: 28px 28px 0;
+    }
+
+    .day-label {
+      font-size: 17.2px;
+      font-weight: 500;
+      color: var(--gray-text);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .day-title {
+      font-size: 34.4px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+
+    .day-body {
+      font-size: 19.1px;
+      font-weight: 400;
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+
+    .day-carousel {
+      position: relative;
+      margin: 0 0 0;
+    }
+
+    .carousel-img {
+      width: 100%;
+      height: 240px;
+      background: #CDD6E6;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-img svg {
+      width: 40px;
+      height: 40px;
+      fill: #9FAEC0;
+    }
+
+    .carousel-counter {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 18.9px;
+      font-weight: 400;
+      padding: 3px 12px;
+      border-radius: 4px;
+    }
+
+    /* Explore activities accordion */
+    .explore-activities {
+      margin-top: 20px;
+    }
+
+    .activities-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 28px;
+      border-top: 1px solid #E0E8E6;
+      font-size: 17.2px;
+      font-weight: 500;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .activities-toggle svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .activities-container {
+      background: var(--mint-bg);
+      padding: 24px;
+      border-top: 1px solid #D8EFEC;
+    }
+
+    /* Activity card */
+    .activity-card {
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .activity-card:last-child { margin-bottom: 0; }
+
+    .activity-img {
+      width: 100%;
+      height: 240px;
+      background: #CDD6E6;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .activity-img svg.placeholder-icon {
+      width: 40px;
+      height: 40px;
+      fill: #9FAEC0;
+    }
+
+    .activity-heart {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      color: #8090A4;
+    }
+
+    .activity-heart svg {
+      width: 22px;
+      height: 22px;
+      fill: #8090A4;
+    }
+
+    .activity-body-wrap {
+      padding: 18px 20px 20px;
+    }
+
+    .activity-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .activity-title {
+      font-size: 22.9px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .activity-arrow {
+      font-size: 18px;
+      color: #000;
+    }
+
+    .activity-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .activity-reviews {
+      font-size: 13.4px;
+      font-weight: 400;
+      color: #000;
+    }
+
+    .activity-tag {
+      font-size: 13.4px;
+      font-weight: 400;
+      color: #000;
+      border: 1px solid #CCC;
+      border-radius: 3px;
+      padding: 2px 8px;
+    }
+
+    .activity-desc {
+      font-size: 19.1px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .activity-location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15.3px;
+      font-weight: 400;
+      color: #000;
+    }
+
+    .activity-location svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--teal);
+    }
+
+    /* ── Sticky map column ── */
+    .map-col {
+      flex: 1;
+    }
+
+    .sticky-map-wrap {
+      position: sticky;
+      top: 20px;
+    }
+
+    .sticky-map {
+      width: 524px;
+      height: 753px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sticky-map .map-bg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ─────────────────────────────────────────────
+       DISCOVER MORE SECTION
+    ───────────────────────────────────────────── */
+    .discover-more-section {
+      padding: 40px var(--wide-pad) 80px;
+    }
+
+    .discover-more-section h2 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 48px;
+    }
+
+    .itinerary-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .itinerary-card-img {
+      width: 100%;
+      height: 300px;
+      background: #C8CADE;
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .days-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #fff;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--red);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .card-title {
+      font-size: 16.6px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    .card-desc {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 18px;
+    }
+
+    .learn-more-link {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ─────────────────────────────────────────────
+       KNOW BEFORE YOU GO
+    ───────────────────────────────────────────── */
+    .know-before-section {
+      background: var(--mint-bg);
+      padding: 64px var(--wide-pad) 80px;
+    }
+
+    .know-before-section h2 {
+      font-size: 27px;
+      font-weight: 700;
+      margin-bottom: 52px;
+    }
+
+    .know-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 52px 80px;
+    }
+
+    .know-item {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .know-circle {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: #C8EAE6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .know-circle svg {
+      width: 38px;
+      height: 38px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .know-label {
+      font-size: 15.1px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .know-label svg.arrow {
+      width: 16px;
+      height: 16px;
+      stroke: #000;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    /* ─────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────── */
+    footer {
+      background: var(--footer-bg);
+      color: #fff;
+      position: relative;
+    }
+
+    .back-to-top-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 13.5px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-to-top-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    .footer-main {
+      padding: 48px var(--wide-pad) 40px;
+      display: grid;
+      grid-template-columns: 180px 1fr 1fr 1fr 1fr;
+      gap: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .footer-logo {
+      color: #fff;
+    }
+
+    .footer-logo-mark {
+      font-size: 28px;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+
+    .footer-logo-sub {
+      font-size: 13px;
+      font-weight: 400;
+      margin-top: 4px;
+      opacity: 0.8;
+      letter-spacing: 1px;
+    }
+
+    .footer-col-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 18px;
+      text-transform: capitalize;
+    }
+
+    .footer-col a {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.82);
+      margin-bottom: 14px;
+    }
+
+    .footer-add-listing {
+      display: block;
+      font-size: 12.6px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .footer-bottom-area {
+      padding: 28px var(--wide-pad) 32px;
+    }
+
+    .footer-territorial {
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 22px;
+    }
+
+    .territorial-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+    }
+
+    .territorial-text {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.75);
+      max-width: 1000px;
+    }
+
+    .footer-legal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copyright {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .footer-legal-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-legal-links a {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────────
+     NAVIGATION
+───────────────────────────────────────────── -->
+<nav class="nav">
+  <div class="nav-logo">
+    <span class="logo-top">Canada's</span>
+    <span class="logo-symbol">✦</span>
+    <span class="logo-bottom">Alberta</span>
+  </div>
+  <div class="nav-inner">
+    <div class="nav-main-links">
+      <a href="#">Things To Do</a>
+      <a href="#">Places To Go</a>
+      <a href="#">Trip Ideas</a>
+      <a href="#">Know Before You Go</a>
+    </div>
+    <div class="nav-secondary">
+      <span class="sec-link">Upcoming<br>Events</span>
+      <span class="sec-link">Experience<br>Providers</span>
+      <!-- Search icon -->
+      <svg class="nav-search" viewBox="0 0 20 20" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
+        <circle cx="8.5" cy="8.5" r="6"/>
+        <line x1="13.5" y1="13.5" x2="19" y2="19"/>
+      </svg>
+    </div>
+  </div>
+</nav>
+
+<!-- ─────────────────────────────────────────────
+     PAGE HEADER
+───────────────────────────────────────────── -->
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="#">Trip Ideas</a>
+    <span>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;</span>
+    <a href="#">Road Trips &amp; Itineraries</a>
+    <span>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;</span>
+    <span>Landscapes and Cultural Discovery</span>
+  </div>
+  <div class="page-title">
+    <h1>Landscapes and Cultural Discovery</h1>
+  </div>
+  <div class="hero-image"></div>
+</div>
+
+<!-- ─────────────────────────────────────────────
+     INTRO SECTION
+───────────────────────────────────────────── -->
+<div class="intro-section">
+  <!-- Left column -->
+  <div class="intro-left">
+    <h2 class="intro-headline">Immerse yourself in a culturally-infused journey punctuated with remarkable landscapes, historic sites and natural wonders.</h2>
+
+    <p class="intro-body">Venture further from Banff to find wilder landscapes and untouched beauty. Yorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur tempus urna at turpis condimentum</p>
+
+    <div class="best-for-section">
+      <span class="best-for-label">Itinerary best for</span>
+      <div class="best-for-content">newcomers to Alberta, photography buffs, lovers of culture and anyone who appreciates phenomenal vistas.</div>
+    </div>
+
+    <div class="at-a-glance">
+      <h3>At a glance</h3>
+      <div class="glance-list">
+
+        <div class="glance-item">
+          <!-- Calendar icon -->
+          <svg class="glance-icon" viewBox="0 0 38 38" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="7" width="28" height="26" rx="2"/>
+            <line x1="5" y1="15" x2="33" y2="15"/>
+            <line x1="13" y1="4" x2="13" y2="10"/>
+            <line x1="25" y1="4" x2="25" y2="10"/>
+            <rect x="11" y="19" width="4" height="4" rx="0.5"/>
+            <rect x="17" y="19" width="4" height="4" rx="0.5"/>
+            <rect x="23" y="19" width="4" height="4" rx="0.5"/>
+            <rect x="11" y="25" width="4" height="4" rx="0.5"/>
+            <rect x="17" y="25" width="4" height="4" rx="0.5"/>
+          </svg>
+          <span>11 day itinerary</span>
+        </div>
+
+        <div class="glance-item">
+          <!-- Route/distance icon -->
+          <svg class="glance-icon" viewBox="0 0 38 38" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 28 Q8 20 19 19 Q30 18 30 10"/>
+            <circle cx="8" cy="30" r="3"/>
+            <circle cx="30" cy="8" r="3"/>
+            <path d="M14 19 Q17 12 22 13"/>
+          </svg>
+          <span>2614 km (1625 mi) total distance</span>
+        </div>
+
+        <div class="glance-item">
+          <!-- Car icon -->
+          <svg class="glance-icon" viewBox="0 0 38 38" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 22 L9 14 Q10 11 13 11 L25 11 Q28 11 29 14 L32 22"/>
+            <rect x="4" y="22" width="30" height="8" rx="2"/>
+            <circle cx="11" cy="31" r="3.5"/>
+            <circle cx="27" cy="31" r="3.5"/>
+            <line x1="4" y1="26" x2="34" y2="26"/>
+            <line x1="14" y1="11" x2="14" y2="22"/>
+          </svg>
+          <span>32 hrs 25 mins drive time</span>
+        </div>
+
+        <div class="glance-item">
+          <!-- Navigation/arrow icon -->
+          <svg class="glance-icon" viewBox="0 0 38 38" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 6 L32 32 L19 26 L6 32 Z" fill="var(--teal)" stroke="none"/>
+          </svg>
+          <span>Your starting point is in <a href="#">Calgary</a></span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column: Map -->
+  <div class="intro-right">
+    <div class="intro-map">
+      <div class="map-bg">
+        <!-- Terrain + Route SVG -->
+        <svg class="map-overlay-svg" viewBox="0 0 524 753" fill="none">
+          <!-- Terrain shapes -->
+          <ellipse cx="120" cy="300" rx="180" ry="260" fill="rgba(180,210,160,0.5)"/>
+          <ellipse cx="300" cy="200" rx="150" ry="220" fill="rgba(200,225,180,0.4)"/>
+          <ellipse cx="400" cy="500" rx="120" ry="180" fill="rgba(190,215,170,0.3)"/>
+          <!-- Roads/paths background -->
+          <path d="M480 650 Q430 560 380 480 Q340 420 330 360 Q320 300 290 240 Q260 180 220 120 Q190 80 160 40" stroke="#d0d0d0" stroke-width="2" fill="none"/>
+          <!-- Main route (blue) -->
+          <path d="M460 690 Q420 620 360 540 Q310 470 295 395 Q280 320 250 250 Q220 180 185 110 Q165 70 150 35" stroke="#4040E0" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- City dots -->
+          <circle cx="460" cy="690" r="6" fill="#fff" stroke="#333" stroke-width="2"/>
+          <circle cx="350" cy="545" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
+          <circle cx="295" cy="475" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
+          <circle cx="245" cy="360" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
+          <circle cx="150" cy="95" r="6" fill="#ff3a2f" stroke="#fff" stroke-width="2"/>
+          <!-- Time badge area -->
+          <rect x="330" y="340" width="130" height="44" rx="2" fill="#fff" stroke="#ccc" stroke-width="1"/>
+          <text x="342" y="358" font-family="Arial" font-size="11" fill="#333">🚗 16 hr 34 min</text>
+          <text x="342" y="374" font-family="Arial" font-size="10" fill="#888">  1,510 km</text>
+        </svg>
+        <!-- City labels -->
+        <div class="map-label" style="top: 26px; left: 116px;">
+          <span class="dot"></span>Jasper
+        </div>
+        <div class="map-label" style="top: 310px; left: 200px;">
+          <span class="dot"></span>Lake Louise
+        </div>
+        <div class="map-label" style="top: 415px; left: 222px;">
+          <span class="dot"></span>Banff
+        </div>
+        <div class="map-label" style="top: 460px; left: 300px;">
+          <span class="dot"></span>Canmore
+        </div>
+        <div class="map-label" style="top: 640px; left: 375px;">
+          <span class="dot"></span>Calgary
+        </div>
+      </div>
+      <button class="expand-map-btn">Expand map&nbsp;
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 2h5v5M14 2l-7 7M7 9l-5 5M2 10v4h4"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────
+     MAP + ITINERARY SECTION
+───────────────────────────────────────────── -->
+<div class="map-itinerary-section">
+
+  <!-- Itinerary column -->
+  <div class="itinerary-col">
+
+    <!-- Starts in Calgary -->
+    <div class="location-header">
+      <div class="location-circle-img">
+        <!-- Placeholder image icon -->
+        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+      </div>
+      <div class="location-details">
+        <span class="loc-label">Starts in</span>
+        <span class="loc-title">Calgary</span>
+      </div>
+    </div>
+
+    <!-- Drive connector: Calgary → Banff -->
+    <div class="drive-connector">
+      <div class="connector-dots">
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+      </div>
+      <div class="drive-pill">
+        <svg width="18" height="14" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 10V7l2-5h14l2 5v3"/>
+          <rect x="0" y="9" width="20" height="4" rx="1.5"/>
+          <circle cx="4.5" cy="13.5" r="1.5"/>
+          <circle cx="15.5" cy="13.5" r="1.5"/>
+        </svg>
+        <span>1 hr 23 min drive</span>
+        <span class="dist">127 km (79 mi)</span>
+      </div>
+    </div>
+
+    <!-- ── DAY 1: Banff ── -->
+    <div class="day-panel">
+      <div class="day-panel-inner">
+        <span class="day-label">Day 1</span>
+        <h2 class="day-title">Banff</h2>
+        <p class="day-body">On day 1, enjoy Banff... Yorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra.</p>
+        <div class="day-carousel">
+          <div class="carousel-img">
+            <svg viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+            <span class="carousel-counter">1/3</span>
+          </div>
+        </div>
+      </div>
+      <!-- Explore activities — OPEN for Day 1 -->
+      <div class="explore-activities">
+        <div class="activities-toggle">
+          <span>Explore activities (3)</span>
+          <!-- Chevron up (open) -->
+          <svg viewBox="0 0 18 18" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><polyline points="3,12 9,6 15,12"/></svg>
+        </div>
+        <div class="activities-container">
+
+          <!-- Activity 1: Banff National Park -->
+          <div class="activity-card">
+            <div class="activity-img">
+              <svg class="placeholder-icon" viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+              <span class="activity-heart">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </span>
+            </div>
+            <div class="activity-body-wrap">
+              <div class="activity-title-row">
+                <span class="activity-title">Banff National Park</span>
+                <span class="activity-arrow">→</span>
+              </div>
+              <div class="activity-meta">
+                <span class="activity-reviews">843 reviews</span>
+                <span class="activity-tag">Great for Family</span>
+              </div>
+              <p class="activity-desc">Hello Sunshine is a Banff sushi restaurant with private karaoke rooms! Their retro space features eye-catching fire tables, a sushi...</p>
+              <div class="activity-location">
+                <svg viewBox="0 0 14 14"><path d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8s4-4.75 4-8c0-2.21-1.79-4-4-4zm0 5.5c-.83 0-1.5-.67-1.5-1.5S6.17 3.5 7 3.5 8.5 4.17 8.5 5 7.83 6.5 7 6.5z"/></svg>
+                Banff
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity 2: Mt Norquay Via Ferrata -->
+          <div class="activity-card">
+            <div class="activity-img">
+              <svg class="placeholder-icon" viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+              <span class="activity-heart">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </span>
+            </div>
+            <div class="activity-body-wrap">
+              <div class="activity-title-row">
+                <span class="activity-title">Mt Norquay Via Ferrata</span>
+                <span class="activity-arrow">→</span>
+              </div>
+              <div class="activity-meta">
+                <span class="activity-reviews">843 reviews</span>
+                <span class="activity-tag">Great for Family</span>
+              </div>
+              <p class="activity-desc">Hello Sunshine is a Banff sushi restaurant with private karaoke rooms! Their retro space features eye-catching fire tables, a sushi...</p>
+              <div class="activity-location">
+                <svg viewBox="0 0 14 14"><path d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8s4-4.75 4-8c0-2.21-1.79-4-4-4zm0 5.5c-.83 0-1.5-.67-1.5-1.5S6.17 3.5 7 3.5 8.5 4.17 8.5 5 7.83 6.5 7 6.5z"/></svg>
+                Banff
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity 3: Lake Minnewanka Cruise -->
+          <div class="activity-card">
+            <div class="activity-img">
+              <svg class="placeholder-icon" viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+              <span class="activity-heart">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </span>
+            </div>
+            <div class="activity-body-wrap">
+              <div class="activity-title-row">
+                <span class="activity-title">Lake Minnewanka Cruise</span>
+                <span class="activity-arrow">→</span>
+              </div>
+              <div class="activity-meta">
+                <span class="activity-reviews">843 reviews</span>
+                <span class="activity-tag">Great for Family</span>
+              </div>
+              <p class="activity-desc">Explore the stunning waterfalls along a scenic trail, perfect for nature lovers and photographers seeking tranquil beauty in Banff.</p>
+              <div class="activity-location">
+                <svg viewBox="0 0 14 14"><path d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8s4-4.75 4-8c0-2.21-1.79-4-4-4zm0 5.5c-.83 0-1.5-.67-1.5-1.5S6.17 3.5 7 3.5 8.5 4.17 8.5 5 7.83 6.5 7 6.5z"/></svg>
+                Banff
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Drive connector: Banff → Day 2 -->
+    <div class="drive-connector">
+      <div class="connector-dots">
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+      </div>
+      <div class="drive-pill">
+        <svg width="18" height="14" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 10V7l2-5h14l2 5v3"/>
+          <rect x="0" y="9" width="20" height="4" rx="1.5"/>
+          <circle cx="4.5" cy="13.5" r="1.5"/>
+          <circle cx="15.5" cy="13.5" r="1.5"/>
+        </svg>
+        <span>38 min drive</span>
+        <span class="dist">57.1 km (35.4 mi)</span>
+      </div>
+    </div>
+
+    <!-- ── DAY 2: Lake Louise, Icefield Parkway and Jasper ── -->
+    <div class="day-panel">
+      <div class="day-panel-inner">
+        <span class="day-label">Day 2</span>
+        <h2 class="day-title">Lake Louise, Icefield Parkway and Jasper</h2>
+        <p class="day-body">Yorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+        <div class="day-carousel">
+          <div class="carousel-img">
+            <svg viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+            <span class="carousel-counter">1/3</span>
+          </div>
+        </div>
+      </div>
+      <!-- Collapsed -->
+      <div class="explore-activities">
+        <div class="activities-toggle">
+          <span>Explore activities (5)</span>
+          <svg viewBox="0 0 18 18" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><polyline points="3,6 9,12 15,6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drive connector -->
+    <div class="drive-connector">
+      <div class="connector-dots">
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+      </div>
+      <div class="drive-pill">
+        <svg width="18" height="14" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 10V7l2-5h14l2 5v3"/>
+          <rect x="0" y="9" width="20" height="4" rx="1.5"/>
+          <circle cx="4.5" cy="13.5" r="1.5"/>
+          <circle cx="15.5" cy="13.5" r="1.5"/>
+        </svg>
+        <span>1 hr 23 min drive</span>
+        <span class="dist">127 km (79 mi)</span>
+      </div>
+    </div>
+
+    <!-- ── DAY 3: Jasper and Canmore ── -->
+    <div class="day-panel">
+      <div class="day-panel-inner">
+        <span class="day-label">Day 3</span>
+        <h2 class="day-title">Jasper and Canmore</h2>
+        <p class="day-body">Yorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+        <div class="day-carousel">
+          <div class="carousel-img">
+            <svg viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+            <span class="carousel-counter">1/3</span>
+          </div>
+        </div>
+      </div>
+      <div class="explore-activities">
+        <div class="activities-toggle">
+          <span>Explore activities (5)</span>
+          <svg viewBox="0 0 18 18" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><polyline points="3,6 9,12 15,6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drive connector -->
+    <div class="drive-connector">
+      <div class="connector-dots">
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+      </div>
+      <div class="drive-pill">
+        <svg width="18" height="14" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 10V7l2-5h14l2 5v3"/>
+          <rect x="0" y="9" width="20" height="4" rx="1.5"/>
+          <circle cx="4.5" cy="13.5" r="1.5"/>
+          <circle cx="15.5" cy="13.5" r="1.5"/>
+        </svg>
+        <span>1 hr 23 min drive</span>
+        <span class="dist">127 km (79 mi)</span>
+      </div>
+    </div>
+
+    <!-- ── DAY 4: Canmore and Calgary ── -->
+    <div class="day-panel">
+      <div class="day-panel-inner">
+        <span class="day-label">Day 4</span>
+        <h2 class="day-title">Canmore and Calgary</h2>
+        <p class="day-body">Yorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+        <div class="day-carousel">
+          <div class="carousel-img">
+            <svg viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+            <span class="carousel-counter">1/3</span>
+          </div>
+        </div>
+      </div>
+      <div class="explore-activities">
+        <div class="activities-toggle">
+          <span>Explore activities (5)</span>
+          <svg viewBox="0 0 18 18" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><polyline points="3,6 9,12 15,6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drive connector -->
+    <div class="drive-connector">
+      <div class="connector-dots">
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+        <div class="connector-dot"></div>
+      </div>
+      <div class="drive-pill">
+        <svg width="18" height="14" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 10V7l2-5h14l2 5v3"/>
+          <rect x="0" y="9" width="20" height="4" rx="1.5"/>
+          <circle cx="4.5" cy="13.5" r="1.5"/>
+          <circle cx="15.5" cy="13.5" r="1.5"/>
+        </svg>
+        <span>1 hr 23 min drive</span>
+        <span class="dist">127 km (79 mi)</span>
+      </div>
+    </div>
+
+    <!-- ── DAY 5: Calgary ── -->
+    <div class="day-panel">
+      <div class="day-panel-inner">
+        <span class="day-label">Day 5</span>
+        <h2 class="day-title">Calgary</h2>
+        <p class="day-body">Yorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+        <div class="day-carousel">
+          <div class="carousel-img">
+            <svg viewBox="0 0 40 40"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-8.5-5.5l2.5 3.01L18 13l4 5H5l3.5-4.5 2 2.49z"/></svg>
+            <span class="carousel-counter">1/3</span>
+          </div>
+        </div>
+      </div>
+      <div class="explore-activities">
+        <div class="activities-toggle">
+          <span>Explore activities (5)</span>
+          <svg viewBox="0 0 18 18" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><polyline points="3,6 9,12 15,6"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /itinerary-col -->
+
+  <!-- Sticky map column -->
+  <div class="map-col">
+    <div class="sticky-map-wrap">
+      <div class="sticky-map">
+        <div class="map-bg">
+          <svg class="map-overlay-svg" viewBox="0 0 524 753" fill="none">
+            <ellipse cx="120" cy="300" rx="180" ry="260" fill="rgba(180,210,160,0.5)"/>
+            <ellipse cx="300" cy="200" rx="150" ry="220" fill="rgba(200,225,180,0.4)"/>
+            <ellipse cx="400" cy="500" rx="120" ry="180" fill="rgba(190,215,170,0.3)"/>
+            <path d="M480 650 Q430 560 380 480 Q340 420 330 360 Q320 300 290 240 Q260 180 220 120 Q190 80 160 40" stroke="#d0d0d0" stroke-width="2" fill="none"/>
+            <path d="M460 690 Q420 620 360 540 Q310 470 295 395 Q280 320 250 250 Q220 180 185 110 Q165 70 150 35" stroke="#4040E0" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <circle cx="460" cy="690" r="6" fill="#fff" stroke="#333" stroke-width="2"/>
+            <circle cx="350" cy="545" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
+            <circle cx="295" cy="475" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
+            <circle cx="245" cy="360" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
+            <circle cx="150" cy="95" r="6" fill="#ff3a2f" stroke="#fff" stroke-width="2"/>
+          </svg>
+          <!-- Map labels -->
+          <div class="map-label" style="top: 26px; left: 116px;"><span class="dot"></span>Jasper</div>
+          <div class="map-label" style="top: 310px; left: 200px;"><span class="dot"></span>Lake Louise</div>
+          <div class="map-label" style="top: 415px; left: 222px;"><span class="dot"></span>Banff</div>
+          <div class="map-label" style="top: 460px; left: 295px;"><span class="dot"></span>Canmore</div>
+          <div class="map-label" style="top: 640px; left: 375px;"><span class="dot"></span>Calgary</div>
+          <!-- Time badges -->
+          <div style="position:absolute;top:390px;right:0px;background:#f6f6f6;border:1px solid #ddd;padding:4px 10px;font-size:12px;font-family:Arial,sans-serif;color:#555;border-radius:2px;">38 min</div>
+          <div style="position:absolute;top:475px;right:0px;background:#f6f6f6;border:1px solid #ddd;padding:4px 10px;font-size:12px;font-family:Arial,sans-serif;color:#555;border-radius:2px;">2 hr 38 min</div>
+          <div style="position:absolute;top:560px;right:0px;background:#f6f6f6;border:1px solid #ddd;padding:4px 10px;font-size:12px;font-family:Arial,sans-serif;color:#555;border-radius:2px;">1 hr 23 min</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /map-itinerary-section -->
+
+<!-- ─────────────────────────────────────────────
+     DISCOVER MORE ROAD TRIPS & ITINERARIES
+───────────────────────────────────────────── -->
+<div class="discover-more-section">
+  <h2>Discover more road trips &amp; itineraries</h2>
+  <div class="itinerary-cards-grid">
+
+    <!-- Card 1 -->
+    <div>
+      <div class="itinerary-card-img">
+        <div class="days-badge">3 DAYS</div>
+      </div>
+      <div class="card-title">Alberta's Canadian Badlands<br>Road Trip</div>
+      <p class="card-desc">Explore the Canadian Badlands on this Alberta. Visit Drumheller's hoodoos, the Royal Tyrrell Museum, an old coal mine, and scenic prairie drives.</p>
+      <a href="#" class="learn-more-link">Learn more&nbsp;
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><line x1="2" y1="7" x2="12" y2="7"/><polyline points="8,3 12,7 8,11"/></svg>
+      </a>
+    </div>
+
+    <!-- Card 2 -->
+    <div>
+      <div class="itinerary-card-img">
+        <div class="days-badge">4 DAYS</div>
+      </div>
+      <div class="card-title">Canadian Rockies Highlights</div>
+      <p class="card-desc">Experience the highlights of the Canadian Rockies. Explore the can't-miss sights and experiences of Banff, Lake Louise and the Icefields Parkway.</p>
+      <a href="#" class="learn-more-link">Learn more&nbsp;
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><line x1="2" y1="7" x2="12" y2="7"/><polyline points="8,3 12,7 8,11"/></svg>
+      </a>
+    </div>
+
+    <!-- Card 3 -->
+    <div>
+      <div class="itinerary-card-img">
+        <div class="days-badge">6 DAYS</div>
+      </div>
+      <div class="card-title">Winter Skies of Jasper</div>
+      <p class="card-desc">Jasper is the second largest Dark Sky Preserve in the world. With its crisp, cool nights, winter is an ideal time to take in the beauty of the night skies.</p>
+      <a href="#" class="learn-more-link">Learn more&nbsp;
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><line x1="2" y1="7" x2="12" y2="7"/><polyline points="8,3 12,7 8,11"/></svg>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────
+     KNOW BEFORE YOU GO
+───────────────────────────────────────────── -->
+<div class="know-before-section">
+  <h2>Know before you go</h2>
+  <div class="know-grid">
+
+    <!-- Where to Stay -->
+    <div class="know-item">
+      <div class="know-circle">
+        <svg viewBox="0 0 38 38">
+          <path d="M6 32V16l13-10 13 10v16"/>
+          <rect x="13" y="22" width="12" height="10"/>
+          <line x1="19" y1="22" x2="19" y2="32"/>
+          <path d="M10 19 Q19 25 28 19"/>
+        </svg>
+      </div>
+      <div class="know-label">
+        <a href="#">Where to Stay</a>
+        <svg class="arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="10,4 14,8 10,12"/></svg>
+      </div>
+    </div>
+
+    <!-- Getting Here -->
+    <div class="know-item">
+      <div class="know-circle">
+        <svg viewBox="0 0 38 38">
+          <path d="M6 24 L8 12 Q14 6 24 8 L32 10 L34 16"/>
+          <ellipse cx="20" cy="22" rx="14" ry="8"/>
+          <path d="M6 24 Q20 30 34 24"/>
+          <line x1="20" y1="14" x2="20" y2="30"/>
+        </svg>
+      </div>
+      <div class="know-label">
+        <a href="#">Getting Here</a>
+        <svg class="arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="10,4 14,8 10,12"/></svg>
+      </div>
+    </div>
+
+    <!-- Climate & Weather -->
+    <div class="know-item">
+      <div class="know-circle">
+        <svg viewBox="0 0 38 38">
+          <circle cx="24" cy="14" r="7"/>
+          <path d="M6 26 Q10 20 16 22 Q18 16 24 18 Q28 14 32 20 Q36 20 36 26 Q36 30 32 30 L10 30 Q6 30 6 26z"/>
+          <line x1="24" y1="4" x2="24" y2="1"/>
+          <line x1="24" y1="27" x2="24" y2="24"/>
+          <line x1="14" y1="14" x2="11" y2="14"/>
+          <line x1="34" y1="14" x2="37" y2="14"/>
+        </svg>
+      </div>
+      <div class="know-label">
+        <a href="#">Climate &amp; Weather</a>
+        <svg class="arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="10,4 14,8 10,12"/></svg>
+      </div>
+    </div>
+
+    <!-- Maps & Transportation -->
+    <div class="know-item">
+      <div class="know-circle">
+        <svg viewBox="0 0 38 38">
+          <path d="M4 22V19l3-8h24l3 8v3"/>
+          <rect x="3" y="21" width="32" height="9" rx="2"/>
+          <circle cx="10" cy="31" r="3.5"/>
+          <circle cx="28" cy="31" r="3.5"/>
+          <line x1="3" y1="27" x2="35" y2="27"/>
+          <line x1="15" y1="11" x2="15" y2="21"/>
+        </svg>
+      </div>
+      <div class="know-label">
+        <a href="#">Maps &amp; Transportation</a>
+        <svg class="arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="10,4 14,8 10,12"/></svg>
+      </div>
+    </div>
+
+    <!-- Health & Safety -->
+    <div class="know-item">
+      <div class="know-circle">
+        <svg viewBox="0 0 38 38">
+          <rect x="10" y="16" width="18" height="6" rx="3" transform="rotate(45 19 19)"/>
+          <rect x="10" y="16" width="18" height="6" rx="3" transform="rotate(-45 19 19)"/>
+          <circle cx="19" cy="19" r="13"/>
+        </svg>
+      </div>
+      <div class="know-label">
+        <a href="#">Health &amp; Safety</a>
+        <svg class="arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="10,4 14,8 10,12"/></svg>
+      </div>
+    </div>
+
+    <!-- Frequently Asked Questions -->
+    <div class="know-item">
+      <div class="know-circle">
+        <svg viewBox="0 0 38 38">
+          <circle cx="19" cy="19" r="13"/>
+          <path d="M15 15 Q15 11 19 11 Q23 11 23 15 Q23 18 19 20"/>
+          <circle cx="19" cy="25" r="1.5" fill="var(--teal)" stroke="none"/>
+        </svg>
+      </div>
+      <div class="know-label">
+        <a href="#">Frequently Asked Questions</a>
+        <svg class="arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="10,4 14,8 10,12"/></svg>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────
+     FOOTER
+───────────────────────────────────────────── -->
+<footer>
+  <button class="back-to-top-btn">
+    Back to Top
+    <svg viewBox="0 0 12 12"><polyline points="2,9 6,3 10,9"/></svg>
+  </button>
+
+  <div class="footer-main">
+    <!-- Logo -->
+    <div class="footer-logo">
+      <div class="footer-logo-mark">Travel<br>Alberta</div>
+      <div class="footer-logo-sub">Canada 🍁</div>
+    </div>
+
+    <!-- Tourism Listings -->
+    <div class="footer-col">
+      <div class="footer-col-title">Tourism Listings</div>
+      <a href="#">Experience Providers</a>
+      <a href="#">Upcoming Events</a>
+      <span class="footer-add-listing">Add Your Tourism Listing Here</span>
+      <a href="#">ATIS Login/Register</a>
+    </div>
+
+    <!-- In-Destination Support -->
+    <div class="footer-col">
+      <div class="footer-col-title">In-Destination Support</div>
+      <a href="#">Health &amp; Safety</a>
+      <a href="#">Maps &amp; Transportation</a>
+      <a href="#">Climate &amp; Weather</a>
+      <a href="#">Visitor Information Centres</a>
+    </div>
+
+    <!-- Travel Alberta Sites -->
+    <div class="footer-col">
+      <div class="footer-col-title">Travel Alberta Sites</div>
+      <a href="#">Tourisme Alberta</a>
+      <a href="#">Tourism Industry Hub</a>
+    </div>
+
+    <!-- Connect with us -->
+    <div class="footer-col">
+      <div class="footer-col-title">Connect with us</div>
+      <a href="#">Get In Touch</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom-area">
+    <div class="footer-territorial">
+      <div class="territorial-title">TERRITORIAL ACKNOWLEDGEMENT</div>
+      <p class="territorial-text">In the spirit of respect, reciprocity and truth, Travel Alberta honours and acknowledges the traditional territories of the many First Nations, Métis and Inuit in Alberta. Alberta is situated within historical and present-day lands that Indigenous Peoples have cared for and lived on for generations. We honour the territories of Treaty 4, 6, 7, 8, 10 and their signatories. We also acknowledge the homelands of the Otipemisiwak Métis Government, including the eight Métis Settlements and the 22 Métis Districts. We acknowledge the many Indigenous Peoples living in urban areas throughout the province. We appreciate that modern borders do not align with traditional land use, and we honour the neighbouring Indigenous communities outside of Alberta who have travelled and inhabited this land throughout history.</p>
+    </div>
+    <div class="footer-legal-row">
+      <span class="footer-copyright">© Travel Alberta 2026 All Rights Reserved. 400-​1601 9 Ave SE, Calgary, Alberta T2G 0H4 Canada</span>
+      <div class="footer-legal-links">
+        <a href="#">Accessibility Statement</a>
+        <a href="#">Your Privacy/Cookies</a>
+        <a href="#">Terms and Conditions</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
