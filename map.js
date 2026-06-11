@@ -55,7 +55,7 @@ const DAYS = [
       { name: 'Banff',   lnglat: [-115.5708, 51.1784] },
     ],
     route: [[-114.0719, 51.0447], [-115.5708, 51.1784]],
-    bounds: [[-116.1, 51.0], [-113.7, 51.5]],
+    bounds: [[-115.9, 50.95], [-113.8, 51.35]],
     segments: [
       { time: '1 hr 23 min', dist: '127 km (79 mi)' },
     ],
@@ -67,7 +67,7 @@ const DAYS = [
       { name: 'Jasper',            lnglat: [-118.0814, 52.8737] },
     ],
     route: [[-116.1773, 51.4254], [-117.2297, 52.2197], [-118.0814, 52.8737]],
-    bounds: [[-118.4, 51.0], [-115.3, 53.1]],
+    bounds: [[-118.4, 51.2], [-115.8, 53.0]],
     approachFrom: { lnglat: [-115.5708, 51.1784], seg: { time: '38 min', dist: '57.1 km (35.4 mi)' } },
     segments: [
       { time: '1 hr 20 min', dist: '126 km (78 mi)' },
@@ -112,7 +112,7 @@ const DAYS = [
       { name: 'Medicine Hat', lnglat: [-110.6768, 50.0405] },
     ],
     route: [[-112.7013, 51.4639], [-111.8973, 50.5645], [-110.6768, 50.0405]],
-    bounds: [[-114.5, 49.9], [-110.3, 51.7]],
+    bounds: [[-113.1, 49.8], [-110.3, 51.7]],
     approachFrom: { lnglat: [-114.0719, 51.0447], seg: { time: '1 hr 30 min', dist: '139 km (86 mi)' } },
     segments: [
       { time: '55 min', dist: '88 km (55 mi)' },
@@ -136,7 +136,7 @@ const DAYS = [
       { name: 'Lethbridge',   lnglat: [-112.8186, 49.6890] },
     ],
     route: [[-110.6768, 50.0405], [-112.0744, 49.1089], [-112.8186, 49.6890]],
-    bounds: [[-113.2, 48.9], [-110.4, 50.3]],
+    bounds: [[-113.15, 48.85], [-110.35, 50.3]],
     segments: [
       { time: '1 hr 35 min', dist: '157 km (98 mi)' },
       { time: '55 min', dist: '85 km (53 mi)' },
@@ -174,7 +174,7 @@ const DAYS = [
       { name: 'Calgary',      lnglat: [-114.0719, 51.0447] },
     ],
     route: [[-113.4075, 49.7199], [-114.1742, 50.5314], [-114.0719, 51.0447]],
-    bounds: [[-114.8, 49.4], [-113.2, 51.3]],
+    bounds: [[-114.6, 49.45], [-113.1, 51.2]],
     approachFrom: { lnglat: [-114.4969, 49.6239], seg: { time: '1 hr 25 min', dist: '118 km (73 mi)' } },
     segments: [
       { time: '1 hr', dist: '96 km (60 mi)' },
@@ -450,10 +450,6 @@ function setState(newState) {
         .setLngLat(mid).addTo(map);
       segmentPillMarkers.push({ marker, a, b });
     };
-    if (dayData.approachFrom) {
-      addPill(dayData.approachFrom.lnglat, dayData.stops[0].lnglat,
-              dayData.approachFrom.seg.time, dayData.approachFrom.seg.dist);
-    }
     dayData.segments.forEach((seg, i) => addPill(dayData.stops[i].lnglat, dayData.stops[i + 1].lnglat, seg.time, seg.dist));
     map.once('moveend', resolveSegmentPillOverlaps);
   }
