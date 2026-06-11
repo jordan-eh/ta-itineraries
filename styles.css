@@ -501,7 +501,7 @@
     .drive-connector {
       display: flex;
       align-items: center;
-      gap: 37px;
+      gap: 23px;
       padding: 20px 0;
       min-height: 120px;
       position: relative;
@@ -523,13 +523,13 @@
     /* Day panel wrapper — holds the dot + panel as a unit */
     .day-panel-wrap {
       position: relative;
-      margin-left: 37px;
+      margin-left: 60px;
     }
 
     /* Small teal dot aligned with the "Day X" label */
     .day-dot {
       position: absolute;
-      left: -17px;   /* centers 11px dot on the line at left:26px of .itinerary-col */
+      left: -40px;   /* centers 11px dot on the line at left:26px of .itinerary-col (60-20.5≈40) */
       top: 22px;     /* vertically centers dot with .day-label (border 1px + pad 15px + ~11.5px half-height) */
       width: 11px;
       height: 11px;
