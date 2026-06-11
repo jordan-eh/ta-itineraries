@@ -77,14 +77,28 @@ const DAYS = [
   },
 ];
 
-function makeMarkerEl(label, color) {
-  const el = document.createElement('div');
-  el.style.cssText = 'width:32px;height:32px;border-radius:50%;border:3px solid #fff;' +
+function makeMarkerEl(label, color, name) {
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;';
+
+  const pin = document.createElement('div');
+  pin.style.cssText = 'width:32px;height:32px;border-radius:50%;border:3px solid #fff;' +
     `background:${color};box-shadow:0 2px 8px rgba(0,0,0,0.3);` +
     'display:flex;align-items:center;justify-content:center;' +
     "color:#fff;font-size:12px;font-weight:700;font-family:'Outfit',sans-serif;cursor:default;";
-  el.textContent = label;
-  return el;
+  pin.textContent = label;
+  wrapper.appendChild(pin);
+
+  if (name) {
+    const namePill = document.createElement('div');
+    namePill.style.cssText = 'background:#fff;border:1px solid #E2E8ED;border-radius:100px;' +
+      'padding:5px 12px;font-size:12px;font-weight:500;white-space:nowrap;' +
+      "box-shadow:0 2px 8px rgba(0,0,0,0.12);font-family:'Futura PT',Futura,'Century Gothic',sans-serif;color:#000;";
+    namePill.textContent = name;
+    wrapper.appendChild(namePill);
+  }
+
+  return wrapper;
 }
 
 let overviewMarkers = [];
@@ -108,7 +122,7 @@ map.on('load', () => {
 
   // ── Overview markers ──
   OVERVIEW_STOPS.forEach((stop, i) => {
-    const m = new maplibregl.Marker({ element: makeMarkerEl(String(i + 1), '#00A79A') })
+    const m = new maplibregl.Marker({ element: makeMarkerEl(String(i + 1), '#00A79A', stop.name) })
       .setLngLat(stop.lnglat)
       .setPopup(new maplibregl.Popup({ offset: 20 }).setText(stop.name))
       .addTo(map);
@@ -135,7 +149,7 @@ map.on('load', () => {
   DAYS.forEach((day, i) => {
     const markers = day.stops.map((stop, j) => {
       const color = j === 0 ? '#9C0F00' : '#00A79A';
-      const el = makeMarkerEl(String(j + 1), color);
+      const el = makeMarkerEl(String(j + 1), color, stop.name);
       el.style.display = 'none';
       return new maplibregl.Marker({ element: el })
         .setLngLat(stop.lnglat)
