@@ -105,27 +105,68 @@ Activity titles and counts match the live page exactly:
 - **Container:** `<div id="dynamic-map">` — 524×753px, `border-radius: 24px`, `overflow: hidden`. Lives inside `.main-right` in normal document flow (not `position: fixed`).
 - **Layout:** `.main-right { width: 524px; position: sticky; top: 24px; align-self: flex-start }` — sticks below the viewport top as the user scrolls through day cards, then scrolls away naturally after the last section.
 - **No fade-out:** the map is always visible once the page loads; there is no opacity or visibility toggle based on scroll position.
-- **Overview state:** all 5 numbered stops + full dotted route line; active before any day card hits the 40% scroll trigger.
-- **Day state:** triggered when a `.day-panel[data-day]` top edge ≤ 40% viewport height; shows only that day's stops + route segment + drive pill overlay.
+- **Overview state:** Calgary full pin (no number) + small teal dots for all 15 stops + full dotted route line + "15 destinations" pill. Active before any day card hits the 40% scroll trigger.
+- **Day state:** triggered when a `.day-panel[data-day]` top edge ≤ 40% viewport height; shows only that day's stops, route segment(s), per-segment drive pills, and approach route/pill if applicable.
 - **Scroll detection:** throttled `scroll` listener + `requestAnimationFrame` in `map.js` → `update()` → `setState('overview' | 1–11)`. `update()` is also called immediately on map load (no waiting for first scroll event).
+- **Initial fitBounds:** `currentState = 'overview'` causes `setState('overview')` to return early on load. An explicit `map.fitBounds(OVERVIEW_BOUNDS, { padding: 60, duration: 0 })` call in `map.on('load')` compensates.
 - **Marker toggling:** `visibility: hidden/visible` (not `display: none/flex`) — preserves the flex-column wrapper layout so the name pill always renders correctly when shown.
-- **Pin labels:** each marker is a flex-column wrapper — numbered circle on top, city name pill below. Same pill style as the drive pill (white bg, `#E2E8ED` border, `border-radius: 100px`, subtle box-shadow).
+- **Pin labels:** each marker is a flex-column wrapper — numbered circle on top, city name pill below. Same pill style as segment pills (white bg, `#E2E8ED` border, `border-radius: 100px`, subtle box-shadow).
 - **Swap to Mapbox:** replace the OpenFreeMap style URL with `'mapbox://styles/mapbox/streets-v12'` and add `accessToken` to the Map constructor.
 
-| Day | Stops on map | Drive pill |
+### DAYS array structure
+
+Each entry in `DAYS` (indices 0–10) has:
+- `stops[]` — `{ name, lnglat }` array of cities/towns shown as numbered pins
+- `route` — coordinate array for the solid red route line (null for single-stop days)
+- `bounds` — `[[sw], [ne]]` for `fitBounds`
+- `segments[]` — `{ time, dist }` per stop-pair; powers the per-segment drive pills
+- `approachFrom` (optional) — `{ lnglat, seg: { time, dist } }` for days that start somewhere different from the previous day's last stop; powers a dashed approach line and approach pill
+
+### Per-segment drive pills
+
+- Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with a car SVG icon, time, and distance (km only, miles stripped)
+- Placed at the geographic midpoint of each segment using a `maplibregl.Marker` with `anchor: 'center'`
+- Stored in `segmentPillMarkers` as `[{ marker, a, b }]` (segment endpoints needed for overlap resolution)
+- After `map.fitBounds` animates, `map.once('moveend', resolveSegmentPillOverlaps)` nudges pills perpendicularly off the route to avoid overlap with stops and each other
+- `resolveSegmentPillOverlaps` tries both ± perpendicular directions, picks whichever requires fewer steps (minimum displacement), max 8 steps × 10px = 80px
+
+### Approach routes (between-day connectors)
+
+Days 2, 6, and 11 start somewhere different from where the previous day ended. Each has:
+- A dashed red route layer (`layer-approach-day-N`) pre-built in `map.on('load')`, shown only when that day is active
+- An approach segment pill showing the travel time/distance from the previous day's location
+- A small teal dot (`makeSmallMarkerEl('#00A79A')`) at the `approachFrom.lnglat` location (the previous day's end point), created/destroyed in `setState`
+
+| Day | approachFrom | Approach segment |
 |---|---|---|
-| Overview | Calgary (1), Banff (2), Lake Louise (3), Jasper (4), Canmore (5) | — |
-| Day 1 | Calgary → Banff | 1 hr 23 min · 127 km (79 mi) |
-| Day 2 | Lake Louise → Columbia Icefield → Jasper | 38 min · 57.1 km (35.4 mi) |
-| Day 3 | Jasper → Canmore | 2 hr 57 min · 287 km (178 mi) |
-| Day 4 | Canmore → Calgary | 58 min · 102 km (63 mi) |
-| Day 5 | Calgary | — |
-| Day 6 | Drumheller → Brooks → Medicine Hat | 2 hr 45 min · 270 km (168 mi) |
-| Day 7 | Medicine Hat (day trip base, no route) | — |
-| Day 8 | Medicine Hat → Milk River → Lethbridge | 2 hr 35 min · 213 km (132 mi) |
-| Day 9 | Lethbridge → Waterton Lakes | 1 hr · 84 km (52 mi) |
-| Day 10 | Waterton Lakes → Crowsnest Pass | 1 hr 25 min · 118 km (73 mi) |
-| Day 11 | Fort Macleod → Longview → Calgary | 2 hr 32 min · 229 km (142 mi) |
+| Day 2 | Banff `[-115.5708, 51.1784]` | 38 min · 57.1 km |
+| Day 6 | Calgary `[-114.0719, 51.0447]` | 1 hr 30 min · 139 km |
+| Day 11 | Crowsnest Pass `[-114.4969, 49.6239]` | 1 hr 25 min · 118 km |
+
+### Overview options
+
+Two marker sets are pre-built in `map.on('load')`:
+- **Option 1** (`overviewMarkersOpt1`): Calgary full pin (label "1") + Jasper + Medicine Hat full empty pins (furthest NW/E) + small dots for remaining 12 stops. Currently hidden.
+- **Option 2** (`overviewMarkersOpt2`, default): Calgary full pin (no number) + small dots for all other 14 stops.
+
+`activeOverviewOption = 2` is the default. The `.map-options-toggle` UI is hidden via CSS (`display: none`) — Option 2 is the only active view. The "15 destinations" pill (`.map-destinations-pill`) shows in overview state and hides in day states.
+
+### Map state reference
+
+| Day | Stops on map | Segments | Approach from |
+|---|---|---|---|
+| Overview | All 15 stops (Calgary pin + small dots) | — | — |
+| Day 1 | Calgary → Banff | 1 hr 23 min · 127 km | — |
+| Day 2 | Lake Louise → Columbia Icefield → Jasper | 1 hr 20 min · 126 km; 1 hr 10 min · 103 km | Banff (38 min · 57.1 km) |
+| Day 3 | Jasper → Canmore | 2 hr 57 min · 287 km | — |
+| Day 4 | Canmore → Calgary | 58 min · 102 km | — |
+| Day 5 | Calgary (no route) | — | — |
+| Day 6 | Drumheller → Brooks → Medicine Hat | 55 min · 88 km; 1 hr 45 min · 180 km | Calgary (1 hr 30 min · 139 km) |
+| Day 7 | Medicine Hat (no route) | — | — |
+| Day 8 | Medicine Hat → Milk River → Lethbridge | 1 hr 35 min · 157 km; 55 min · 85 km | — |
+| Day 9 | Lethbridge → Waterton Lakes | 1 hr · 84 km | — |
+| Day 10 | Waterton Lakes → Crowsnest Pass | 1 hr 25 min · 118 km | — |
+| Day 11 | Fort Macleod → Longview → Calgary | 1 hr · 96 km; 1 hr 30 min · 130 km | Crowsnest Pass (1 hr 25 min · 118 km) |
 
 ## Coding Conventions
 
