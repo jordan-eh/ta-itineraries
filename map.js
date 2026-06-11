@@ -184,9 +184,6 @@ function setState(newState) {
 }
 
 function initScrollDetection() {
-  const mapEl = document.getElementById('dynamic-map');
-  const introSection = document.querySelector('.intro-section');
-  const discoverSection = document.querySelector('.discover-more-section');
   const TRIGGER = 0.4;
 
   function getActiveDay() {
@@ -202,24 +199,14 @@ function initScrollDetection() {
     return active;
   }
 
-  function updateVisibility() {
-    const introBottom = introSection.getBoundingClientRect().bottom;
-    const discoverTop = discoverSection.getBoundingClientRect().top;
-    const visible = introBottom > 0 && discoverTop > window.innerHeight * 0.1;
-    mapEl.classList.toggle('hidden', !visible);
-  }
-
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      updateVisibility();
       const day = getActiveDay();
       setState(day === 0 ? 'overview' : day);
       ticking = false;
     });
   }, { passive: true });
-
-  updateVisibility();
 }
