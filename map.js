@@ -56,7 +56,7 @@ const DAYS = [
     ],
     route: [[-118.0814, 52.8737], [-115.3589, 51.0893]],
     bounds: [[-118.4, 50.9], [-115.0, 53.1]],
-    pill: { time: '1 hr 23 min drive', dist: '127 km (79 mi)' },
+    pill: { time: '2 hr 57 min drive', dist: '287 km (178 mi)' },
   },
   {
     stops: [
@@ -65,7 +65,7 @@ const DAYS = [
     ],
     route: [[-115.3589, 51.0893], [-114.0719, 51.0447]],
     bounds: [[-115.6, 51.0], [-113.7, 51.3]],
-    pill: { time: '1 hr 23 min drive', dist: '127 km (79 mi)' },
+    pill: { time: '58 min drive', dist: '102 km (63 mi)' },
   },
   {
     stops: [
@@ -90,6 +90,7 @@ function makeMarkerEl(label, color) {
 let overviewMarkers = [];
 let dayMarkers = [];
 let currentState = 'overview';
+const pillEl = document.querySelector('.map-drive-pill');
 
 map.on('load', () => {
   // ── Overview route layer ──
@@ -172,14 +173,13 @@ function setState(newState) {
   map.fitBounds(bounds, { padding: 60, duration: 900 });
 
   // Drive pill
-  const pill = document.querySelector('.map-drive-pill');
   const pillData = isOverview ? null : DAYS[dayIndex].pill;
   if (pillData) {
-    pill.querySelector('.pill-time').textContent = pillData.time;
-    pill.querySelector('.pill-dist').textContent = pillData.dist;
-    pill.classList.remove('hidden');
+    pillEl.querySelector('.pill-time').textContent = pillData.time;
+    pillEl.querySelector('.pill-dist').textContent = pillData.dist;
+    pillEl.classList.remove('hidden');
   } else {
-    pill.classList.add('hidden');
+    pillEl.classList.add('hidden');
   }
 }
 
