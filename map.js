@@ -150,10 +150,9 @@ map.on('load', () => {
     const markers = day.stops.map((stop, j) => {
       const color = j === 0 ? '#9C0F00' : '#00A79A';
       const el = makeMarkerEl(String(j + 1), color, stop.name);
-      el.style.display = 'none';
+      el.style.visibility = 'hidden';
       return new maplibregl.Marker({ element: el })
         .setLngLat(stop.lnglat)
-        .setPopup(new maplibregl.Popup({ offset: 20 }).setText(stop.name))
         .addTo(map);
     });
     dayMarkers.push(markers);
@@ -177,9 +176,10 @@ function setState(newState) {
   });
 
   // Marker visibility
-  overviewMarkers.forEach(m => { m.getElement().style.display = isOverview ? 'flex' : 'none'; });
+  overviewMarkers.forEach(m => { m.getElement().style.visibility = isOverview ? 'visible' : 'hidden'; });
   dayMarkers.forEach((markers, i) => {
-    markers.forEach(m => { m.getElement().style.display = i === dayIndex ? 'flex' : 'none'; });
+    const vis = i === dayIndex ? 'visible' : 'hidden';
+    markers.forEach(m => { m.getElement().style.visibility = vis; });
   });
 
   // Camera
@@ -213,14 +213,17 @@ function initScrollDetection() {
     return active;
   }
 
+  function update() {
+    const day = getActiveDay();
+    setState(day === 0 ? 'overview' : day);
+  }
+
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(() => {
-      const day = getActiveDay();
-      setState(day === 0 ? 'overview' : day);
-      ticking = false;
-    });
+    requestAnimationFrame(() => { update(); ticking = false; });
   }, { passive: true });
+
+  update();
 }
