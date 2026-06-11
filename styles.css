@@ -190,41 +190,39 @@
     }
 
     .best-for-section {
-      margin-bottom: 86px;
+      background: var(--mint-bg);
+      padding: 33px 44px 37px;
     }
 
     .best-for-label {
       font-size: 18px;
       font-weight: 500;
       display: block;
-      margin-bottom: 24px;
+      margin-bottom: 14px;
     }
 
     .best-for-content {
-      background: #F5F5F5;
-      padding: 32px;
       font-size: 18px;
       font-weight: 400;
       line-height: 26px;
     }
 
     .at-a-glance {
-      background: var(--mint-bg);
-      padding: 32px;
-      width: 380px;
+      margin-bottom: 53px;
     }
 
     .at-a-glance h3 {
       font-size: 27.9px;
       font-weight: 700;
       line-height: 30px;
-      margin-bottom: 68px;
+      margin-bottom: 30px;
     }
 
     .glance-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 20px;
+      row-gap: 24px;
     }
 
     .glance-item {
@@ -337,6 +335,9 @@
       border-radius: 24px;
       overflow: hidden;
     }
+
+    .maplibregl-ctrl-logo,
+    .maplibregl-ctrl-attrib { display: none !important; }
 
     .map-drive-pill {
       position: absolute;

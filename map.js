@@ -6,7 +6,6 @@ const map = new maplibregl.Map({
   attributionControl: false,
 });
 
-map.addControl(new maplibregl.AttributionControl({ compact: true }));
 map.scrollZoom.disable();
 
 const OVERVIEW_BOUNDS = [[-118.5, 50.8], [-113.7, 53.2]];
