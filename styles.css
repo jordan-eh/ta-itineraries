@@ -137,14 +137,32 @@
     }
 
     /* ─────────────────────────────────────────────
+       MAIN TWO-COLUMN LAYOUT
+    ───────────────────────────────────────────── */
+    .main-layout {
+      display: flex;
+      padding: 120px var(--content-pad) 0;
+      gap: 80px;
+      align-items: flex-start;
+    }
+
+    .main-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .main-right {
+      width: 524px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 24px;
+      align-self: flex-start;
+    }
+
+    /* ─────────────────────────────────────────────
        INTRO SECTION
     ───────────────────────────────────────────── */
     .intro-section {
-      padding: 120px var(--content-pad) 0;
-      display: flex;
-      gap: 135px;
-      align-items: flex-start;
-      max-width: 1440px;
     }
 
     .intro-left {
@@ -225,10 +243,6 @@
       position: relative;
     }
 
-    .intro-map {
-      width: 524px;
-      height: 753px;
-    }
 
     /* Map placeholder styled to approximate Google Maps terrain */
     .map-bg {
@@ -313,14 +327,10 @@
 
     /* ── Dynamic map (fixed panel) ── */
     #dynamic-map {
-      position: fixed;
-      right: 112px;
-      top: 100px;
       width: 524px;
       height: 753px;
       border-radius: 24px;
       overflow: hidden;
-      z-index: 10;
     }
 
     .map-drive-pill {
@@ -358,11 +368,8 @@
     /* ─────────────────────────────────────────────
        MAP + ITINERARY SECTION
     ───────────────────────────────────────────── */
-    .map-itinerary-section {
-      padding: 120px var(--content-pad) 0;
-      display: flex;
-      gap: 80px;
-      align-items: flex-start;
+    .itinerary-section {
+      margin-top: 120px;
       margin-bottom: 120px;
     }
 
@@ -667,14 +674,6 @@
     }
 
     /* ── Sticky map column ── */
-    .map-col {
-      flex: 1;
-    }
-
-    .sticky-map-wrap {
-      width: 524px;
-      height: 753px;
-    }
 
     /* ─────────────────────────────────────────────
        DISCOVER MORE SECTION

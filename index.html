@@ -56,6 +56,13 @@
 </div>
 
 <!-- ─────────────────────────────────────────────
+     MAIN LAYOUT: left content + sticky map
+───────────────────────────────────────────── -->
+<div class="main-layout">
+
+<div class="main-left">
+
+<!-- ─────────────────────────────────────────────
      INTRO SECTION
 ───────────────────────────────────────────── -->
 <div class="intro-section">
@@ -126,16 +133,12 @@
     </div>
   </div>
 
-  <!-- Right column: Map -->
-  <div class="intro-right">
-    <div class="intro-map"></div>
-  </div>
 </div>
 
 <!-- ─────────────────────────────────────────────
-     MAP + ITINERARY SECTION
+     ITINERARY SECTION
 ───────────────────────────────────────────── -->
-<div class="map-itinerary-section">
+<div class="itinerary-section">
 
   <!-- Itinerary column -->
   <div class="itinerary-col">
@@ -684,14 +687,26 @@
 
   </div><!-- /itinerary-col -->
 
-  <!-- Sticky map column -->
-  <div class="map-col">
-    <div class="sticky-map-wrap">
-      <div class="sticky-map"></div>
+</div><!-- /itinerary-section -->
+
+</div><!-- /main-left -->
+
+<div class="main-right">
+  <div id="dynamic-map">
+    <div class="map-drive-pill hidden">
+      <svg width="16" height="12" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 10V7l2-5h14l2 5v3"/>
+        <rect x="0" y="9" width="20" height="4" rx="1.5"/>
+        <circle cx="4.5" cy="13.5" r="1.5"/>
+        <circle cx="15.5" cy="13.5" r="1.5"/>
+      </svg>
+      <span class="pill-time"></span>
+      <span class="pill-dist dist"></span>
     </div>
   </div>
+</div><!-- /main-right -->
 
-</div><!-- /map-itinerary-section -->
+</div><!-- /main-layout -->
 
 <!-- ─────────────────────────────────────────────
      DISCOVER MORE ROAD TRIPS & ITINERARIES
@@ -911,18 +926,6 @@
   </div>
 </footer>
 
-<div id="dynamic-map">
-  <div class="map-drive-pill hidden">
-    <svg width="16" height="12" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M1 10V7l2-5h14l2 5v3"/>
-      <rect x="0" y="9" width="20" height="4" rx="1.5"/>
-      <circle cx="4.5" cy="13.5" r="1.5"/>
-      <circle cx="15.5" cy="13.5" r="1.5"/>
-    </svg>
-    <span class="pill-time"></span>
-    <span class="pill-dist dist"></span>
-  </div>
-</div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="main.js"></script>
 <script src="map.js"></script>
