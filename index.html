@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 </head>
 <body>
 
@@ -127,50 +128,7 @@
 
   <!-- Right column: Map -->
   <div class="intro-right">
-    <div class="intro-map">
-      <div class="map-bg">
-        <!-- Terrain + Route SVG -->
-        <svg class="map-overlay-svg" viewBox="0 0 524 753" fill="none">
-          <!-- Terrain shapes -->
-          <ellipse cx="120" cy="300" rx="180" ry="260" fill="rgba(180,210,160,0.5)"/>
-          <ellipse cx="300" cy="200" rx="150" ry="220" fill="rgba(200,225,180,0.4)"/>
-          <ellipse cx="400" cy="500" rx="120" ry="180" fill="rgba(190,215,170,0.3)"/>
-          <!-- Roads/paths background -->
-          <path d="M480 650 Q430 560 380 480 Q340 420 330 360 Q320 300 290 240 Q260 180 220 120 Q190 80 160 40" stroke="#d0d0d0" stroke-width="2" fill="none"/>
-          <!-- Main route (blue) -->
-          <path d="M460 690 Q420 620 360 540 Q310 470 295 395 Q280 320 250 250 Q220 180 185 110 Q165 70 150 35" stroke="#4040E0" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <!-- City dots -->
-          <circle cx="460" cy="690" r="6" fill="#fff" stroke="#333" stroke-width="2"/>
-          <circle cx="350" cy="545" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
-          <circle cx="295" cy="475" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
-          <circle cx="245" cy="360" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
-          <circle cx="150" cy="95" r="6" fill="#ff3a2f" stroke="#fff" stroke-width="2"/>
-          <!-- Time badge area -->
-          <rect x="330" y="340" width="130" height="44" rx="2" fill="#fff" stroke="#ccc" stroke-width="1"/>
-          <text x="342" y="358" font-family="Arial" font-size="11" fill="#333">🚗 16 hr 34 min</text>
-          <text x="342" y="374" font-family="Arial" font-size="10" fill="#888">  1,510 km</text>
-        </svg>
-        <!-- City labels -->
-        <div class="map-label" style="top: 26px; left: 116px;">
-          <span class="dot"></span>Jasper
-        </div>
-        <div class="map-label" style="top: 310px; left: 200px;">
-          <span class="dot"></span>Lake Louise
-        </div>
-        <div class="map-label" style="top: 415px; left: 222px;">
-          <span class="dot"></span>Banff
-        </div>
-        <div class="map-label" style="top: 460px; left: 300px;">
-          <span class="dot"></span>Canmore
-        </div>
-        <div class="map-label" style="top: 640px; left: 375px;">
-          <span class="dot"></span>Calgary
-        </div>
-      </div>
-      <button class="expand-map-btn">Expand map&nbsp;
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 2h5v5M14 2l-7 7M7 9l-5 5M2 10v4h4"/></svg>
-      </button>
-    </div>
+    <div class="intro-map"></div>
   </div>
 </div>
 
@@ -729,32 +687,7 @@
   <!-- Sticky map column -->
   <div class="map-col">
     <div class="sticky-map-wrap">
-      <div class="sticky-map">
-        <div class="map-bg">
-          <svg class="map-overlay-svg" viewBox="0 0 524 753" fill="none">
-            <ellipse cx="120" cy="300" rx="180" ry="260" fill="rgba(180,210,160,0.5)"/>
-            <ellipse cx="300" cy="200" rx="150" ry="220" fill="rgba(200,225,180,0.4)"/>
-            <ellipse cx="400" cy="500" rx="120" ry="180" fill="rgba(190,215,170,0.3)"/>
-            <path d="M480 650 Q430 560 380 480 Q340 420 330 360 Q320 300 290 240 Q260 180 220 120 Q190 80 160 40" stroke="#d0d0d0" stroke-width="2" fill="none"/>
-            <path d="M460 690 Q420 620 360 540 Q310 470 295 395 Q280 320 250 250 Q220 180 185 110 Q165 70 150 35" stroke="#4040E0" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <circle cx="460" cy="690" r="6" fill="#fff" stroke="#333" stroke-width="2"/>
-            <circle cx="350" cy="545" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
-            <circle cx="295" cy="475" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
-            <circle cx="245" cy="360" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
-            <circle cx="150" cy="95" r="6" fill="#ff3a2f" stroke="#fff" stroke-width="2"/>
-          </svg>
-          <!-- Map labels -->
-          <div class="map-label" style="top: 26px; left: 116px;"><span class="dot"></span>Jasper</div>
-          <div class="map-label" style="top: 310px; left: 200px;"><span class="dot"></span>Lake Louise</div>
-          <div class="map-label" style="top: 415px; left: 222px;"><span class="dot"></span>Banff</div>
-          <div class="map-label" style="top: 460px; left: 295px;"><span class="dot"></span>Canmore</div>
-          <div class="map-label" style="top: 640px; left: 375px;"><span class="dot"></span>Calgary</div>
-          <!-- Time badges -->
-          <div style="position:absolute;top:390px;right:0px;background:#f6f6f6;border:1px solid #ddd;padding:4px 10px;font-size:12px;font-family:Arial,sans-serif;color:#555;border-radius:2px;">38 min</div>
-          <div style="position:absolute;top:475px;right:0px;background:#f6f6f6;border:1px solid #ddd;padding:4px 10px;font-size:12px;font-family:Arial,sans-serif;color:#555;border-radius:2px;">2 hr 38 min</div>
-          <div style="position:absolute;top:560px;right:0px;background:#f6f6f6;border:1px solid #ddd;padding:4px 10px;font-size:12px;font-family:Arial,sans-serif;color:#555;border-radius:2px;">1 hr 23 min</div>
-        </div>
-      </div>
+      <div class="sticky-map"></div>
     </div>
   </div>
 
@@ -978,6 +911,20 @@
   </div>
 </footer>
 
+<div id="dynamic-map" class="hidden">
+  <div class="map-drive-pill hidden">
+    <svg width="16" height="12" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 10V7l2-5h14l2 5v3"/>
+      <rect x="0" y="9" width="20" height="4" rx="1.5"/>
+      <circle cx="4.5" cy="13.5" r="1.5"/>
+      <circle cx="15.5" cy="13.5" r="1.5"/>
+    </svg>
+    <span class="pill-time"></span>
+    <span class="pill-dist dist"></span>
+  </div>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="main.js"></script>
+<script src="map.js"></script>
 </body>
 </html>
