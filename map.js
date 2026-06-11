@@ -195,9 +195,8 @@ function makeSegmentPillEl(time, dist) {
   pill.className = 'map-segment-pill';
   const km = dist.replace(/ \(.*\)/, '');
   pill.innerHTML =
-    '<svg width="13" height="10" viewBox="0 0 20 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
-      '<path d="M1 10V7l2-5h14l2 5v3"/><rect x="0" y="9" width="20" height="4" rx="1.5"/>' +
-      '<circle cx="4.5" cy="13.5" r="1.5"/><circle cx="15.5" cy="13.5" r="1.5"/>' +
+    '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M11.6671 2.66667C12.107 2.66667 12.4802 2.94659 12.6136 3.33981L13.9267 7.11974C13.9734 7.25974 14.0003 7.41321 14.0003 7.55987V12.3329C14.0003 12.8863 13.5465 13.3333 12.9999 13.3333C12.4468 13.3331 12.0005 12.8794 12.0005 12.3329V11.9995H4.00052V12.3329C4.00052 12.8861 3.55428 13.3331 3.00117 13.3333C2.44785 13.3333 2.00078 12.8863 2.00078 12.3329V7.55987C2.00078 7.40654 2.02764 7.25974 2.0743 7.11974L3.38744 3.33981C3.52748 2.94659 3.89408 2.66669 4.33398 2.66667H11.6671ZM4.33398 8C3.78083 8.00002 3.33382 8.44625 3.33359 8.99935C3.33359 9.55265 3.78069 9.99972 4.33398 9.99974C4.88729 9.99974 5.33437 9.55267 5.33437 8.99935C5.33414 8.44623 4.88715 8 4.33398 8ZM11.6671 8C11.1139 8.00002 10.6669 8.44624 10.6667 8.99935C10.6667 9.55265 11.1138 9.99972 11.6671 9.99974C12.2204 9.99974 12.6674 9.55267 12.6674 8.99935C12.6672 8.44623 12.2202 8 11.6671 8ZM4.8145 3.66706C4.52795 3.66706 4.27413 3.85312 4.18071 4.11961L3.33359 6.66615H12.6674L11.8203 4.11961C11.727 3.85327 11.4739 3.66726 11.1876 3.66706H4.8145Z" fill="#69727A"/>' +
     '</svg>' +
     `<span class="seg-time">${time}</span><span class="seg-dist">${km}</span>`;
   return pill;
@@ -478,9 +477,19 @@ function initScrollDetection() {
     return active;
   }
 
+  const dayDotEls = Array.from(document.querySelectorAll('.day-dot'));
+  let lastActiveDotDay = 0;
+
+  function updateDotStates(day) {
+    if (day === lastActiveDotDay) return;
+    dayDotEls.forEach((dot, i) => dot.classList.toggle('is-active', i + 1 === day));
+    lastActiveDotDay = day;
+  }
+
   function update() {
     const day = getActiveDay();
     setState(day === 0 ? 'overview' : day);
+    updateDotStates(day);
   }
 
   let ticking = false;
@@ -507,3 +516,25 @@ document.querySelectorAll('.map-option-btn').forEach(btn => {
     }
   });
 });
+
+function updateConnectorLine() {
+  const col = document.querySelector('.itinerary-col');
+  const startDot = document.querySelector('.location-dot');
+  const dayDots = document.querySelectorAll('.day-dot');
+  if (!col || !startDot || !dayDots.length) return;
+
+  const lastDot = dayDots[dayDots.length - 1];
+  const colRect = col.getBoundingClientRect();
+  const startRect = startDot.getBoundingClientRect();
+  const endRect = lastDot.getBoundingClientRect();
+
+  const lineTop = startRect.top + startRect.height / 2 - colRect.top;
+  const lineEnd = endRect.top + endRect.height / 2 - colRect.top;
+
+  col.style.setProperty('--line-top', lineTop + 'px');
+  col.style.setProperty('--line-height', (lineEnd - lineTop) + 'px');
+}
+
+updateConnectorLine();
+window.addEventListener('load', updateConnectorLine);
+window.addEventListener('resize', updateConnectorLine);

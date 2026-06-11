@@ -51,7 +51,7 @@ No build step. No dependencies required for the static site — `server.js` is o
 2. **Breadcrumb + H1 + Hero** — H1 "Landscapes and Cultural Discovery" at 47.8px bold, line-height 1.17. Full-width gray hero image placeholder (462px tall). Page title padding: `60px 112px 54px`.
 3. **Main two-column layout** (`.main-layout`) — wraps the intro and itinerary sections in a single `display: flex; gap: 80px; padding: 120px 112px 0` container. Left column (`.main-left`, `flex: 1`) holds the intro content and day cards stacked. Right column (`.main-right`, `width: 524px; position: sticky; top: 24px`) holds `#dynamic-map`.
    - **Intro content** (`.intro-section` inside `.main-left`): headline (36.3px bold), body (20.2px), "Itinerary best for" gray box, "At a glance" mint card (380px wide).
-   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed.
+   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed. The `.itinerary-col` has a continuous teal dashed connector line running its full height via `::before` at `left: 25px`. Day panels are offset `margin-left: 37px` so the line is visible to their left. Drive connectors have a 4-ring teal connector node (`.connector-node`, box-shadow rings) pushed to the bottom of their left column, marking each day transition.
 4. **Discover more** — 3-card grid at 214px padding. Heading 36px bold. Cards: image 366px tall, "X DAYS" red badge (bottom-right, letter-spacing 3px), title 16.6px bold, desc 15px, "Learn more →" link. Grid gap 36px.
 5. **Know before you go** — Mint bg, 214px padding, 3×2 grid (gap 48px 0) of teal icon links.
 6. **Footer** — Dark navy `#073142`, 214px padding. "Travel Alberta" italic logo, 4 link columns, territorial acknowledgement, copyright. Teal "Back to Top" button (top-right, padding 9px 12px).
@@ -71,6 +71,8 @@ No build step. No dependencies required for the static site — `server.js` is o
 | Discover/KBYG/Footer group | `10699:19545` |
 | Activity card | `10699:19551` |
 | Map frame (524×753) | `10701:20182` |
+| "Starts in Calgary" + first drive connector | `10761:32627` |
+| Itinerary section group (Days 1–3 area) | `10759:5564` |
 
 ## Activity Content (sourced from travelalberta.com)
 
@@ -176,6 +178,39 @@ Two marker sets are pre-built in `map.on('load')`:
 - **Nav bottom border** only covers `.nav-inner` (the links side), not the full nav width. This matches the Figma separator that starts after the logo block.
 - **CSS custom properties** are defined in `:root` in `styles.css` — use them for all repeated values.
 - **No comments** unless the why is non-obvious (hidden constraint, Figma quirk, etc.).
+
+## Itinerary Section Layout
+
+### Connector line + nodes
+
+The vertical teal dashed connector runs the full height of `.itinerary-col` via a CSS `::before` pseudo-element:
+- `left: 25px` — aligns with the connector-dots column inside each drive connector
+- `background: repeating-linear-gradient(...)` — 5px dash / 7px gap, `#00A79A`
+
+Day panels have `margin-left: 37px`, leaving an 11px gap between the line (right edge at 26px) and the panel (left edge at 37px), matching the Figma.
+
+The drive connector gap is `37px` (connector-dots → pill), placing the pill at ~63px from the left — matching the Figma offset.
+
+### Connector node (`.connector-node`)
+
+Used at the bottom of each `.drive-connector`'s `.connector-dots` column (via `justify-content: flex-end`) to mark each day transition. Four concentric rings via `box-shadow`:
+```
+box-shadow: 0 0 0 3px rgba(0,167,154,0.30),  /* inner halo 18px */
+            0 0 0 9px #00A79A,                 /* solid ring 30px */
+            0 0 0 17px rgba(0,167,154,0.30);   /* outer halo 46px */
+```
+Figma source: Groups 294722 + 294723 (node `10759:5494`, `10759:5497`).
+
+### "Starts in Calgary" header
+
+Figma node `10761:32627`. Structure:
+- `.location-start-dot` — `padding-left: 24px; padding-top: 6px` — contains `.location-dot` (11×11px solid teal circle, Figma: Ellipse 213)
+- `.location-details` — `loc-label` ("Starts in", 17.2px gray) + `loc-title` ("Calgary", 48px bold, line-height 56px)
+- No circle/image placeholder — removed
+
+### Drive connector pill (`.drive-pill`)
+
+Background `#E6F7F5` (mint), `border-radius: 122px`, no border. Contains car icon (`drive_eta_24px` SVG from Figma, 15×15px, `#69727A` fill) + time + distance text.
 
 ## Next Steps
 

@@ -436,32 +436,51 @@
     .itinerary-col {
       width: 611px;
       flex-shrink: 0;
+      position: relative;
+    }
+
+    .itinerary-col::before {
+      content: '';
+      position: absolute;
+      left: 25px;
+      top: var(--line-top, 0);
+      height: var(--line-height, 100%);
+      width: 2px;
+      background: repeating-linear-gradient(
+        to bottom,
+        #00A79A 0,
+        #00A79A 5px,
+        transparent 5px,
+        transparent 12px
+      );
     }
 
     /* "Starts in" header */
     .location-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 20px;
       padding-bottom: 0;
+      position: relative;
+      z-index: 1;
     }
 
-    .location-circle-img {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: #D8E0EA;
+    .location-start-dot {
+      padding-left: 20px;   /* centers 11px dot at line x=26px: 20+5.5=25.5≈26 */
       display: flex;
       align-items: center;
-      justify-content: center;
       flex-shrink: 0;
-      overflow: hidden;
+      padding-top: 6px;
     }
 
-    .location-circle-img svg {
-      width: 24px;
-      height: 24px;
-      fill: #9FAEC0;
+    .location-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #00A79A;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
     }
 
     .location-details .loc-label {
@@ -473,52 +492,75 @@
     }
 
     .location-details .loc-title {
-      font-size: 34.4px;
+      font-size: 48px;
       font-weight: 700;
-      line-height: 1.1;
+      line-height: 56px;
     }
 
     /* Drive connector */
     .drive-connector {
       display: flex;
       align-items: center;
-      gap: 22px;
+      gap: 37px;
       padding: 20px 0;
       min-height: 120px;
+      position: relative;
+      z-index: 1;
     }
 
     .connector-dots {
+      align-self: stretch;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 11px;
       padding-left: 24px;
+      flex-shrink: 0;
+      width: 37px;
+      position: relative;
+      z-index: 1;
     }
 
-    .connector-dot {
-      width: 7px;
-      height: 7px;
+    /* Day panel wrapper — holds the dot + panel as a unit */
+    .day-panel-wrap {
+      position: relative;
+      margin-left: 37px;
+    }
+
+    /* Small teal dot aligned with the "Day X" label */
+    .day-dot {
+      position: absolute;
+      left: -17px;   /* centers 11px dot on the line at left:26px of .itinerary-col */
+      top: 22px;     /* vertically centers dot with .day-label (border 1px + pad 15px + ~11.5px half-height) */
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
-      background: #B8C4CE;
+      background: #00A79A;
       flex-shrink: 0;
+      z-index: 2;
+      transition: box-shadow 0.2s ease;
+    }
+
+    /* Active state: 30px solid inner + 46px outer halo (matching Figma Group 294722) */
+    .day-dot.is-active {
+      box-shadow:
+        0 0 0 9.5px #00A79A,
+        0 0 0 17.5px rgba(0, 167, 154, 0.30);
     }
 
     .drive-pill {
-      background: #fff;
-      border: 1px solid #D8E0E8;
-      border-radius: 40px;
-      padding: 9px 20px;
+      background: #E6F7F5;
+      border-radius: 122px;
+      padding: 5px 20px;
       font-size: 15.3px;
       font-weight: 400;
       display: flex;
       align-items: center;
       gap: 8px;
       white-space: nowrap;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
     .drive-pill .dist {
-      color: var(--gray-text);
+      color: inherit;
       margin-left: 2px;
     }
 
@@ -528,6 +570,9 @@
       border: 1px solid #00A79A;
       border-radius: 8px;
       overflow: hidden;
+      margin-left: 0;
+      position: relative;
+      z-index: 1;
     }
 
     .day-panel-inner {
