@@ -102,7 +102,7 @@ function makeMarkerEl(label, color, name) {
 
 let overviewMarkers = [];
 let dayMarkers = [];
-let currentState = 'overview';
+let currentState = null; // null forces fitBounds on first setState call
 const pillEl = document.querySelector('.map-drive-pill');
 
 map.on('load', () => {
@@ -186,12 +186,13 @@ function setState(newState) {
     markers.forEach(m => { m.getElement().style.visibility = vis; });
   });
 
-  // Camera
-  const bounds = isOverview ? OVERVIEW_BOUNDS : DAYS[dayIndex].bounds;
-  map.fitBounds(bounds, { padding: 60, duration: 900 });
+  // Camera — only if day data exists (days beyond DAYS array just keep last view)
+  const dayData = isOverview ? null : DAYS[dayIndex];
+  const bounds = isOverview ? OVERVIEW_BOUNDS : (dayData ? dayData.bounds : null);
+  if (bounds) map.fitBounds(bounds, { padding: 60, duration: 900 });
 
   // Drive pill
-  const pillData = isOverview ? null : DAYS[dayIndex].pill;
+  const pillData = isOverview ? null : (dayData ? dayData.pill : null);
   if (pillData) {
     pillEl.querySelector('.pill-time').textContent = pillData.time;
     pillEl.querySelector('.pill-dist').textContent = pillData.dist;
