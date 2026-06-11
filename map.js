@@ -74,6 +74,68 @@ const DAYS = [
     bounds: [[-114.5, 50.8], [-113.6, 51.4]],
     pill: null,
   },
+  // Day 6 — Drumheller → Brooks → Medicine Hat
+  {
+    stops: [
+      { name: 'Drumheller',  lnglat: [-112.7013, 51.4639] },
+      { name: 'Brooks',      lnglat: [-111.8973, 50.5645] },
+      { name: 'Medicine Hat', lnglat: [-110.6768, 50.0405] },
+    ],
+    route: [[-112.7013, 51.4639], [-111.8973, 50.5645], [-110.6768, 50.0405]],
+    bounds: [[-113.0, 49.9], [-110.3, 51.7]],
+    pill: { time: '2 hr 45 min drive', dist: '270 km (168 mi)' },
+  },
+  // Day 7 — Medicine Hat base (day trip to Cypress Hills, returns to Medicine Hat)
+  {
+    stops: [
+      { name: 'Medicine Hat', lnglat: [-110.6768, 50.0405] },
+    ],
+    route: null,
+    bounds: [[-111.2, 49.6], [-110.1, 50.5]],
+    pill: null,
+  },
+  // Day 8 — Medicine Hat → Milk River → Lethbridge
+  {
+    stops: [
+      { name: 'Medicine Hat', lnglat: [-110.6768, 50.0405] },
+      { name: 'Milk River',   lnglat: [-112.0744, 49.1089] },
+      { name: 'Lethbridge',   lnglat: [-112.8186, 49.6890] },
+    ],
+    route: [[-110.6768, 50.0405], [-112.0744, 49.1089], [-112.8186, 49.6890]],
+    bounds: [[-113.2, 48.9], [-110.4, 50.3]],
+    pill: { time: '2 hr 35 min drive', dist: '213 km (132 mi)' },
+  },
+  // Day 9 — Lethbridge → Waterton Lakes
+  {
+    stops: [
+      { name: 'Lethbridge',    lnglat: [-112.8186, 49.6890] },
+      { name: 'Waterton Lakes', lnglat: [-113.9023, 49.0510] },
+    ],
+    route: [[-112.8186, 49.6890], [-113.9023, 49.0510]],
+    bounds: [[-114.2, 48.8], [-112.5, 49.9]],
+    pill: { time: '1 hr drive', dist: '84 km (52 mi)' },
+  },
+  // Day 10 — Waterton → Crowsnest Pass
+  {
+    stops: [
+      { name: 'Waterton Lakes', lnglat: [-113.9023, 49.0510] },
+      { name: 'Crowsnest Pass', lnglat: [-114.4969, 49.6239] },
+    ],
+    route: [[-113.9023, 49.0510], [-114.4969, 49.6239]],
+    bounds: [[-114.8, 48.9], [-113.6, 49.9]],
+    pill: { time: '1 hr 25 min drive', dist: '118 km (73 mi)' },
+  },
+  // Day 11 — Fort Macleod → Longview → Calgary
+  {
+    stops: [
+      { name: 'Fort Macleod', lnglat: [-113.4075, 49.7199] },
+      { name: 'Longview',     lnglat: [-114.1742, 50.5314] },
+      { name: 'Calgary',      lnglat: [-114.0719, 51.0447] },
+    ],
+    route: [[-113.4075, 49.7199], [-114.1742, 50.5314], [-114.0719, 51.0447]],
+    bounds: [[-114.5, 49.5], [-113.2, 51.3]],
+    pill: { time: '2 hr 32 min drive', dist: '229 km (142 mi)' },
+  },
 ];
 
 function makeMarkerEl(label, color, name) {
@@ -102,7 +164,7 @@ function makeMarkerEl(label, color, name) {
 
 let overviewMarkers = [];
 let dayMarkers = [];
-let currentState = null; // null forces fitBounds on first setState call
+let currentState = 'overview';
 const pillEl = document.querySelector('.map-drive-pill');
 
 map.on('load', () => {

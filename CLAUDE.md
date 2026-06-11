@@ -51,7 +51,7 @@ No build step. No dependencies required for the static site — `server.js` is o
 2. **Breadcrumb + H1 + Hero** — H1 "Landscapes and Cultural Discovery" at 47.8px bold, line-height 1.17. Full-width gray hero image placeholder (462px tall). Page title padding: `60px 112px 54px`.
 3. **Main two-column layout** (`.main-layout`) — wraps the intro and itinerary sections in a single `display: flex; gap: 80px; padding: 120px 112px 0` container. Left column (`.main-left`, `flex: 1`) holds the intro content and day cards stacked. Right column (`.main-right`, `width: 524px; position: sticky; top: 24px`) holds `#dynamic-map`.
    - **Intro content** (`.intro-section` inside `.main-left`): headline (36.3px bold), body (20.2px), "Itinerary best for" gray box, "At a glance" mint card (380px wide).
-   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 5 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–5 start collapsed.
+   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed.
 4. **Discover more** — 3-card grid at 214px padding. Heading 36px bold. Cards: image 366px tall, "X DAYS" red badge (bottom-right, letter-spacing 3px), title 16.6px bold, desc 15px, "Learn more →" link. Grid gap 36px.
 5. **Know before you go** — Mint bg, 214px padding, 3×2 grid (gap 48px 0) of teal icon links.
 6. **Footer** — Dark navy `#073142`, 214px padding. "Travel Alberta" italic logo, 4 link columns, territorial acknowledgement, copyright. Teal "Back to Top" button (top-right, padding 9px 12px).
@@ -83,6 +83,12 @@ Activity titles and counts match the live page exactly:
 | Day 3 — Jasper and Canmore | 3 | Maligne Lake Cruise · Jasper SkyTram · Drive to Canmore along the Icefield Parkway |
 | Day 4 — Canmore and Calgary | 5 | Canmore Cave Tours · Carter-Ryan Gallery and Live Art Venue · Yamnuska Wolfdog Sanctuary · WinSport's Canada Olympic Park · Overnight in Calgary's vibrant East Village |
 | Day 5 — Calgary | 3 | Heritage Park · Calgary Food Tour · Calgary Tower |
+| Day 6 — Southern Alberta | 4 | The hoodoos of Drumheller · Royal Tyrrell Museum of Palaeontology · Dinosaur Provincial Park · Overnight in Medicine Hat |
+| Day 7 — Medicine Hat | 4 | Saamis Teepee · Medalta Potteries National Historic Site · Cypress Hills Interprovincial Park · Hell's Basement Brewery |
+| Day 8 — Writing-on-Stone and Lethbridge | 4 | Áísínai'pi / Writing-on-Stone Provincial Park · Fort Whoop-Up · Galt Museum and Archives · Nikka Yuko Japanese Garden |
+| Day 9 — Waterton Lakes National Park | 5 | Drive into Waterton · Alpine Stables trail ride · Lunch at Prince of Wales Hotel · Cameron Lake · Shoreline Cruise |
+| Day 10 — Southern Rockies | 5 | Red Rock Canyon · Crowsnest Pass scenic drive · Bellevue Mine · Frank Slide Interpretive Centre · Overnight at Country Encounters B&B |
+| Day 11 — Southern Alberta to Calgary | 3 | Head-Smashed-In Buffalo Jump · Bar U Ranch National Historic Site · Wet your whistle at Eau Claire Distillery |
 
 ## Accordion Behaviour
 
@@ -101,7 +107,7 @@ Activity titles and counts match the live page exactly:
 - **No fade-out:** the map is always visible once the page loads; there is no opacity or visibility toggle based on scroll position.
 - **Overview state:** all 5 numbered stops + full dotted route line; active before any day card hits the 40% scroll trigger.
 - **Day state:** triggered when a `.day-panel[data-day]` top edge ≤ 40% viewport height; shows only that day's stops + route segment + drive pill overlay.
-- **Scroll detection:** throttled `scroll` listener + `requestAnimationFrame` in `map.js` → `update()` → `setState('overview' | 1–5)`. `update()` is also called immediately on map load (no waiting for first scroll event).
+- **Scroll detection:** throttled `scroll` listener + `requestAnimationFrame` in `map.js` → `update()` → `setState('overview' | 1–11)`. `update()` is also called immediately on map load (no waiting for first scroll event).
 - **Marker toggling:** `visibility: hidden/visible` (not `display: none/flex`) — preserves the flex-column wrapper layout so the name pill always renders correctly when shown.
 - **Pin labels:** each marker is a flex-column wrapper — numbered circle on top, city name pill below. Same pill style as the drive pill (white bg, `#E2E8ED` border, `border-radius: 100px`, subtle box-shadow).
 - **Swap to Mapbox:** replace the OpenFreeMap style URL with `'mapbox://styles/mapbox/streets-v12'` and add `accessToken` to the Map constructor.
@@ -114,6 +120,12 @@ Activity titles and counts match the live page exactly:
 | Day 3 | Jasper → Canmore | 2 hr 57 min · 287 km (178 mi) |
 | Day 4 | Canmore → Calgary | 58 min · 102 km (63 mi) |
 | Day 5 | Calgary | — |
+| Day 6 | Drumheller → Brooks → Medicine Hat | 2 hr 45 min · 270 km (168 mi) |
+| Day 7 | Medicine Hat (day trip base, no route) | — |
+| Day 8 | Medicine Hat → Milk River → Lethbridge | 2 hr 35 min · 213 km (132 mi) |
+| Day 9 | Lethbridge → Waterton Lakes | 1 hr · 84 km (52 mi) |
+| Day 10 | Waterton Lakes → Crowsnest Pass | 1 hr 25 min · 118 km (73 mi) |
+| Day 11 | Fort Macleod → Longview → Calgary | 2 hr 32 min · 229 km (142 mi) |
 
 ## Coding Conventions
 
