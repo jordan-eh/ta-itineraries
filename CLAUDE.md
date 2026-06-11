@@ -14,10 +14,13 @@ GitHub repo: https://github.com/jordan-eh/ta-itineraries
 | `index.html` | All HTML structure |
 | `styles.css` | All CSS — no preprocessor, plain CSS custom properties |
 | `server.js` | Zero-dep Node.js dev server (`node server.js` → `http://localhost:3000`) |
+| `main.js` | Accordion toggle — click listener toggles `is-open` on `.explore-activities` |
+| `map.js` | Dynamic map — MapLibre GL JS init, per-day state data, scroll detection, `setState()` transitions |
 | `images/logo-text.png` | Canada's Alberta logo (white text, exported from Figma node `10699:19252` at 2×) |
 | `images/logo.svg` | SVG version of the full logo block (red bg + white text) |
-| `main.js` | Accordion toggle — 3-line click listener, toggles `is-open` on `.explore-activities` |
-| `map.js` | Dynamic map — MapLibre GL JS init, per-day state data, scroll detection, `setState()` transitions |
+| `images/logo.png` | Full logo with red background |
+| `docs/superpowers/specs/` | Design specs (brainstorming output) |
+| `docs/superpowers/plans/` | Implementation plans |
 
 ## Running Locally
 
@@ -37,7 +40,7 @@ No build step. No dependencies required for the static site — `server.js` is o
 | Mint background | `#E6F7F5` |
 | Footer navy | `#073142` |
 | Gray text | `#69727A` |
-| Border/separator | `#DBDEDF` |
+| Border/separator | `#E2E8ED` (CSS var `--border`) |
 | Content padding (most sections) | `112px` (CSS var `--content-pad`) |
 | Content padding (discover/kbyg/footer) | `214px` (CSS var `--wide-pad`) |
 | Primary font | Futura PT → Outfit (Google Fonts fallback) |
@@ -46,11 +49,12 @@ No build step. No dependencies required for the static site — `server.js` is o
 
 1. **Nav** — 100px tall, white bg. Logo block: `images/logo-text.png` (white Canada's Alberta text) on `#9C0F00` red at 188px wide. Main links (17.9px, weight 500, letter-spacing 0.36px, gap 35px). Secondary links "Upcoming Events" / "Experience Providers" (15.9px, weight 400, centered, gap 12px). Search icon with 26px extra left margin. Bottom border `#DBDEDF` runs only under the links section, not behind the logo.
 2. **Breadcrumb + H1 + Hero** — H1 "Landscapes and Cultural Discovery" at 47.8px bold, line-height 1.17. Full-width gray hero image placeholder (462px tall). Page title padding: `60px 112px 54px`.
-3. **Intro** — 2-col at 112px side padding. Left (557px): headline (36.3px bold, lh 44.38px), body (20.2px, lh 26.22px), "Itinerary best for" gray box (padding 32px), "At a glance" mint card (380px wide, h3 gap 68px). Right (524px): map placeholder (524×753px, border-radius 24px) + "Expand map" black pill button.
-4. **Map + Itinerary** — 2-col at 112px padding. Left (611px): "Starts in Calgary" → drive connectors → 5 day panels. Each day panel has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–5 start collapsed. Right (524px): transparent spacer — the actual map is `#dynamic-map` (`position: fixed; right: 112px; top: 100px; width: 524px; height: calc(100vh - 120px)`). Section margin-bottom 120px. Drive connectors: 7 dots (gap 11px), padding 20px top/bottom, min-height 120px.
-5. **Discover more** — 3-card grid at 214px padding. Heading 36px bold. Cards: image 366px tall, "X DAYS" red badge (bottom-right, letter-spacing 3px), title 16.6px bold, desc 15px, "Learn more →" link. Grid gap 36px.
-6. **Know before you go** — Mint bg, 214px padding, 3×2 grid (gap 48px 0) of teal icon links.
-7. **Footer** — Dark navy `#073142`, 214px padding. "Travel Alberta" italic logo, 4 link columns, territorial acknowledgement, copyright. Teal "Back to Top" button (top-right, padding 9px 12px).
+3. **Main two-column layout** (`.main-layout`) — wraps the intro and itinerary sections in a single `display: flex; gap: 80px; padding: 120px 112px 0` container. Left column (`.main-left`, `flex: 1`) holds the intro content and day cards stacked. Right column (`.main-right`, `width: 524px; position: sticky; top: 24px`) holds `#dynamic-map`.
+   - **Intro content** (`.intro-section` inside `.main-left`): headline (36.3px bold), body (20.2px), "Itinerary best for" gray box, "At a glance" mint card (380px wide).
+   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 5 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–5 start collapsed.
+4. **Discover more** — 3-card grid at 214px padding. Heading 36px bold. Cards: image 366px tall, "X DAYS" red badge (bottom-right, letter-spacing 3px), title 16.6px bold, desc 15px, "Learn more →" link. Grid gap 36px.
+5. **Know before you go** — Mint bg, 214px padding, 3×2 grid (gap 48px 0) of teal icon links.
+6. **Footer** — Dark navy `#073142`, 214px padding. "Travel Alberta" italic logo, 4 link columns, territorial acknowledgement, copyright. Teal "Back to Top" button (top-right, padding 9px 12px).
 
 ## Figma Reference Node IDs
 
@@ -66,6 +70,7 @@ No build step. No dependencies required for the static site — `server.js` is o
 | Activities container | `10699:19344` |
 | Discover/KBYG/Footer group | `10699:19545` |
 | Activity card | `10699:19551` |
+| Map frame (524×753) | `10701:20182` |
 
 ## Activity Content (sourced from travelalberta.com)
 
@@ -88,21 +93,26 @@ Activity titles and counts match the live page exactly:
 
 ## Dynamic Map
 
-- **Library:** MapLibre GL JS 4.7.1 + OpenFreeMap liberty vector tiles (no API key)
-- **Element:** `<div id="dynamic-map">` — `position: fixed; right: 112px; top: 100px`
-- **Visibility:** fades in when `.intro-section` is in view; fades out when `.discover-more-section` enters view
-- **Overview state:** all 5 numbered stops + full dotted route line; active before any day card hits the 40% trigger
-- **Day state:** triggered when a `.day-panel[data-day]` top edge ≤ 40% of viewport height; shows only that day's stops + route segment + drive pill overlay
-- **Scroll detection:** throttled `scroll` listener + `requestAnimationFrame` in `map.js` → `setState('overview' | 1–5)`
-- **Swap to Mapbox:** replace the OpenFreeMap style URL with `'mapbox://styles/mapbox/streets-v12'` and add `accessToken` to the Map constructor
+- **Library:** MapLibre GL JS 4.7.1 + OpenFreeMap liberty vector tiles (no API key required)
+- **CDN:** `https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.{js,css}`
+- **Tile style:** `https://tiles.openfreemap.org/styles/liberty`
+- **Container:** `<div id="dynamic-map">` — 524×753px, `border-radius: 24px`, `overflow: hidden`. Lives inside `.main-right` in normal document flow (not `position: fixed`).
+- **Layout:** `.main-right { width: 524px; position: sticky; top: 24px; align-self: flex-start }` — sticks below the viewport top as the user scrolls through day cards, then scrolls away naturally after the last section.
+- **No fade-out:** the map is always visible once the page loads; there is no opacity or visibility toggle based on scroll position.
+- **Overview state:** all 5 numbered stops + full dotted route line; active before any day card hits the 40% scroll trigger.
+- **Day state:** triggered when a `.day-panel[data-day]` top edge ≤ 40% viewport height; shows only that day's stops + route segment + drive pill overlay.
+- **Scroll detection:** throttled `scroll` listener + `requestAnimationFrame` in `map.js` → `update()` → `setState('overview' | 1–5)`. `update()` is also called immediately on map load (no waiting for first scroll event).
+- **Marker toggling:** `visibility: hidden/visible` (not `display: none/flex`) — preserves the flex-column wrapper layout so the name pill always renders correctly when shown.
+- **Pin labels:** each marker is a flex-column wrapper — numbered circle on top, city name pill below. Same pill style as the drive pill (white bg, `#E2E8ED` border, `border-radius: 100px`, subtle box-shadow).
+- **Swap to Mapbox:** replace the OpenFreeMap style URL with `'mapbox://styles/mapbox/streets-v12'` and add `accessToken` to the Map constructor.
 
 | Day | Stops on map | Drive pill |
 |---|---|---|
-| Overview | Calgary, Banff, Lake Louise, Jasper, Canmore | — |
-| Day 1 | Calgary → Banff | 1 hr 23 min · 127 km |
-| Day 2 | Lake Louise → Columbia Icefield → Jasper | 38 min · 57.1 km |
-| Day 3 | Jasper → Canmore | 2 hr 57 min · 287 km |
-| Day 4 | Canmore → Calgary | 58 min · 102 km |
+| Overview | Calgary (1), Banff (2), Lake Louise (3), Jasper (4), Canmore (5) | — |
+| Day 1 | Calgary → Banff | 1 hr 23 min · 127 km (79 mi) |
+| Day 2 | Lake Louise → Columbia Icefield → Jasper | 38 min · 57.1 km (35.4 mi) |
+| Day 3 | Jasper → Canmore | 2 hr 57 min · 287 km (178 mi) |
+| Day 4 | Canmore → Calgary | 58 min · 102 km (63 mi) |
 | Day 5 | Calgary | — |
 
 ## Coding Conventions
