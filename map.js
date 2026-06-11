@@ -106,6 +106,11 @@ let currentState = 'overview';
 const pillEl = document.querySelector('.map-drive-pill');
 
 map.on('load', () => {
+  // Remove bottom controls (logo + attribution)
+  ['maplibregl-ctrl-bottom-left', 'maplibregl-ctrl-bottom-right'].forEach(cls => {
+    const el = map.getContainer().querySelector('.' + cls);
+    if (el) el.remove();
+  });
   // ── Overview route layer ──
   map.addSource('route-overview', {
     type: 'geojson',
