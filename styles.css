@@ -142,7 +142,7 @@
     .main-layout {
       display: flex;
       padding: 120px var(--content-pad) 0;
-      gap: 15px;
+      gap: 80px;
       align-items: flex-start;
     }
 
@@ -166,7 +166,8 @@
     }
 
     .intro-left {
-      width: 100%;
+      width: 557px;
+      flex-shrink: 0;
     }
 
     .intro-headline {
@@ -180,13 +181,7 @@
       font-size: 20.2px;
       font-weight: 400;
       line-height: 26.22px;
-      margin-bottom: 35px;
-    }
-
-    .intro-separator {
-      border: none;
-      border-top: 1px solid #adb5bd;
-      margin: 0 0 38px;
+      margin-bottom: 60px;
     }
 
     .best-for-section {
