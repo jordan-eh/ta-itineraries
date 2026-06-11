@@ -51,7 +51,7 @@ No build step. No dependencies required for the static site — `server.js` is o
 2. **Breadcrumb + H1 + Hero** — H1 "Landscapes and Cultural Discovery" at 47.8px bold, line-height 1.17. Full-width gray hero image placeholder (462px tall). Page title padding: `60px 112px 54px`.
 3. **Main two-column layout** (`.main-layout`) — wraps the intro and itinerary sections in a single `display: flex; gap: 80px; padding: 120px 112px 0` container. Left column (`.main-left`, `flex: 1`) holds the intro content and day cards stacked. Right column (`.main-right`, `width: 524px; position: sticky; top: 24px`) holds `#dynamic-map`.
    - **Intro content** (`.intro-section` inside `.main-left`): headline (36.3px bold), body (20.2px), "Itinerary best for" gray box, "At a glance" mint card (380px wide).
-   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed. The `.itinerary-col` has a continuous teal dashed connector line running its full height via `::before` at `left: 25px`. Day panels are offset `margin-left: 37px` so the line is visible to their left. Drive connectors have a 4-ring teal connector node (`.connector-node`, box-shadow rings) pushed to the bottom of their left column, marking each day transition.
+   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed. The `.itinerary-col` has a teal dashed connector line via `::before` at `left: 25px`; its `top`/`height` are set by JS (`updateConnectorLine`) to span exactly from the "Starts in" dot center to the Day 11 dot center. Each `.day-panel-wrap` has a small 11px `.day-dot` absolutely positioned on the connector line, vertically aligned with the "Day X" label. Day panels are offset `margin-left: 60px` to give clearance for the dot's active halo. Day 2 is the only card with a carousel right-arrow and counter indicator.
 4. **Discover more** — 3-card grid at 214px padding. Heading 36px bold. Cards: image 366px tall, "X DAYS" red badge (bottom-right, letter-spacing 3px), title 16.6px bold, desc 15px, "Learn more →" link. Grid gap 36px.
 5. **Know before you go** — Mint bg, 214px padding, 3×2 grid (gap 48px 0) of teal icon links.
 6. **Footer** — Dark navy `#073142`, 214px padding. "Travel Alberta" italic logo, 4 link columns, territorial acknowledgement, copyright. Teal "Back to Top" button (top-right, padding 9px 12px).
@@ -181,36 +181,46 @@ Two marker sets are pre-built in `map.on('load')`:
 
 ## Itinerary Section Layout
 
-### Connector line + nodes
+### Connector line
 
-The vertical teal dashed connector runs the full height of `.itinerary-col` via a CSS `::before` pseudo-element:
-- `left: 25px` — aligns with the connector-dots column inside each drive connector
+The vertical teal dashed connector runs via `.itinerary-col::before`:
+- `left: 25px`, `width: 2px` — line center at 26px from `.itinerary-col` left
 - `background: repeating-linear-gradient(...)` — 5px dash / 7px gap, `#00A79A`
+- `top` and `height` driven by CSS custom properties `--line-top` / `--line-height`
+- `updateConnectorLine()` (in `map.js`) measures the "Starts in" `.location-dot` and last `.day-dot` via `getBoundingClientRect()` and sets these properties so the line spans exactly between the two endpoint dots. Called immediately on script load, and on `window resize` and `load`.
 
-Day panels have `margin-left: 37px`, leaving an 11px gap between the line (right edge at 26px) and the panel (left edge at 37px), matching the Figma.
+### Day dots (`.day-dot`)
 
-The drive connector gap is `37px` (connector-dots → pill), placing the pill at ~63px from the left — matching the Figma offset.
+Each `.day-panel-wrap` contains an absolutely positioned `.day-dot` (11×11px solid teal circle) marking that day on the connector line:
+- `left: -40px` — centers the dot at line x=26px (wrapper `margin-left: 60px`, dot left edge at 20px → center 25.5px ≈ 26px)
+- `top: 22px` — vertically centers dot with the "Day X" label (1px border + 15px padding + ~11px half-height)
+- Inactive: plain 11×11 teal circle, same style as `.location-dot`
+- **Active state** (`.day-dot.is-active`): two-ring expansion via `box-shadow`:
+  ```
+  box-shadow: 0 0 0 9.5px #00A79A,               /* 30px solid inner (Figma Ellipse 214) */
+              0 0 0 17.5px rgba(0,167,154,0.30);  /* 46px outer halo (Figma Ellipse 215) */
+  ```
+  Figma source: Group 294722 (node `10759:5494`). Transition: `box-shadow 0.2s ease`.
+- Active class toggled by `updateDotStates(day)` inside `initScrollDetection` → `update()`, exactly in sync with the map state change. When `day === 0` (overview), all dots are inactive.
 
-### Connector node (`.connector-node`)
+Day panels are wrapped in `.day-panel-wrap { position: relative; margin-left: 60px }` — the 60px gap ensures the 46px active halo (right edge at 49px) has 11px clearance from the card border.
 
-Used at the bottom of each `.drive-connector`'s `.connector-dots` column (via `justify-content: flex-end`) to mark each day transition. Four concentric rings via `box-shadow`:
-```
-box-shadow: 0 0 0 3px rgba(0,167,154,0.30),  /* inner halo 18px */
-            0 0 0 9px #00A79A,                 /* solid ring 30px */
-            0 0 0 17px rgba(0,167,154,0.30);   /* outer halo 46px */
-```
-Figma source: Groups 294722 + 294723 (node `10759:5494`, `10759:5497`).
+The drive connector gap is `23px` (connector-dots 37px + gap 23px = 60px), keeping the drive pill aligned with the card left edge.
 
 ### "Starts in Calgary" header
 
 Figma node `10761:32627`. Structure:
-- `.location-start-dot` — `padding-left: 24px; padding-top: 6px` — contains `.location-dot` (11×11px solid teal circle, Figma: Ellipse 213)
+- `.location-start-dot` — `padding-left: 20px; padding-top: 6px` — contains `.location-dot` (11×11px solid teal circle, Figma: Ellipse 213). Dot center at ~25.5px ≈ 26px from `.itinerary-col` left, matching the line center.
 - `.location-details` — `loc-label` ("Starts in", 17.2px gray) + `loc-title` ("Calgary", 48px bold, line-height 56px)
 - No circle/image placeholder — removed
 
 ### Drive connector pill (`.drive-pill`)
 
 Background `#E6F7F5` (mint), `border-radius: 122px`, no border. Contains car icon (`drive_eta_24px` SVG from Figma, 15×15px, `#69727A` fill) + time + distance text.
+
+### Carousel indicators
+
+Only **Day 2** has the right-arrow nav button (`.carousel-nav-right`) and counter (`.carousel-counter`). All other day cards have these removed.
 
 ## Next Steps
 
