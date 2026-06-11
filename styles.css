@@ -339,34 +339,33 @@
     .maplibregl-ctrl-bottom-left,
     .maplibregl-ctrl-bottom-right { display: none !important; }
 
-    .map-drive-pill {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 8px 18px;
-      font-size: 14px;
-      font-weight: 500;
-      font-family: var(--font);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-      z-index: 1;
-      opacity: 1;
-      transition: opacity 0.2s ease;
-    }
-
-    .map-drive-pill.hidden,
     .map-destinations-pill.hidden {
       display: none;
     }
 
-    .map-drive-pill .dist {
+    .map-segment-pill {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+      pointer-events: none;
+    }
+
+    .map-segment-pill .seg-dist::before {
+      content: '·';
+      margin-right: 5px;
+      color: var(--gray-text);
+    }
+
+    .map-segment-pill .seg-dist {
       color: var(--gray-text);
       font-weight: 400;
     }
@@ -397,9 +396,7 @@
     }
 
     .map-options-toggle {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
+      display: none;
     }
 
     .map-option-btn {
