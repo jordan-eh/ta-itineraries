@@ -124,9 +124,18 @@ Each entry in `DAYS` (indices 0–10) has:
 - `segments[]` — `{ time, dist }` per stop-pair; powers the per-segment drive pills
 - `approachFrom` (optional) — `{ lnglat, seg: { time, dist } }` for days that start somewhere different from the previous day's last stop; powers a dashed approach line and approach pill
 
+### Activities layer
+
+`ACTIVITIES` (array of 11 arrays, index 0–10) stores per-day activity pin locations: `{ name, lnglat }`. These are context-only pins — not connected to the route.
+
+- `makeActivityMarkerEl(name)` — teal-outline white dot (`.activity-pin-dot`) + name label pill (`.activity-pin-label`)
+- `setActivityMarkers(day)` — clears `activityMarkers[]`, then places new markers if `showActivities === true` and `day ≥ 1`. Called from `setState()` on every state change so pins always reflect the active day.
+- `showActivities` (boolean, default `false`) — toggled by `.map-view-btn` click handler
+- **Toggle UI** (`.map-view-toggle`) is in `.main-right` below the map. Currently hidden via `display: none` in CSS. To re-enable: change `.map-view-toggle { display: none }` → `display: flex`. In overview state the toggle has no effect (no day active, `day < 1` guard in `setActivityMarkers`).
+
 ### Per-segment drive pills
 
-- Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with a car SVG icon, time, and distance (km only, miles stripped)
+- Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with the `drive_eta_24px` Figma car icon (18×18px, `#000` fill), time, and distance (km only, miles stripped)
 - Placed at the geographic midpoint of each segment using a `maplibregl.Marker` with `anchor: 'center'`
 - Stored in `segmentPillMarkers` as `[{ marker, a, b }]` (segment endpoints needed for overlap resolution)
 - After `map.fitBounds` animates, `map.once('moveend', resolveSegmentPillOverlaps)` nudges pills perpendicularly off the route to avoid overlap with stops and each other
@@ -216,7 +225,7 @@ Figma node `10761:32627`. Structure:
 
 ### Drive connector pill (`.drive-pill`)
 
-Background `#E6F7F5` (mint), `border-radius: 122px`, no border. Contains car icon (`drive_eta_24px` SVG from Figma, 15×15px, `#69727A` fill) + time + distance text.
+Background `#E6F7F5` (mint), `border-radius: 122px`, no border. Contains car icon (`drive_eta_24px` SVG from Figma, 18×18px, `#000` fill, `viewBox="0 0 16 16"`) + time + distance text.
 
 ### Carousel indicators
 
