@@ -645,6 +645,7 @@ function updateConnectorLine() {
 updateConnectorLine();
 window.addEventListener('load', updateConnectorLine);
 window.addEventListener('resize', updateConnectorLine);
+document.addEventListener('accordion-toggled', updateConnectorLine);
 
 document.querySelectorAll('.map-view-btn').forEach(btn => {
   btn.addEventListener('click', () => {
