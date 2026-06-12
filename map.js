@@ -183,6 +183,87 @@ const DAYS = [
   },
 ];
 
+const ACTIVITIES = [
+  // Day 1 — Banff
+  [
+    { name: 'Banff National Park',          lnglat: [-115.5708, 51.1784] },
+    { name: 'Mt Norquay Via Ferrata',       lnglat: [-115.5920, 51.2066] },
+    { name: 'Lake Minnewanka Cruise',       lnglat: [-115.4060, 51.2260] },
+    { name: 'Trail Ride – Banff',           lnglat: [-115.5600, 51.1750] },
+    { name: 'Fairmont Banff Springs',       lnglat: [-115.5680, 51.1620] },
+  ],
+  // Day 2 — Lake Louise / Icefield Pkwy / Jasper
+  [
+    { name: 'Fairmont Chateau Lake Louise', lnglat: [-116.1780, 51.4254] },
+    { name: 'Glacier SkyWalk',              lnglat: [-117.2000, 52.1960] },
+    { name: 'Columbia Icefield Adventure',  lnglat: [-117.2297, 52.2197] },
+    { name: 'Fairmont Jasper Park Lodge',   lnglat: [-118.0628, 52.8793] },
+    { name: 'Jasper Planetarium',           lnglat: [-118.0900, 52.8680] },
+  ],
+  // Day 3 — Jasper and Canmore
+  [
+    { name: 'Maligne Lake Cruise',          lnglat: [-117.6309, 52.6713] },
+    { name: 'Jasper SkyTram',               lnglat: [-118.1074, 52.8831] },
+    { name: 'Drive to Canmore',             lnglat: [-115.3589, 51.0893] },
+  ],
+  // Day 4 — Canmore and Calgary
+  [
+    { name: 'Canmore Cave Tours',           lnglat: [-115.3589, 51.0893] },
+    { name: 'Carter-Ryan Gallery',          lnglat: [-115.3540, 51.0870] },
+    { name: 'Yamnuska Wolfdog Sanctuary',   lnglat: [-115.0492, 51.1241] },
+    { name: 'Canada Olympic Park',          lnglat: [-114.1830, 51.0868] },
+    { name: 'Calgary East Village',         lnglat: [-114.0519, 51.0480] },
+  ],
+  // Day 5 — Calgary
+  [
+    { name: 'Heritage Park',                lnglat: [-114.1275, 50.9858] },
+    { name: 'Calgary Food Tour',            lnglat: [-114.0680, 51.0445] },
+    { name: 'Calgary Tower',                lnglat: [-114.0625, 51.0432] },
+  ],
+  // Day 6 — Southern Alberta
+  [
+    { name: 'Drumheller Hoodoos',           lnglat: [-112.6813, 51.4530] },
+    { name: 'Royal Tyrrell Museum',         lnglat: [-112.8009, 51.4783] },
+    { name: 'Dinosaur Provincial Park',     lnglat: [-111.4865, 50.7726] },
+    { name: 'Medicine Hat',                 lnglat: [-110.6768, 50.0405] },
+  ],
+  // Day 7 — Medicine Hat
+  [
+    { name: 'Saamis Teepee',                lnglat: [-110.6768, 50.0405] },
+    { name: 'Medalta Potteries',            lnglat: [-110.6920, 50.0300] },
+    { name: 'Cypress Hills Park',           lnglat: [-110.0058, 49.6117] },
+    { name: "Hell's Basement Brewery",      lnglat: [-110.6800, 50.0450] },
+  ],
+  // Day 8 — Writing-on-Stone and Lethbridge
+  [
+    { name: 'Writing-on-Stone Park',        lnglat: [-111.6199, 49.0766] },
+    { name: 'Fort Whoop-Up',                lnglat: [-112.8362, 49.6928] },
+    { name: 'Galt Museum',                  lnglat: [-112.8186, 49.6890] },
+    { name: 'Nikka Yuko Garden',            lnglat: [-112.8320, 49.6980] },
+  ],
+  // Day 9 — Waterton Lakes
+  [
+    { name: 'Waterton Townsite',            lnglat: [-113.9023, 49.0510] },
+    { name: 'Alpine Stables',               lnglat: [-113.8890, 49.0620] },
+    { name: 'Prince of Wales Hotel',        lnglat: [-113.9170, 49.0552] },
+    { name: 'Cameron Lake',                 lnglat: [-113.9997, 48.9775] },
+    { name: 'Shoreline Cruise',             lnglat: [-113.9023, 49.0560] },
+  ],
+  // Day 10 — Southern Rockies
+  [
+    { name: 'Red Rock Canyon',              lnglat: [-113.9300, 49.0310] },
+    { name: 'Crowsnest Pass',               lnglat: [-114.4969, 49.6239] },
+    { name: 'Bellevue Mine',                lnglat: [-114.3660, 49.5780] },
+    { name: 'Frank Slide',                  lnglat: [-114.4162, 49.6021] },
+  ],
+  // Day 11 — Southern Alberta to Calgary
+  [
+    { name: 'Head-Smashed-In Buffalo Jump', lnglat: [-113.6396, 49.7193] },
+    { name: 'Bar U Ranch',                  lnglat: [-114.1960, 50.5180] },
+    { name: 'Eau Claire Distillery',        lnglat: [-114.1220, 50.3620] },
+  ],
+];
+
 function screenPerp(a, b) {
   const dlng = b[0] - a[0];
   const dlat = b[1] - a[1];
@@ -285,11 +366,22 @@ const OVERVIEW_STOPS_OPT1 = [
   { name: 'Medicine Hat', lnglat: [-110.6768, 50.0405] },
 ];
 
+function makeActivityMarkerEl(name) {
+  const wrap = document.createElement('div');
+  wrap.className = 'activity-pin';
+  wrap.innerHTML =
+    '<div class="activity-pin-dot"></div>' +
+    '<div class="activity-pin-label">' + name + '</div>';
+  return wrap;
+}
+
 let overviewMarkersOpt1 = [];
 let overviewMarkersOpt2 = [];
 let dayMarkers = [];
 let segmentPillMarkers = [];
 let approachPinMarkers = [];
+let activityMarkers = [];
+let showActivities = false;
 let currentState = 'overview';
 let activeOverviewOption = 2;
 const destPillEl = document.querySelector('.map-destinations-pill');
@@ -459,6 +551,21 @@ function setState(newState) {
   } else {
     destPillEl.classList.add('hidden');
   }
+
+  setActivityMarkers(isOverview ? 0 : newState);
+}
+
+function setActivityMarkers(day) {
+  activityMarkers.forEach(m => m.remove());
+  activityMarkers = [];
+  if (!showActivities || day < 1) return;
+  (ACTIVITIES[day - 1] || []).forEach(act => {
+    const el = makeActivityMarkerEl(act.name);
+    activityMarkers.push(
+      new maplibregl.Marker({ element: el, anchor: 'bottom' })
+        .setLngLat(act.lnglat).addTo(map)
+    );
+  });
 }
 
 function initScrollDetection() {
@@ -538,3 +645,14 @@ function updateConnectorLine() {
 updateConnectorLine();
 window.addEventListener('load', updateConnectorLine);
 window.addEventListener('resize', updateConnectorLine);
+
+document.querySelectorAll('.map-view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const activating = btn.dataset.view === 'activities';
+    if (activating === showActivities) return;
+    showActivities = activating;
+    document.querySelectorAll('.map-view-btn').forEach(b => b.classList.toggle('is-active', b === btn));
+    const day = typeof currentState === 'number' ? currentState : 0;
+    setActivityMarkers(day);
+  });
+});

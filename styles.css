@@ -399,6 +399,68 @@
       display: none;
     }
 
+    .map-view-toggle {
+      display: none;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .map-view-btn {
+      flex: 1;
+      padding: 9px 0;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--gray-text);
+      font-family: var(--font);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .map-view-btn.is-active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #fff;
+    }
+
+    .map-view-btn:not(.is-active):hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    /* Activity pins on map */
+    .activity-pin {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      pointer-events: none;
+    }
+
+    .activity-pin-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--teal);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+
+    .activity-pin-label {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font);
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
     .map-option-btn {
       flex: 1;
       padding: 9px 0;
