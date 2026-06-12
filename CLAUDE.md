@@ -196,7 +196,7 @@ The vertical teal dashed connector runs via `.itinerary-col::before`:
 - `left: 25px`, `width: 2px` — line center at 26px from `.itinerary-col` left
 - `background: repeating-linear-gradient(...)` — 5px dash / 7px gap, `#00A79A`
 - `top` and `height` driven by CSS custom properties `--line-top` / `--line-height`
-- `updateConnectorLine()` (in `map.js`) measures the "Starts in" `.location-dot` and last `.day-dot` via `getBoundingClientRect()` and sets these properties so the line spans exactly between the two endpoint dots. Called immediately on script load, and on `window resize` and `load`.
+- `updateConnectorLine()` (in `map.js`) measures the "Starts in" `.location-dot` and last `.day-dot` via `getBoundingClientRect()` and sets these properties so the line spans exactly between the two endpoint dots. Called immediately on script load, on `window resize` and `load`, and on the custom `accordion-toggled` event (dispatched by `main.js` on every accordion open/close so the line stays accurate when day cards expand).
 
 ### Day dots (`.day-dot`)
 
