@@ -1130,21 +1130,22 @@
       .page-title h1 { font-size: 26px; line-height: 1.25; }
       .hero-image { height: 220px; }
 
-      /* ── Main two-column → single column ── */
+      /* ── Main layout: intro → map → itinerary ──
+         .itinerary-section is moved out of .main-left via JS (mobile only)
+         so the DOM order becomes: .main-left(intro) → .main-right(map) → .itinerary-section */
       .main-layout {
         flex-direction: column;
         padding: 0;
         gap: 0;
       }
 
-      /* Map sticks at top as you scroll the itinerary */
+      .main-left { padding: 0; }
+
       .main-right {
         width: 100%;
-        position: sticky;
-        top: 0;
+        position: relative;
         z-index: 20;
         flex-shrink: 0;
-        align-self: auto;
       }
 
       #dynamic-map {
@@ -1155,9 +1156,6 @@
 
       .map-destinations-pill { bottom: 12px; font-size: 12px; padding: 6px 14px; }
       .map-view-toggle { display: none !important; }
-
-      /* ── Main left ── */
-      .main-left { padding: 0; }
 
       /* ── Intro ── */
       .intro-section { padding: 24px 20px 0; }
@@ -1184,19 +1182,27 @@
 
       /* Drive connector */
       .drive-connector { gap: 16px; min-height: 72px; padding: 14px 0; }
-      .connector-dots { width: 26px; padding-left: 20px; }
+      .connector-dots { width: 40px; padding-left: 20px; }
       .drive-pill { font-size: 13px; padding: 5px 14px; gap: 6px; }
 
-      /* Day panel */
-      .day-panel-wrap { margin-left: 46px; }
-      .day-dot { left: -27px; top: 20px; } /* centers dot: 46-20.5=25.5≈26px from itinerary-col */
+      /* Day panel — margin-left 56px gives 8.5px clearance past the 46px halo right edge */
+      .day-panel-wrap { margin-left: 56px; }
+      .day-dot { left: -37px; top: 20px; }
 
       .day-panel-inner { padding: 12px 18px 0; }
       .day-label { font-size: 14px; }
       .day-title { font-size: 22px; margin-bottom: 10px; }
-      .day-body { font-size: 15px; line-height: 1.55; margin-bottom: 16px; }
+      .day-body {
+        font-size: 15px;
+        line-height: 1.55;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
 
-      .carousel-img { height: 200px; }
+      .carousel-img { height: 160px; }
       .carousel-counter { font-size: 14px; }
 
       /* Explore activities */

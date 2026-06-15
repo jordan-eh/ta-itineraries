@@ -1372,6 +1372,19 @@
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="main.js"></script>
+<script>
+  // Mobile layout: move .itinerary-section out of .main-left so the DOM order is
+  // .main-left(intro) → .main-right(map) → .itinerary-section(days).
+  // Runs before map.js so updateConnectorLine() sees the correct structure.
+  if (window.matchMedia('(max-width: 430px)').matches) {
+    var mainLayout = document.querySelector('.main-layout');
+    var mainRight  = document.querySelector('.main-right');
+    var itinerary  = document.querySelector('.itinerary-section');
+    if (mainLayout && mainRight && itinerary) {
+      mainLayout.insertBefore(itinerary, mainRight.nextElementSibling);
+    }
+  }
+</script>
 <script src="map.js"></script>
 <script>
   if (window === window.top) {
