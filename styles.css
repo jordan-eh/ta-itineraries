@@ -336,7 +336,8 @@
       overflow: hidden;
     }
 
-    .maplibregl-ctrl-bottom-left { display: none !important; }
+    .maplibregl-ctrl-bottom-left,
+    .mapboxgl-ctrl-bottom-left { display: none !important; }
 
     .map-destinations-pill.hidden {
       display: none;
@@ -369,6 +370,23 @@
       font-weight: 400;
     }
 
+    /* Hover tooltip on overview pins */
+    .city-hover-popup .maplibregl-popup-content,
+    .city-hover-popup .mapboxgl-popup-content {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      color: #000;
+    }
+    .city-hover-popup .maplibregl-popup-tip,
+    .city-hover-popup .mapboxgl-popup-tip { display: none; }
+    .city-hover-popup { pointer-events: none; }
+
     .map-destinations-pill {
       position: absolute;
       bottom: 24px;
@@ -398,35 +416,32 @@
       display: none;
     }
 
-    .map-view-toggle {
-      display: none;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
     .map-view-btn {
-      flex: 1;
-      padding: 9px 0;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      background: #fff;
-      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 28px;
+      padding: 0 12px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: rgba(255,255,255,0.4);
+      font-size: 12px;
       font-weight: 500;
-      cursor: pointer;
-      color: var(--gray-text);
       font-family: var(--font);
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
     }
 
     .map-view-btn.is-active {
-      background: var(--teal);
-      border-color: var(--teal);
+      background: rgba(255,255,255,0.14);
       color: #fff;
     }
 
     .map-view-btn:not(.is-active):hover {
-      border-color: var(--teal);
-      color: var(--teal);
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.7);
     }
 
     /* Activity pins on map */
@@ -458,6 +473,12 @@
       font-family: var(--font);
       white-space: nowrap;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    #dynamic-map.zoom-labels .activity-pin-label {
+      opacity: 1;
     }
 
     .map-option-btn {
@@ -1159,6 +1180,27 @@
       .map-destinations-pill { bottom: 12px; font-size: 12px; padding: 6px 14px; }
       .map-view-toggle { display: none !important; }
 
+      /* Smaller city pins and labels on mobile */
+      .map-city-pin {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 10px !important;
+        border-width: 2px !important;
+      }
+      .map-city-label {
+        font-size: 10px !important;
+        padding: 3px 7px !important;
+      }
+      .map-segment-pill {
+        font-size: 10px !important;
+        padding: 3px 7px !important;
+        gap: 3px !important;
+      }
+      .map-segment-pill svg {
+        width: 12px !important;
+        height: 12px !important;
+      }
+
       /* ── Intro ── */
       .intro-section { padding: 24px 20px 0; }
       .intro-headline { font-size: 20px; line-height: 1.35; margin-bottom: 16px; }
@@ -1273,12 +1315,30 @@
 
     }
 
-/* ─── View switcher (bottom-right, index.html only) ─── */
-.view-switcher {
+/* ─── Bottom-right controls wrapper (index.html only) ─── */
+.bottom-right-controls {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-view-toggle {
+  display: none;
+  background: rgba(18, 18, 18, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+
+/* ─── View switcher ─── */
+.view-switcher {
   display: none;
   background: rgba(18, 18, 18, 0.82);
   backdrop-filter: blur(10px);

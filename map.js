@@ -1,4 +1,6 @@
-const map = new maplibregl.Map({
+const mgl = typeof mapboxgl !== 'undefined' ? mapboxgl : maplibregl;
+
+const map = new mgl.Map({
   container: 'dynamic-map',
   style: 'https://tiles.openfreemap.org/styles/liberty',
   center: [-116.5, 52.0],
@@ -6,8 +8,7 @@ const map = new maplibregl.Map({
   attributionControl: false,
 });
 
-map.addControl(new maplibregl.AttributionControl({ compact: true }));
-map.scrollZoom.disable();
+map.addControl(new mgl.AttributionControl({ compact: true }));
 
 const OVERVIEW_BOUNDS = [[-118.5, 48.7], [-110.2, 53.2]];
 
@@ -36,21 +37,21 @@ const OVERVIEW_ROUTE = [
 ];
 
 const OVERVIEW_STOPS = [
-  { name: 'Calgary',           lnglat: [-114.0719, 51.0447] },
-  { name: 'Banff',             lnglat: [-115.5708, 51.1784] },
-  { name: 'Lake Louise',       lnglat: [-116.1773, 51.4254] },
-  { name: 'Columbia Icefield', lnglat: [-117.2297, 52.2197] },
-  { name: 'Jasper',            lnglat: [-118.0814, 52.8737] },
-  { name: 'Canmore',           lnglat: [-115.3589, 51.0893] },
-  { name: 'Drumheller',        lnglat: [-112.7013, 51.4639] },
-  { name: 'Brooks',            lnglat: [-111.8973, 50.5645] },
-  { name: 'Medicine Hat',      lnglat: [-110.6768, 50.0405] },
-  { name: 'Milk River',        lnglat: [-112.0744, 49.1089] },
-  { name: 'Lethbridge',        lnglat: [-112.8186, 49.6890] },
-  { name: 'Waterton Lakes',    lnglat: [-113.9023, 49.0510] },
-  { name: 'Crowsnest Pass',    lnglat: [-114.4969, 49.6239] },
-  { name: 'Fort Macleod',      lnglat: [-113.4075, 49.7199] },
-  { name: 'Longview',          lnglat: [-114.1742, 50.5314] },
+  { name: 'Calgary',           lnglat: [-114.0719, 51.0447], day: 1  },
+  { name: 'Banff',             lnglat: [-115.5708, 51.1784], day: 1  },
+  { name: 'Lake Louise',       lnglat: [-116.1773, 51.4254], day: 2  },
+  { name: 'Columbia Icefield', lnglat: [-117.2297, 52.2197], day: 2  },
+  { name: 'Jasper',            lnglat: [-118.0814, 52.8737], day: 2  },
+  { name: 'Canmore',           lnglat: [-115.3589, 51.0893], day: 3  },
+  { name: 'Drumheller',        lnglat: [-112.7013, 51.4639], day: 6  },
+  { name: 'Brooks',            lnglat: [-111.8973, 50.5645], day: 6  },
+  { name: 'Medicine Hat',      lnglat: [-110.6768, 50.0405], day: 6  },
+  { name: 'Milk River',        lnglat: [-112.0744, 49.1089], day: 8  },
+  { name: 'Lethbridge',        lnglat: [-112.8186, 49.6890], day: 8  },
+  { name: 'Waterton Lakes',    lnglat: [-113.9023, 49.0510], day: 9  },
+  { name: 'Crowsnest Pass',    lnglat: [-114.4969, 49.6239], day: 10 },
+  { name: 'Fort Macleod',      lnglat: [-113.4075, 49.7199], day: 11 },
+  { name: 'Longview',          lnglat: [-114.1742, 50.5314], day: 11 },
 ];
 
 const DAYS = [
@@ -290,7 +291,8 @@ function makeSegmentPillEl(time, dist) {
 
 function resolveSegmentPillOverlaps() {
   if (!segmentPillMarkers.length) return;
-  const PILL_W = 120, PILL_H = 22, PAD = 4, STEP = 10, MAX = 8;
+  const isMob = window.matchMedia('(max-width: 430px)').matches;
+  const PILL_W = isMob ? 80 : 120, PILL_H = isMob ? 18 : 22, PAD = 4, STEP = 10, MAX = 8;
   const dayIdx = typeof currentState === 'number' ? currentState - 1 : -1;
 
   const stops = (dayIdx >= 0 ? dayMarkers[dayIdx] || [] : [])
@@ -346,6 +348,7 @@ function makeMarkerEl(label, color, name) {
   wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;';
 
   const pin = document.createElement('div');
+  pin.className = 'map-city-pin';
   pin.style.cssText = 'width:32px;height:32px;border-radius:50%;border:3px solid #fff;' +
     `background:${color};box-shadow:0 2px 8px rgba(0,0,0,0.3);` +
     'display:flex;align-items:center;justify-content:center;' +
@@ -355,6 +358,7 @@ function makeMarkerEl(label, color, name) {
 
   if (name) {
     const namePill = document.createElement('div');
+    namePill.className = 'map-city-label';
     namePill.style.cssText = 'background:#fff;border:1px solid #E2E8ED;border-radius:100px;' +
       'padding:5px 12px;font-size:12px;font-weight:500;white-space:nowrap;' +
       "box-shadow:0 2px 8px rgba(0,0,0,0.12);font-family:'Futura PT',Futura,'Century Gothic',sans-serif;color:#000;";
@@ -371,12 +375,23 @@ const OVERVIEW_STOPS_OPT1 = [
   { name: 'Medicine Hat', lnglat: [-110.6768, 50.0405] },
 ];
 
-function makeActivityMarkerEl(name) {
+function haversineKm(a, b) {
+  const R = 6371;
+  const dLat = (b[1] - a[1]) * Math.PI / 180;
+  const dLon = (b[0] - a[0]) * Math.PI / 180;
+  const lat1 = a[1] * Math.PI / 180;
+  const lat2 = b[1] * Math.PI / 180;
+  const sd = Math.sin(dLat / 2), sl = Math.sin(dLon / 2);
+  return R * 2 * Math.asin(Math.sqrt(sd * sd + Math.cos(lat1) * Math.cos(lat2) * sl * sl));
+}
+
+function makeActivityMarkerEl(name, distKm) {
   const wrap = document.createElement('div');
   wrap.className = 'activity-pin';
+  const dist = distKm !== null ? ' · ' + distKm + ' km' : '';
   wrap.innerHTML =
     '<div class="activity-pin-dot"></div>' +
-    '<div class="activity-pin-label">' + name + '</div>';
+    '<div class="activity-pin-label">' + name + dist + '</div>';
   return wrap;
 }
 
@@ -389,11 +404,17 @@ let activityMarkers = [];
 let showActivities = false;
 let currentState = 'overview';
 let activeOverviewOption = 2;
+let defaultZoom = 0;
+let scrollLocked = false;
+
+function updateLabelVisibility() {
+  map.getContainer().classList.toggle('zoom-labels', map.getZoom() > defaultZoom + 0.3);
+}
 const destPillEl = document.querySelector('.map-destinations-pill');
 
 map.on('load', () => {
   // Remove MapLibre logo only; keep bottom-right attribution tooltip
-  const logoCtrl = map.getContainer().querySelector('.maplibregl-ctrl-bottom-left');
+  const logoCtrl = map.getContainer().querySelector('.maplibregl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-left');
   if (logoCtrl) logoCtrl.remove();
   // ── Overview route layer ──
   map.addSource('route-overview', {
@@ -417,22 +438,58 @@ map.on('load', () => {
         ? makeMarkerEl('', '#00A79A', stop.name)
         : makeSmallMarkerEl('#00A79A');
     el.style.visibility = 'hidden';
-    const m = new maplibregl.Marker({ element: el })
+    const m = new mgl.Marker({ element: el })
       .setLngLat(stop.lnglat)
-      .setPopup(new maplibregl.Popup({ offset: 20 }).setText(stop.name))
+      .setPopup(new mgl.Popup({ offset: 20 }).setText(stop.name))
       .addTo(map);
     overviewMarkersOpt1.push(m);
   });
 
   // ── Overview markers — Option 2 (Calgary pin + small dots for all stops) ──
+  const isDesktop = !window.matchMedia('(max-width: 430px)').matches;
+  const hoverPopup = new mgl.Popup({
+    offset: 10, closeButton: false, closeOnClick: false, className: 'city-hover-popup',
+  });
+
   OVERVIEW_STOPS.forEach((stop, i) => {
     const el = i === 0
       ? makeMarkerEl('', '#00A79A', stop.name)
       : makeSmallMarkerEl('#00A79A');
     el.style.visibility = 'visible';
-    const m = new maplibregl.Marker({ element: el })
+
+    if (isDesktop) {
+      el.style.cursor = 'pointer';
+
+      // Hover tooltip — small dots only (full Calgary pin already shows its name)
+      if (i > 0) {
+        el.addEventListener('mouseenter', () => {
+          hoverPopup.setLngLat(stop.lnglat).setText(stop.name).addTo(map);
+        });
+        el.addEventListener('mouseleave', () => hoverPopup.remove());
+      }
+
+      // Click → jump map to target day, lock scroll detection, then scroll
+      el.addEventListener('click', () => {
+        const panel = document.querySelector(`.day-panel[data-day="${stop.day}"]`);
+        if (!panel) return;
+        scrollLocked = true;
+        setState(stop.day);
+        // Update dot states inline (updateDotStates is scoped inside initScrollDetection)
+        document.querySelectorAll('.day-dot').forEach((dot, i) => {
+          dot.classList.toggle('is-active', i + 1 === stop.day);
+        });
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const unlock = () => { scrollLocked = false; };
+        if ('onscrollend' in window) {
+          window.addEventListener('scrollend', unlock, { once: true });
+        } else {
+          setTimeout(unlock, 1200);
+        }
+      });
+    }
+
+    const m = new mgl.Marker({ element: el })
       .setLngLat(stop.lnglat)
-      .setPopup(new maplibregl.Popup({ offset: 20 }).setText(stop.name))
       .addTo(map);
     overviewMarkersOpt2.push(m);
   });
@@ -475,7 +532,7 @@ map.on('load', () => {
       const color = j === 0 ? '#9C0F00' : '#00A79A';
       const el = makeMarkerEl(String(j + 1), color, stop.name);
       el.style.visibility = 'hidden';
-      return new maplibregl.Marker({ element: el })
+      return new mgl.Marker({ element: el })
         .setLngLat(stop.lnglat)
         .addTo(map);
     });
@@ -488,8 +545,19 @@ map.on('load', () => {
   // fitBounds on initial load — setState skips this because currentState is already 'overview'
   const isMobile = window.matchMedia('(max-width: 430px)').matches;
   map.fitBounds(OVERVIEW_BOUNDS, { padding: isMobile ? 20 : 60, duration: 0 });
+  defaultZoom = map.getZoom();
 
   initScrollDetection();
+
+  let zoomTicking = false;
+  map.on('zoom', (e) => {
+    updateLabelVisibility();
+    if (!e.originalEvent) return; // skip programmatic zooms (fitBounds animation)
+    if (zoomTicking) return;
+    zoomTicking = true;
+    requestAnimationFrame(() => { resolveSegmentPillOverlaps(); zoomTicking = false; });
+  });
+  updateLabelVisibility();
 });
 
 function setState(newState) {
@@ -527,6 +595,7 @@ function setState(newState) {
     const isMobile = window.matchMedia('(max-width: 430px)').matches;
     const pad = (isOverview && isMobile) ? 20 : 60;
     map.fitBounds(bounds, { padding: pad, duration: 900 });
+    map.once('moveend', () => { defaultZoom = map.getZoom(); updateLabelVisibility(); });
   }
 
   // Approach origin pin (small teal dot at previous day's last location)
@@ -534,7 +603,7 @@ function setState(newState) {
   approachPinMarkers = [];
   if (!isOverview && dayData && dayData.approachFrom) {
     approachPinMarkers.push(
-      new maplibregl.Marker({ element: makeSmallMarkerEl('#00A79A') })
+      new mgl.Marker({ element: makeSmallMarkerEl('#00A79A') })
         .setLngLat(dayData.approachFrom.lnglat).addTo(map)
     );
   }
@@ -545,7 +614,7 @@ function setState(newState) {
   if (!isOverview && dayData) {
     const addPill = (a, b, time, dist) => {
       const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-      const marker = new maplibregl.Marker({ element: makeSegmentPillEl(time, dist), anchor: 'center' })
+      const marker = new mgl.Marker({ element: makeSegmentPillEl(time, dist), anchor: 'center' })
         .setLngLat(mid).addTo(map);
       segmentPillMarkers.push({ marker, a, b });
     };
@@ -566,11 +635,16 @@ function setState(newState) {
 function setActivityMarkers(day) {
   activityMarkers.forEach(m => m.remove());
   activityMarkers = [];
-  if (!showActivities || day < 1) return;
+  if (!showActivities || day < 1 || window.matchMedia('(max-width: 430px)').matches) return;
+  const stops = (DAYS[day - 1] || {}).stops || [];
   (ACTIVITIES[day - 1] || []).forEach(act => {
-    const el = makeActivityMarkerEl(act.name);
+    const nearest = stops.length
+      ? Math.min(...stops.map(s => haversineKm(act.lnglat, s.lnglat)))
+      : null;
+    const distKm = nearest !== null ? Math.round(nearest * 10) / 10 : null;
+    const el = makeActivityMarkerEl(act.name, distKm);
     activityMarkers.push(
-      new maplibregl.Marker({ element: el, anchor: 'bottom' })
+      new mgl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat(act.lnglat).addTo(map)
     );
   });
@@ -602,6 +676,7 @@ function initScrollDetection() {
   }
 
   function update() {
+    if (scrollLocked) return;
     const day = getActiveDay();
     setState(day === 0 ? 'overview' : day);
     updateDotStates(day);

@@ -1128,10 +1128,6 @@
     <button class="map-option-btn active" data-option="1">Option 1</button>
     <button class="map-option-btn" data-option="2">Option 2</button>
   </div>
-  <div class="map-view-toggle">
-    <button class="map-view-btn is-active" data-view="route">Route</button>
-    <button class="map-view-btn" data-view="activities">Activities</button>
-  </div>
 </div><!-- /main-right -->
 
 </div><!-- /main-layout -->
@@ -1354,20 +1350,26 @@
   </div>
 </footer>
 
-<div class="view-switcher" id="view-switcher">
-  <button class="view-switcher-btn is-active" aria-label="Desktop view">
-    <svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="0.75" y="0.75" width="12.5" height="7" rx="1.25"/>
-      <line x1="4.5" y1="9.5" x2="9.5" y2="9.5"/>
-      <line x1="7" y1="7.75" x2="7" y2="9.5"/>
-    </svg>
-  </button>
-  <button class="view-switcher-btn" id="switch-to-mobile" aria-label="Mobile view">
-    <svg viewBox="0 0 9 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="0.75" y="0.75" width="7.5" height="12.5" rx="2"/>
-      <circle cx="4.5" cy="11.25" r="0.75" fill="currentColor" stroke="none"/>
-    </svg>
-  </button>
+<div class="bottom-right-controls">
+  <div class="map-view-toggle" id="map-view-toggle">
+    <button class="map-view-btn is-active" data-view="route">Route</button>
+    <button class="map-view-btn" data-view="activities">Activities</button>
+  </div>
+  <div class="view-switcher" id="view-switcher">
+    <button class="view-switcher-btn is-active" aria-label="Desktop view">
+      <svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="0.75" y="0.75" width="12.5" height="7" rx="1.25"/>
+        <line x1="4.5" y1="9.5" x2="9.5" y2="9.5"/>
+        <line x1="7" y1="7.75" x2="7" y2="9.5"/>
+      </svg>
+    </button>
+    <button class="view-switcher-btn" id="switch-to-mobile" aria-label="Mobile view">
+      <svg viewBox="0 0 9 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="0.75" y="0.75" width="7.5" height="12.5" rx="2"/>
+        <circle cx="4.5" cy="11.25" r="0.75" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+  </div>
 </div>
 
 <button id="map-view-btn" aria-label="Jump to map">
@@ -1434,6 +1436,7 @@
 
   if (window === window.top) {
     document.getElementById('view-switcher').style.display = 'flex';
+    document.getElementById('map-view-toggle').style.display = 'flex';
 
     // Fade in on load
     document.body.style.opacity = '0';
