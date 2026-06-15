@@ -638,17 +638,36 @@ function updateConnectorLine() {
   const dayDots = document.querySelectorAll('.day-dot');
   if (!col || !startDot || !dayDots.length) return;
 
-  const lastDot = dayDots[dayDots.length - 1];
   const colRect = col.getBoundingClientRect();
-  const startRect = startDot.getBoundingClientRect();
-  const endRect = lastDot.getBoundingClientRect();
+  const dayDotsHidden = getComputedStyle(dayDots[0]).display === 'none';
+  const startDotHidden = getComputedStyle(startDot).display === 'none';
 
-  const lineTop = startRect.top + startRect.height / 2 - colRect.top;
-  const lineEnd = endRect.top + endRect.height / 2 - colRect.top;
+  let lineTop, lineEnd;
+  if (dayDotsHidden) {
+    // No day dots: line ends at bottom of last card
+    const panels = document.querySelectorAll('.day-panel-wrap');
+    if (!panels.length) return;
+    lineEnd = panels[panels.length - 1].getBoundingClientRect().bottom - colRect.top;
+    // Start from location dot center if visible, else top of first card
+    if (!startDotHidden) {
+      const startRect = startDot.getBoundingClientRect();
+      lineTop = startRect.top + startRect.height / 2 - colRect.top;
+    } else {
+      lineTop = panels[0].getBoundingClientRect().top - colRect.top;
+    }
+  } else {
+    const lastDot = dayDots[dayDots.length - 1];
+    const startRect = startDot.getBoundingClientRect();
+    const endRect = lastDot.getBoundingClientRect();
+    lineTop = startRect.top + startRect.height / 2 - colRect.top;
+    lineEnd = endRect.top + endRect.height / 2 - colRect.top;
+  }
 
   col.style.setProperty('--line-top', lineTop + 'px');
   col.style.setProperty('--line-height', (lineEnd - lineTop) + 'px');
 }
+
+window.appUpdateConnectorLine = updateConnectorLine;
 
 updateConnectorLine();
 window.addEventListener('load', updateConnectorLine);

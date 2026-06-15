@@ -370,7 +370,7 @@
       var style = iframeDoc.createElement('style');
       style.id = 'map-mode-override';
       if (mode === 'sticky') {
-        style.textContent = '@media (max-width: 430px) { .main-right { position: -webkit-sticky !important; position: sticky !important; top: 0 !important; } #map-view-btn { display: none !important; } }';
+        style.textContent = '@media (max-width: 430px) { .main-right { position: -webkit-sticky !important; position: sticky !important; top: 0 !important; } #map-view-btn { display: none !important; } .day-dot { display: none !important; } .day-panel-wrap { margin-left: 0 !important; width: 100% !important; } .drive-connector { padding-left: 0 !important; } .day-panel-inner { padding: 10px 14px 0 !important; } .day-label { font-size: 12px !important; } .day-title { font-size: 18px !important; margin-bottom: 6px !important; } .day-body { font-size: 13px !important; margin-bottom: 10px !important; -webkit-line-clamp: 2 !important; } .carousel-img { height: 120px !important; } .explore-activities { padding: 8px 14px !important; gap: 10px !important; } .activities-toggle { font-size: 13px !important; } .drive-pill { font-size: 12px !important; padding: 4px 10px !important; } }';
       } else {
         style.textContent = '@media (max-width: 430px) { .main-right { margin-bottom: 64px !important; } }';
       }
@@ -381,6 +381,7 @@
         setTimeout(function() {
           win.appMap.resize();
           win.appMap.fitBounds(win.APP_OVERVIEW_BOUNDS, { padding: 20, duration: 0 });
+          if (win.appUpdateConnectorLine) win.appUpdateConnectorLine();
         }, 50);
       }
     }
