@@ -6,6 +6,7 @@ const map = new maplibregl.Map({
   attributionControl: false,
 });
 
+map.addControl(new maplibregl.AttributionControl({ compact: true }));
 map.scrollZoom.disable();
 
 const OVERVIEW_BOUNDS = [[-118.5, 48.7], [-110.2, 53.2]];
@@ -391,11 +392,9 @@ let activeOverviewOption = 2;
 const destPillEl = document.querySelector('.map-destinations-pill');
 
 map.on('load', () => {
-  // Remove bottom controls (logo + attribution)
-  ['maplibregl-ctrl-bottom-left', 'maplibregl-ctrl-bottom-right'].forEach(cls => {
-    const el = map.getContainer().querySelector('.' + cls);
-    if (el) el.remove();
-  });
+  // Remove MapLibre logo only; keep bottom-right attribution tooltip
+  const logoCtrl = map.getContainer().querySelector('.maplibregl-ctrl-bottom-left');
+  if (logoCtrl) logoCtrl.remove();
   // ── Overview route layer ──
   map.addSource('route-overview', {
     type: 'geojson',

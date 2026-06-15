@@ -336,8 +336,7 @@
       overflow: hidden;
     }
 
-    .maplibregl-ctrl-bottom-left,
-    .maplibregl-ctrl-bottom-right { display: none !important; }
+    .maplibregl-ctrl-bottom-left { display: none !important; }
 
     .map-destinations-pill.hidden {
       display: none;
