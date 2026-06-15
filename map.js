@@ -10,6 +10,10 @@ map.scrollZoom.disable();
 
 const OVERVIEW_BOUNDS = [[-118.5, 48.7], [-110.2, 53.2]];
 
+// Expose for cross-frame access (frame.html mode toggle)
+window.appMap = map;
+window.APP_OVERVIEW_BOUNDS = OVERVIEW_BOUNDS;
+
 const OVERVIEW_ROUTE = [
   [-114.0719, 51.0447],  // Calgary
   [-115.5708, 51.1784],  // Banff
@@ -483,7 +487,8 @@ map.on('load', () => {
   destPillEl.classList.remove('hidden');
 
   // fitBounds on initial load — setState skips this because currentState is already 'overview'
-  map.fitBounds(OVERVIEW_BOUNDS, { padding: 60, duration: 0 });
+  const isMobile = window.matchMedia('(max-width: 430px)').matches;
+  map.fitBounds(OVERVIEW_BOUNDS, { padding: isMobile ? 20 : 60, duration: 0 });
 
   initScrollDetection();
 });
@@ -519,7 +524,11 @@ function setState(newState) {
   // Camera — only if day data exists (days beyond DAYS array just keep last view)
   const dayData = isOverview ? null : DAYS[dayIndex];
   const bounds = isOverview ? OVERVIEW_BOUNDS : (dayData ? dayData.bounds : null);
-  if (bounds) map.fitBounds(bounds, { padding: 60, duration: 900 });
+  if (bounds) {
+    const isMobile = window.matchMedia('(max-width: 430px)').matches;
+    const pad = (isOverview && isMobile) ? 20 : 60;
+    map.fitBounds(bounds, { padding: pad, duration: 900 });
+  }
 
   // Approach origin pin (small teal dot at previous day's last location)
   approachPinMarkers.forEach(m => m.remove());

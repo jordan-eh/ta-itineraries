@@ -373,6 +373,14 @@
         style.textContent = '@media (max-width: 430px) { .main-right { position: -webkit-sticky !important; position: sticky !important; top: 0 !important; } #map-view-btn { display: none !important; } }';
         iframeDoc.head.appendChild(style);
       }
+      // Re-sync map view after CSS layout change
+      var win = iframeDoc.defaultView;
+      if (win && win.appMap && win.APP_OVERVIEW_BOUNDS) {
+        setTimeout(function() {
+          win.appMap.resize();
+          win.appMap.fitBounds(win.APP_OVERVIEW_BOUNDS, { padding: 20, duration: 0 });
+        }, 50);
+      }
     }
 
     var mobileFrame = document.getElementById('mobile-frame');
