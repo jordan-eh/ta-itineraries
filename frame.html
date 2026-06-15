@@ -367,13 +367,15 @@
     function applyMapMode(mode, iframeDoc) {
       var existing = iframeDoc.getElementById('map-mode-override');
       if (existing) existing.remove();
+      var style = iframeDoc.createElement('style');
+      style.id = 'map-mode-override';
       if (mode === 'sticky') {
-        var style = iframeDoc.createElement('style');
-        style.id = 'map-mode-override';
         style.textContent = '@media (max-width: 430px) { .main-right { position: -webkit-sticky !important; position: sticky !important; top: 0 !important; } #map-view-btn { display: none !important; } }';
-        iframeDoc.head.appendChild(style);
+      } else {
+        style.textContent = '@media (max-width: 430px) { .main-right { margin-bottom: 64px !important; } }';
       }
-      // Re-sync map view after CSS layout change
+      iframeDoc.head.appendChild(style);
+      // Re-sync map render after CSS layout change
       var win = iframeDoc.defaultView;
       if (win && win.appMap && win.APP_OVERVIEW_BOUNDS) {
         setTimeout(function() {
