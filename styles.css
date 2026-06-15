@@ -141,7 +141,7 @@
     ───────────────────────────────────────────── */
     .main-layout {
       display: flex;
-      padding: 120px var(--content-pad) 0;
+      padding: 80px var(--content-pad) 0;
       gap: 80px;
       align-items: flex-start;
     }
@@ -163,6 +163,20 @@
        INTRO SECTION
     ───────────────────────────────────────────── */
     .intro-section {
+      position: relative;
+      padding-bottom: 136px;
+      min-height: 849px;
+    }
+
+    .intro-section::before {
+      content: '';
+      position: absolute;
+      top: -104px;
+      bottom: 0;
+      left: calc(-1 * var(--content-pad));
+      width: 100vw;
+      background: var(--mint-bg);
+      z-index: -1;
     }
 
     .intro-left {
@@ -189,9 +203,47 @@
       margin: 0 0 38px;
     }
 
+    /* Desktop inline version hidden — hero bar is used instead */
     .best-for-section {
-      background: var(--mint-bg);
-      padding: 33px 44px 37px;
+      display: none;
+    }
+
+    .best-for-hero {
+      margin: -32px var(--content-pad) 0;
+      height: 56px;
+      background: #9c0f00;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 143px 0 96px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .best-for-hero .best-for-label {
+      font-size: 15.1px;
+      font-weight: 700;
+      font-family: var(--font);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1.74px;
+      line-height: 22.58px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline;
+      margin: 0;
+    }
+
+    .best-for-item {
+      font-size: 15.6px;
+      font-weight: 400;
+      font-family: var(--font);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1.74px;
+      line-height: 22.58px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .best-for-label {
@@ -528,7 +580,7 @@
        MAP + ITINERARY SECTION
     ───────────────────────────────────────────── */
     .itinerary-section {
-      margin-top: 120px;
+      margin-top: 67px;
       margin-bottom: 120px;
     }
 
@@ -648,7 +700,7 @@
     }
 
     .drive-pill {
-      background: #E6F7F5;
+      background: rgba(196, 66, 138, 0.10);
       border-radius: 122px;
       padding: 5px 20px;
       font-size: 15.3px;
@@ -1231,7 +1283,8 @@
       .glance-icon { width: 26px; height: 26px; }
       .glance-item { font-size: 15px; gap: 14px; }
 
-      .best-for-section { padding: 20px; margin: 0 20px 24px; }
+      .best-for-hero { display: none !important; }
+      .best-for-section { display: block; background: var(--mint-bg); padding: 20px; margin: 0 20px 24px; }
       .best-for-label { font-size: 15px; }
       .best-for-content { font-size: 15px; }
 

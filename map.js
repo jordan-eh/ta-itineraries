@@ -464,9 +464,17 @@ function updateLabelVisibility() {
 const destPillEl = document.querySelector('.map-destinations-pill');
 
 map.on('load', () => {
-  // Remove MapLibre logo only; keep bottom-right attribution tooltip
+  // Remove MapLibre logo only; keep bottom-right attribution tooltip (force-closed on load)
   const logoCtrl = map.getContainer().querySelector('.maplibregl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-left');
   if (logoCtrl) logoCtrl.remove();
+  // Ensure attribution tooltip starts collapsed on all viewport sizes
+  const forceCloseAttrib = () => {
+    map.getContainer().querySelectorAll(
+      '.maplibregl-ctrl-attrib, .mapboxgl-ctrl-attrib'
+    ).forEach(el => el.classList.remove('maplibregl-compact-show', 'mapboxgl-compact-show'));
+  };
+  forceCloseAttrib();
+  setTimeout(forceCloseAttrib, 0);
   // ── Overview route layer ──
   map.addSource('route-overview', {
     type: 'geojson',
