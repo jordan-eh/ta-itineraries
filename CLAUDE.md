@@ -11,8 +11,9 @@ GitHub repo: https://github.com/jordan-eh/ta-itineraries
 
 | File/Folder | Purpose |
 |---|---|
-| `index.html` | All HTML structure |
+| `index.html` | All HTML structure — desktop view |
 | `styles.css` | All CSS — no preprocessor, plain CSS custom properties |
+| `frame.html` | Mobile device preview wrapper — phone mockup with iframe, view switcher, Safari bar |
 | `server.js` | Zero-dep Node.js dev server (`node server.js` → `http://localhost:3000`) |
 | `main.js` | Accordion toggle — click listener toggles `is-open` on `.explore-activities` |
 | `map.js` | Dynamic map — MapLibre GL JS init, per-day state data, scroll detection, `setState()` transitions |
@@ -231,9 +232,39 @@ Background `#E6F7F5` (mint), `border-radius: 122px`, no border. Contains car ico
 
 Only **Day 2** has the right-arrow nav button (`.carousel-nav-right`) and counter (`.carousel-counter`). All other day cards have these removed.
 
+## Mobile Preview (`frame.html`)
+
+A self-contained device preview wrapper. Open at `http://localhost:3000/frame.html`.
+
+### Structure
+
+- Phone shell: dark `#1D1D1F`, 8px bezel padding, `border-radius: 52px`, 406px outer width
+- Screen: 390×790px, `border-radius: 40px`, `overflow: hidden`
+- Dynamic Island: 126×37px black pill, `top: 11px`, centered, `pointer-events: none`
+- Status bar: white bg, 59px tall, dark time + icons, z-index 11 — overlaid as fixed chrome
+- `#mobile-frame`: `top: 59px; height: 665px` — starts below status bar, no competing scroll container
+- Safari bar: 44px, white bg, `bottom: 22px` — centered pill with lock icon + `travelalberta.com`
+- Home strip: 22px, white bg, dark indicator pill — inside screen so bottom bezel matches top
+
+### View switcher
+
+Both `index.html` and `frame.html` have a matching small dark pill (bottom-right, `position: fixed`) with Desktop + Mobile icon buttons:
+- **`index.html`**: Desktop button is active (no action). Mobile button navigates to `frame.html`.
+- **`frame.html`**: Desktop button navigates to `index.html`. Mobile button is active (no action).
+- Navigation uses a fade-out (220ms) → navigate → fade-in (220ms on load) pattern for smooth transitions.
+- The switcher is hidden inside iframes via `window === window.top` guard.
+
+### Mobile CSS (`styles.css` — `@media (max-width: 430px)`)
+
+All mobile layout rules live in a single `@media (max-width: 430px)` block at the end of `styles.css`. Key rules:
+- Scrollbar hidden: `::-webkit-scrollbar { display: none }` + `scrollbar-width: none`
+- Layout: single-column, map sticky at top (280px, full-width), itinerary below
+- Day cards: `margin-left: 46px`, dot `left: -27px; top: 20px`
+- Drive connector: `gap: 16px`, `connector-dots` 26px wide
+- Nav collapses to logo only
+
 ## Next Steps
 
 - [ ] Image carousel interaction (click nav-right button to cycle photos)
 - [ ] Replace all placeholder images/colors with real photography
 - [ ] Sticky nav behaviour on scroll
-- [ ] Mobile/responsive breakpoints

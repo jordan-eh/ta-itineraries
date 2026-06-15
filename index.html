@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1440">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Landscapes and Cultural Discovery | Canada's Alberta</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1354,8 +1354,42 @@
   </div>
 </footer>
 
+<div class="view-switcher" id="view-switcher">
+  <button class="view-switcher-btn is-active" aria-label="Desktop view">
+    <svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="0.75" y="0.75" width="12.5" height="7" rx="1.25"/>
+      <line x1="4.5" y1="9.5" x2="9.5" y2="9.5"/>
+      <line x1="7" y1="7.75" x2="7" y2="9.5"/>
+    </svg>
+  </button>
+  <button class="view-switcher-btn" id="switch-to-mobile" aria-label="Mobile view">
+    <svg viewBox="0 0 9 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="0.75" y="0.75" width="7.5" height="12.5" rx="2"/>
+      <circle cx="4.5" cy="11.25" r="0.75" fill="currentColor" stroke="none"/>
+    </svg>
+  </button>
+</div>
+
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="main.js"></script>
 <script src="map.js"></script>
+<script>
+  if (window === window.top) {
+    document.getElementById('view-switcher').style.display = 'flex';
+
+    // Fade in on load
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.22s ease';
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { document.body.style.opacity = '1'; });
+    });
+
+    // Fade out then navigate
+    document.getElementById('switch-to-mobile').addEventListener('click', function() {
+      document.body.style.opacity = '0';
+      setTimeout(function() { window.location.href = 'frame.html'; }, 240);
+    });
+  }
+</script>
 </body>
 </html>
