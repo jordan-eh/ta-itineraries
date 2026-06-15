@@ -395,12 +395,63 @@ function makeActivityMarkerEl(name, distKm) {
   return wrap;
 }
 
+function makeActivityClusterEl(count) {
+  const el = document.createElement('div');
+  el.className = 'activity-cluster';
+  el.textContent = '+' + count;
+  return el;
+}
+
+function clusterActivityMarkers() {
+  activityClusterMarkers.forEach(m => m.remove());
+  activityClusterMarkers = [];
+  if (!activityMarkers.length) return;
+
+  const RADIUS = 32;
+  const items = activityMarkers.map(m => ({
+    marker: m,
+    p: map.project(m.getLngLat()),
+    used: false,
+  }));
+
+  // Reset all individual markers to visible
+  items.forEach(item => { item.marker.getElement().style.visibility = 'visible'; });
+
+  items.forEach((item, i) => {
+    if (item.used) return;
+    const group = [item];
+    item.used = true;
+    items.forEach((other, j) => {
+      if (i === j || other.used) return;
+      const dx = item.p.x - other.p.x;
+      const dy = item.p.y - other.p.y;
+      if (Math.sqrt(dx * dx + dy * dy) < RADIUS) {
+        group.push(other);
+        other.used = true;
+      }
+    });
+
+    if (group.length < 2) return;
+
+    // Hide individual pins and place a cluster marker at their centroid
+    group.forEach(g => { g.marker.getElement().style.visibility = 'hidden'; });
+    const cx = group.reduce((s, g) => s + g.p.x, 0) / group.length;
+    const cy = group.reduce((s, g) => s + g.p.y, 0) / group.length;
+    const lnglat = map.unproject([cx, cy]);
+    activityClusterMarkers.push(
+      new mgl.Marker({ element: makeActivityClusterEl(group.length), anchor: 'center' })
+        .setLngLat(lnglat).addTo(map)
+    );
+  });
+}
+
 let overviewMarkersOpt1 = [];
 let overviewMarkersOpt2 = [];
 let dayMarkers = [];
 let segmentPillMarkers = [];
 let approachPinMarkers = [];
 let activityMarkers = [];
+let activityClusterMarkers = [];
 let showActivities = false;
 let currentState = 'overview';
 let activeOverviewOption = 2;
@@ -555,7 +606,7 @@ map.on('load', () => {
     if (!e.originalEvent) return; // skip programmatic zooms (fitBounds animation)
     if (zoomTicking) return;
     zoomTicking = true;
-    requestAnimationFrame(() => { resolveSegmentPillOverlaps(); zoomTicking = false; });
+    requestAnimationFrame(() => { resolveSegmentPillOverlaps(); clusterActivityMarkers(); zoomTicking = false; });
   });
   updateLabelVisibility();
 });
@@ -595,7 +646,7 @@ function setState(newState) {
     const isMobile = window.matchMedia('(max-width: 430px)').matches;
     const pad = (isOverview && isMobile) ? 20 : 60;
     map.fitBounds(bounds, { padding: pad, duration: 900 });
-    map.once('moveend', () => { defaultZoom = map.getZoom(); updateLabelVisibility(); });
+    map.once('moveend', () => { defaultZoom = map.getZoom(); updateLabelVisibility(); clusterActivityMarkers(); });
   }
 
   // Approach origin pin (small teal dot at previous day's last location)
@@ -635,6 +686,8 @@ function setState(newState) {
 function setActivityMarkers(day) {
   activityMarkers.forEach(m => m.remove());
   activityMarkers = [];
+  activityClusterMarkers.forEach(m => m.remove());
+  activityClusterMarkers = [];
   if (!showActivities || day < 1 || window.matchMedia('(max-width: 430px)').matches) return;
   const stops = (DAYS[day - 1] || {}).stops || [];
   (ACTIVITIES[day - 1] || []).forEach(act => {
