@@ -527,7 +527,7 @@ map.on('load', () => {
         el.addEventListener('mouseleave', () => hoverPopup.remove());
       }
 
-      // Click → jump map to target day, lock scroll detection, then scroll
+      // Click → jump map to target day, open its accordion, lock scroll detection, then scroll
       el.addEventListener('click', () => {
         const panel = document.querySelector(`.day-panel[data-day="${stop.day}"]`);
         if (!panel) return;
@@ -537,6 +537,12 @@ map.on('load', () => {
         document.querySelectorAll('.day-dot').forEach((dot, i) => {
           dot.classList.toggle('is-active', i + 1 === stop.day);
         });
+        // Open the explore activities accordion for this day
+        const exploreEl = panel.querySelector('.explore-activities');
+        if (exploreEl && !exploreEl.classList.contains('is-open')) {
+          exploreEl.classList.add('is-open');
+          document.dispatchEvent(new CustomEvent('accordion-toggled'));
+        }
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const unlock = () => { scrollLocked = false; };
         if ('onscrollend' in window) {

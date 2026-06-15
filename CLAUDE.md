@@ -42,6 +42,8 @@ No build step. No dependencies required for the static site — `server.js` is o
 | Footer navy | `#073142` |
 | Gray text | `#69727A` |
 | Border/separator | `#E2E8ED` (CSS var `--border`) |
+| Drive pill background | `rgba(196, 66, 138, 0.10)` — 10% opacity mauve |
+| Activity cluster badge | 40px circle, `#cfefec` fill, black border, bold font — matches travelalberta.com/map |
 | Content padding (most sections) | `112px` (CSS var `--content-pad`) |
 | Content padding (discover/kbyg/footer) | `214px` (CSS var `--wide-pad`) |
 | Primary font | Futura PT → Outfit (Google Fonts fallback) |
@@ -50,9 +52,10 @@ No build step. No dependencies required for the static site — `server.js` is o
 
 1. **Nav** — 100px tall, white bg. Logo block: `images/logo-text.png` (white Canada's Alberta text) on `#9C0F00` red at 188px wide. Main links (17.9px, weight 500, letter-spacing 0.36px, gap 35px). Secondary links "Upcoming Events" / "Experience Providers" (15.9px, weight 400, centered, gap 12px). Search icon with 26px extra left margin. Bottom border `#DBDEDF` runs only under the links section, not behind the logo.
 2. **Breadcrumb + H1 + Hero** — H1 "Landscapes and Cultural Discovery" at 47.8px bold, line-height 1.17. Full-width gray hero image placeholder (462px tall). Page title padding: `60px 112px 54px`.
-3. **Main two-column layout** (`.main-layout`) — wraps the intro and itinerary sections in a single `display: flex; gap: 80px; padding: 120px 112px 0` container. Left column (`.main-left`, `flex: 1`) holds the intro content and day cards stacked. Right column (`.main-right`, `width: 524px; position: sticky; top: 24px`) holds `#dynamic-map`.
-   - **Intro content** (`.intro-section` inside `.main-left`): headline (36.3px bold), body (20.2px), "Itinerary best for" gray box, "At a glance" mint card (380px wide).
-   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 120px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed. The `.itinerary-col` has a teal dashed connector line via `::before` at `left: 25px`; its `top`/`height` are set by JS (`updateConnectorLine`) to span exactly from the "Starts in" dot center to the Day 11 dot center. Each `.day-panel-wrap` has a small 11px `.day-dot` absolutely positioned on the connector line, vertically aligned with the "Day X" label. Day panels are offset `margin-left: 60px` to give clearance for the dot's active halo. Day 2 is the only card with a carousel right-arrow and counter indicator.
+3. **Main two-column layout** (`.main-layout`) — wraps the intro and itinerary sections in a single `display: flex; gap: 80px; padding: 80px 112px 0` container. Left column (`.main-left`, `flex: 1`) holds the intro content and day cards stacked. Right column (`.main-right`, `width: 524px; position: sticky; top: 24px`) holds `#dynamic-map`.
+   - **Intro content** (`.intro-section` inside `.main-left`): full-width mint (`#E6F7F5`) background via `::before` pseudo-element (desktop only, hidden on mobile). Contains headline (36.3px bold), body (20.2px), "At a glance" section, and on mobile the "Itinerary best for" block.
+   - **"Itinerary best for" bar** (`.best-for-hero`): desktop-only red bar (`#9C0F00`, 56px tall) that overlaps the bottom of the hero image by 32px (`margin-top: -32px`). Items span full bar width via `justify-content: space-between`, padding `0 143px 0 96px`. Hidden on mobile — a plain `.best-for-section` block inside `.intro-left` is shown instead.
+   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 67px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed. The `.itinerary-col` has a teal dashed connector line via `::before` at `left: 25px`. Each `.day-panel-wrap` has a small 11px `.day-dot` absolutely positioned on the connector line, vertically aligned with the destination title (`top: 60px` desktop). Day panels offset `margin-left: 80px` (desktop) / `56px` (mobile) from column left. No carousel nav or counter on any card except Day 1.
 4. **Discover more** — 3-card grid at 214px padding. Heading 36px bold. Cards: image 366px tall, "X DAYS" red badge (bottom-right, letter-spacing 3px), title 16.6px bold, desc 15px, "Learn more →" link. Grid gap 36px.
 5. **Know before you go** — Mint bg, 214px padding, 3×2 grid (gap 48px 0) of teal icon links.
 6. **Footer** — Dark navy `#073142`, 214px padding. "Travel Alberta" italic logo, 4 link columns, territorial acknowledgement, copyright. Teal "Back to Top" button (top-right, padding 9px 12px).
@@ -77,26 +80,30 @@ No build step. No dependencies required for the static site — `server.js` is o
 
 ## Activity Content (sourced from travelalberta.com)
 
+Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itineraries/culture-and-landscapes` when clicking "Learn more" for each activity.
+
 | Day | Count | Titles |
 |---|---|---|
-| Day 1 — Banff | 5 | Drive to Banff National Park · Via Ferrata at Mount Norquay · Lake Minnewanka Cruise · Trail Ride with Banff Trail Riders · Check into Fairmont Banff Springs Hotel |
-| Day 2 — Lake Louise, Icefield Parkway and Jasper | 5 | Brunch at Fairmont Chateau Lake Louise · Glacier SkyWalk · Columbia Icefield Glacier Adventure · Check into Fairmont Jasper Park Lodge · Jasper Planetarium & Telescope Experience |
+| Day 1 — Banff | 5 | Banff National Park · Mt. Norquay Via Ferrata · Lake Minnewanka Cruise · Banff Trail Riders · The Fairmont Banff Springs Hotel |
+| Day 2 — Lake Louise, Icefield Parkway and Jasper | 5 | The Fairmont Chateau Lake Louise · Columbia Icefield Skywalk · Columbia Icefield Adventure · Fairmont Jasper Park Lodge · Jasper Planetarium & Telescope Experience |
 | Day 3 — Jasper and Canmore | 3 | Maligne Lake Cruise · Jasper SkyTram · Drive to Canmore along the Icefield Parkway |
-| Day 4 — Canmore and Calgary | 5 | Canmore Cave Tours · Carter-Ryan Gallery and Live Art Venue · Yamnuska Wolfdog Sanctuary · WinSport's Canada Olympic Park · Overnight in Calgary's vibrant East Village |
-| Day 5 — Calgary | 3 | Heritage Park · Calgary Food Tour · Calgary Tower |
-| Day 6 — Southern Alberta | 4 | The hoodoos of Drumheller · Royal Tyrrell Museum of Palaeontology · Dinosaur Provincial Park · Overnight in Medicine Hat |
+| Day 4 — Canmore and Calgary | 5 | Canmore Cave Tours · Carter-Ryan Gallery and Live Art Venue · Yamnuska Wolfdog Sanctuary · WinSport's Canada Olympic Park · Alt Hotel Calgary East Village |
+| Day 5 — Calgary | 3 | Heritage Park Historical Village · Alberta Food Tours · Calgary Tower |
+| Day 6 — Southern Alberta | 4 | Hoodoos and Hoodoo Trail · Royal Tyrrell Museum of Palaeontology · Dinosaur Provincial Park · Drive and overnight in Medicine Hat |
 | Day 7 — Medicine Hat | 4 | Saamis Teepee · Medalta Potteries National Historic Site · Cypress Hills Interprovincial Park · Hell's Basement Brewery |
-| Day 8 — Writing-on-Stone and Lethbridge | 4 | Áísínai'pi / Writing-on-Stone Provincial Park · Fort Whoop-Up · Galt Museum and Archives · Nikka Yuko Japanese Garden |
-| Day 9 — Waterton Lakes National Park | 5 | Drive into Waterton · Alpine Stables trail ride · Lunch at Prince of Wales Hotel · Cameron Lake · Shoreline Cruise |
-| Day 10 — Southern Rockies | 5 | Red Rock Canyon · Crowsnest Pass scenic drive · Bellevue Mine · Frank Slide Interpretive Centre · Overnight at Country Encounters B&B |
-| Day 11 — Southern Alberta to Calgary | 3 | Head-Smashed-In Buffalo Jump · Bar U Ranch National Historic Site · Wet your whistle at Eau Claire Distillery |
+| Day 8 — Writing-on-Stone and Lethbridge | 4 | Writing-on-Stone Provincial Park/Áísínai'pi · Fort Whoop-Up · Galt Museum & Archives · Nikka Yuko Japanese Garden |
+| Day 9 — Waterton Lakes National Park | 5 | Waterton Lakes National Park · Alpine Stables · Prince of Wales Hotel · Cameron Lake · Waterton Inter-Nation Shoreline Cruise |
+| Day 10 — Southern Rockies | 5 | Red Rock Canyon · Drive to the Crowsnest Pass · The Bellevue Underground Mine · Frank Slide Interpretive Centre · Country Encounters |
+| Day 11 — Southern Alberta to Calgary | 3 | Head-Smashed-In Buffalo Jump World Heritage Site · Bar U Ranch National Historic Site · Eau Claire Distillery |
 
 ## Accordion Behaviour
 
 - `.explore-activities` drawer is hidden by default (`display: none` on `.activities-list`)
-- Add `.is-open` class to show the list (`display: flex`) and rotate the chevron 180°
+- Add `.is-open` class to show the list (`display: flex`) and swap the toggle icon
 - Day 1 starts with `is-open` applied in HTML
 - `main.js` toggles `is-open` on click of `.activities-toggle`
+- **Desktop toggle icon:** chevron SVG is hidden (`display: none` in `@media (min-width: 431px)`); a CSS `::after` pseudo-element shows `+` (closed) or `−` (open)
+- **Mobile toggle icon:** original chevron SVG (18×18px), rotates 180° when open via `transform: rotate(180deg)`
 
 ## Dynamic Map
 
@@ -230,13 +237,15 @@ The vertical teal dashed connector runs via `.itinerary-col::before`:
 - **Option 2 mode (day dots hidden):** `getComputedStyle(dayDots[0]).display === 'none'` → measures from `.location-dot` center (if visible) to bottom of last `.day-panel-wrap`; falls back to top of first card if start dot is also hidden
 - Called on script load, `window resize`, `load`, `accordion-toggled` event, and after `applyMapMode` in `frame.html`
 - Exposed as `window.appUpdateConnectorLine` for cross-frame access
+- On desktop, `.connector-dots` spacer elements are hidden — the `::before` pseudo-element is the sole visual timeline
 
 ### Day dots (`.day-dot`)
 
-- `left: -40px`, `top: 22px` (desktop) — centers dot on connector line
+- **Desktop** (`@media (min-width: 431px)`): `left: -60px; top: 60px` — centers dot on connector line, aligned vertically with the destination title
+- **Mobile**: `left: -37px; top: 20px` — aligned with the "Day X" label
 - Inactive: plain 11×11 teal circle
 - **Active state** (`.day-dot.is-active`): `box-shadow: 0 0 0 9.5px #00A79A, 0 0 0 17.5px rgba(0,167,154,0.30)` — 30px inner / 46px outer halo
-- Mobile: `left: -37px; top: 20px`; active halo halved: `box-shadow: 0 0 0 4.75px #00A79A, 0 0 0 8.75px rgba(0,167,154,0.30)`
+- Mobile active halo halved: `box-shadow: 0 0 0 4.75px #00A79A, 0 0 0 8.75px rgba(0,167,154,0.30)`
 - Active class toggled by `updateDotStates(day)` inside `initScrollDetection` → `update()`, exactly in sync with map state change
 
 ## Mobile Preview (`frame.html`)
@@ -269,14 +278,30 @@ Both options are in `frame.html`'s `applyMapMode(mode, iframeDoc)` which injects
 - Compact card sizing: `day-panel-inner` padding 10px 14px, `day-label` 12px, `day-title` 18px, `day-body` 13px (2-line clamp), `carousel-img` 120px, `explore-activities` padding 8px 14px, `drive-pill` 12px
 - After CSS injection, calls `win.appMap.resize()`, `win.appMap.fitBounds(...)`, and `win.appUpdateConnectorLine()`
 
+### Desktop-only CSS (`styles.css` — `@media (min-width: 431px)`)
+
+Overrides applied only on desktop (not affecting mobile):
+- `.day-panel { border-radius: 0; }` — square card corners
+- `.day-panel-wrap { margin-left: 80px; }` — cards 80px from column left
+- `.day-dot { left: -60px; top: 60px; }` — dot on timeline, aligned with destination title
+- `.drive-connector { padding-left: 80px; }` — drive pills align with card left edge
+- `.connector-dots { display: none; }` — spacer hidden; timeline comes from `::before`
+- `.location-start-dot { width: 60px; }` — "Starts in" text aligns at 80px
+- `.explore-activities { margin-top: 16px; }` — 16px gap between carousel and explore bar
+- `.activities-toggle svg { display: none; }` + `::after` — replaces chevron with `+`/`−`
+- `.activity-title { font-weight: 500; }` — matches Figma "Demi" weight
+
 ### Mobile CSS (`styles.css` — `@media (max-width: 430px)`)
 
 Key mobile-only rules:
-- Timeline: `itinerary-section` left padding `8px` (vs `20px` desktop) — moves connector line closer to screen edge
+- Timeline: `itinerary-section` left padding `8px` — moves connector line closer to screen edge
 - Scrollbar hidden: `::-webkit-scrollbar { display: none }` + `scrollbar-width: none`
 - Layout: single-column, map sticky at top (280px, full-width), itinerary below
 - Day cards: `margin-left: 56px`, dot `left: -37px; top: 20px`
-- Drive connector: `gap: 16px`, `connector-dots` 40px wide
+- Card border restored: `border: 1px solid #00A79A`
+- Explore activities: `padding: 10px 18px`, `border-top: 1px solid #00A79A`, `border-bottom: none`
+- Drive connector: `gap: 16px`, `connector-dots` 40px wide, no left padding
+- Day panel inner: `padding: 12px 18px 0`
 - Nav collapses to logo only
 - Map markers: `.map-city-pin` 22×22px, `.map-city-label` font 10px / padding 3px 7px, `.map-segment-pill` font 10px / padding 3px 7px / svg 12×12
 
