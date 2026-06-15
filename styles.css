@@ -1272,7 +1272,8 @@
       }
 
       /* ── Intro ── */
-      .intro-section { padding: 24px 20px 0; }
+      .intro-section { padding: 24px 20px 0; min-height: 0; padding-bottom: 0; }
+      .intro-section::before { display: none; }
       .intro-headline { font-size: 20px; line-height: 1.35; margin-bottom: 16px; }
       .intro-body { font-size: 15px; line-height: 1.6; margin-bottom: 24px; }
       .intro-separator { margin: 0 0 24px; }
