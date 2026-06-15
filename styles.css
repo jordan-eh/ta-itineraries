@@ -1102,6 +1102,9 @@
       color: rgba(255,255,255,0.65);
     }
 
+    /* Hidden on desktop; shown via JS on mobile only */
+    #map-view-btn { display: none; }
+
     /* ═══════════════════════════════════════════════
        MOBILE  (≤ 430px — phone mockup / small screens)
     ═══════════════════════════════════════════════ */
@@ -1213,6 +1216,29 @@
       .activity-title { font-size: 18px; }
       .activity-desc { font-size: 15px; }
       .activity-location { font-size: 13px; }
+
+      /* ── Map view jump button ── */
+      #map-view-btn {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 44px;
+        background: #F6F6F6;
+        border: none;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-family: var(--font);
+        font-size: 18px;
+        font-weight: 500;
+        color: #384250;
+        cursor: pointer;
+        z-index: 50;
+        padding: 0 24px;
+      }
 
       /* ── Discover more ── */
       .discover-more-section { padding: 32px 20px 60px; }

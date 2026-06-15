@@ -1370,6 +1370,14 @@
   </button>
 </div>
 
+<button id="map-view-btn" aria-label="Jump to map">
+  <span>Map view</span>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="8" y1="13" x2="8" y2="3"/>
+    <polyline points="4,7 8,3 12,7"/>
+  </svg>
+</button>
+
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="main.js"></script>
 <script>
@@ -1387,6 +1395,43 @@
 </script>
 <script src="map.js"></script>
 <script>
+  // Mobile: show "Map view" jump button when map has scrolled off screen
+  if (window.matchMedia('(max-width: 430px)').matches) {
+    var mapViewBtn = document.getElementById('map-view-btn');
+    var dynamicMap = document.getElementById('dynamic-map');
+    if (mapViewBtn && dynamicMap) {
+      var mapAbove = false;
+      var itineraryDone = false;
+
+      function updateMapBtn() {
+        mapViewBtn.style.display = (mapAbove && !itineraryDone) ? 'flex' : 'none';
+      }
+
+      // Show only after map has scrolled above the viewport
+      new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          mapAbove = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+          updateMapBtn();
+        });
+      }, { threshold: 0.1 }).observe(dynamicMap);
+
+      // Hide once the user scrolls past the last day card
+      var itinerarySection = document.querySelector('.itinerary-section');
+      if (itinerarySection) {
+        new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            itineraryDone = !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
+            updateMapBtn();
+          });
+        }, { threshold: 0 }).observe(itinerarySection);
+      }
+
+      mapViewBtn.addEventListener('click', function() {
+        dynamicMap.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  }
+
   if (window === window.top) {
     document.getElementById('view-switcher').style.display = 'flex';
 
