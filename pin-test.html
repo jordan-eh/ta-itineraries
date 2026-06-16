@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pin Options — TA Itineraries</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1A1A1A;
+      min-height: 100vh;
+      padding: 48px 32px 64px;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+      margin-bottom: 40px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .option-card {
+      background: #2A2A2A;
+      border-radius: 16px;
+      padding: 22px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .option-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 3px;
+      align-self: flex-start;
+    }
+
+    .option-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 26px;
+      align-self: flex-start;
+      line-height: 1.2;
+    }
+
+    .pin-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .pin-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .pin-circle {
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .name-pill {
+      background: #fff;
+      border: 1px solid #E2E8ED;
+      border-radius: 100px;
+      padding: 4px 11px;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #000;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* ── A: Teal ring ── */
+    .a-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35), 0 0 0 3px #00A79A, 0 0 0 6.5px rgba(0,167,154,0.28);
+    }
+    .a-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── B: Size hierarchy ── */
+    .b-start {
+      width: 42px; height: 42px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+      font-size: 13px; font-weight: 700; color: #fff;
+      font-family: -apple-system, sans-serif;
+    }
+    .b-follow {
+      width: 26px; height: 26px;
+      background: #00A79A;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    /* ── C: Outlined / hollow start ── */
+    .c-start {
+      width: 34px; height: 34px;
+      background: #fff;
+      border: 3px solid #9C0F00;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      position: relative;
+    }
+    .c-start::after {
+      content: '';
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #9C0F00;
+      position: absolute;
+    }
+    .c-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── D: All teal + white ring on start ── */
+    .d-start {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 3px #fff, 0 0 0 6px rgba(255,255,255,0.25);
+    }
+    .d-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── E: Number on start only ── */
+    .e-start {
+      width: 36px; height: 36px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      font-size: 14px; font-weight: 700; color: #fff;
+      font-family: -apple-system, sans-serif;
+    }
+    .e-follow {
+      width: 28px; height: 28px;
+      background: #00A79A;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    /* ── F: Start chip badge ── */
+    .f-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .f-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .f-badge {
+      position: absolute;
+      top: -8px;
+      right: -16px;
+      background: #00A79A;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 100px;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .f-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── G: Pulse animation ── */
+    @keyframes pulse {
+      0%   { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 0 rgba(0,167,154,0.5); }
+      70%  { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 9px rgba(0,167,154,0); }
+      100% { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 0 rgba(0,167,154,0); }
+    }
+    .g-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      animation: pulse 2s ease-out infinite;
+    }
+    .g-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── H: Coloured name pill on start ── */
+    .h-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .h-pill-start {
+      background: #9C0F00;
+      border: 1px solid #9C0F00;
+      border-radius: 100px;
+      padding: 4px 11px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .h-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── I: Corner number badge ── */
+    .i-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .i-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .i-num {
+      position: absolute;
+      top: -5px;
+      right: -7px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #00A79A;
+      border: 2px solid #2A2A2A;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .i-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── J: Teardrop / location pin shape ── */
+    .j-start-pin {
+      width: 30px; height: 38px;
+      background: #9C0F00;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      clip-path: polygon(50% 100%, 0% 30%, 14% 0%, 86% 0%, 100% 30%);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: 35%;
+      justify-content: center;
+      padding-bottom: 8px;
+    }
+    .j-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #fff;
+      margin-top: 6px;
+    }
+    .j-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── K: Bold double ring ── */
+    .k-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 4px #9C0F00, 0 0 0 7px rgba(156,15,0,0.25);
+    }
+    .k-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── L: Teal start + red ring ── */
+    .l-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35), 0 0 0 3.5px #9C0F00, 0 0 0 7px rgba(156,15,0,0.25);
+    }
+    .l-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── M: Star / flag marker inside ── */
+    .m-start {
+      width: 34px; height: 34px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      font-size: 13px;
+      line-height: 1;
+    }
+    .m-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── N: Inverted — white start, coloured border ── */
+    .n-start {
+      width: 34px; height: 34px;
+      background: #fff;
+      border: 3px solid #00A79A;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2), 0 0 0 3px rgba(0,167,154,0.2);
+      position: relative;
+    }
+    .n-start::after {
+      content: '';
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #00A79A;
+      position: absolute;
+    }
+    .n-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── O: Same size, same colour, start has inner white ring ── */
+    .o-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      outline: 2.5px solid #9C0F00;
+      outline-offset: 2px;
+    }
+    .o-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── P: Start pill says "Start · City" ── */
+    .p-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .p-pill-start {
+      background: #fff;
+      border: 1px solid #E2E8ED;
+      border-radius: 100px;
+      padding: 4px 10px;
+      font-size: 10px;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #000;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .p-pill-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #9C0F00;
+      flex-shrink: 0;
+    }
+    .p-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ── Q: All numbered ── */
+    .q-start {
+      width: 36px; height: 36px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      font-size: 14px; font-weight: 700; color: #fff;
+      font-family: -apple-system, sans-serif;
+    }
+    .q-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      font-size: 12px; font-weight: 700; color: #fff;
+      font-family: -apple-system, sans-serif;
+    }
+
+    /* ── R: Start with "day 1" label above ── */
+    .r-start {
+      width: 32px; height: 32px;
+      background: #9C0F00;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .r-day-label {
+      background: #9C0F00;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 100px;
+      margin-bottom: 5px;
+    }
+    .r-follow {
+      width: 32px; height: 32px;
+      background: #00A79A;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Map Pin Options</h1>
+  <p class="subtitle">Top pin = starting destination &nbsp;·&nbsp; Below = following stops</p>
+
+  <div class="options-grid">
+
+    <!-- A: Teal ring -->
+    <div class="option-card">
+      <div class="option-label">Option A</div>
+      <div class="option-name">Teal Ring</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle a-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle a-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle a-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: Size hierarchy -->
+    <div class="option-card">
+      <div class="option-label">Option B</div>
+      <div class="option-name">Size Hierarchy</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle b-start">1</div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle b-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle b-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C: Outlined start -->
+    <div class="option-card">
+      <div class="option-label">Option C</div>
+      <div class="option-name">Outlined Start</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle c-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle c-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle c-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D: All teal + white ring -->
+    <div class="option-card">
+      <div class="option-label">Option D</div>
+      <div class="option-name">White Ring</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle d-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle d-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle d-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E: Number on start only -->
+    <div class="option-card">
+      <div class="option-label">Option E</div>
+      <div class="option-name">Numbered Start</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle e-start">1</div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle e-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle e-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- F: Start chip badge -->
+    <div class="option-card">
+      <div class="option-label">Option F</div>
+      <div class="option-name">Start Badge</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="f-wrap">
+            <div class="pin-circle f-start"></div>
+            <div class="f-badge">Start</div>
+          </div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle f-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle f-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G: Pulse animation -->
+    <div class="option-card">
+      <div class="option-label">Option G</div>
+      <div class="option-name">Pulse Glow</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle g-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle g-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle g-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- H: Coloured name pill -->
+    <div class="option-card">
+      <div class="option-label">Option H</div>
+      <div class="option-name">Coloured Label</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle h-start"></div>
+          <div class="h-pill-start">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle h-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle h-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- I: Corner number badge -->
+    <div class="option-card">
+      <div class="option-label">Option I</div>
+      <div class="option-name">Corner Badge</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="i-wrap">
+            <div class="pin-circle i-start"></div>
+            <div class="i-num">1</div>
+          </div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle i-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle i-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- J: Teardrop shape -->
+    <div class="option-card">
+      <div class="option-label">Option J</div>
+      <div class="option-name">Teardrop</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="j-start-pin">
+            <div class="j-dot"></div>
+          </div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle j-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle j-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- K: Bold red double ring -->
+    <div class="option-card">
+      <div class="option-label">Option K</div>
+      <div class="option-name">Red Ring</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle k-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle k-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle k-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L: Same red, ring directly on pin -->
+    <div class="option-card">
+      <div class="option-label">Option L</div>
+      <div class="option-name">Red Glow Ring</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle l-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle l-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle l-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M: Star emoji inside -->
+    <div class="option-card">
+      <div class="option-label">Option M</div>
+      <div class="option-name">Star Marker</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle m-start">★</div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle m-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle m-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- N: Inverted — white pin, teal border + ring -->
+    <div class="option-card">
+      <div class="option-label">Option N</div>
+      <div class="option-name">Inverted Start</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle n-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle n-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle n-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- O: Outline offset ring (CSS outline) -->
+    <div class="option-card">
+      <div class="option-label">Option O</div>
+      <div class="option-name">Offset Outline</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle o-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle o-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle o-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P: Start label with coloured dot prefix -->
+    <div class="option-card">
+      <div class="option-label">Option P</div>
+      <div class="option-name">Dot in Label</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle p-start"></div>
+          <div class="p-pill-start">
+            <div class="p-pill-dot"></div>
+            Calgary
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle p-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle p-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q: All numbered -->
+    <div class="option-card">
+      <div class="option-label">Option Q</div>
+      <div class="option-name">All Numbered</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="pin-circle q-start">1</div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle q-follow">2</div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle q-follow">3</div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- R: Day label above start pin -->
+    <div class="option-card">
+      <div class="option-label">Option R</div>
+      <div class="option-name">Day Label</div>
+      <div class="pin-col">
+        <div class="pin-item">
+          <div class="r-day-label">Start</div>
+          <div class="pin-circle r-start"></div>
+          <div class="name-pill">Calgary</div>
+        </div>
+        <div class="divider"></div>
+        <div class="pin-item">
+          <div class="pin-circle r-follow"></div>
+          <div class="name-pill">Banff</div>
+        </div>
+        <div class="pin-item">
+          <div class="pin-circle r-follow"></div>
+          <div class="name-pill">Jasper</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -353,7 +353,6 @@ function makeMarkerEl(label, color, name) {
     `background:${color};box-shadow:0 2px 8px rgba(0,0,0,0.3);` +
     'display:flex;align-items:center;justify-content:center;' +
     "color:#fff;font-size:12px;font-weight:700;font-family:'Outfit',sans-serif;cursor:default;";
-  pin.textContent = label;
   wrapper.appendChild(pin);
 
   if (name) {
