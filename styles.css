@@ -1,3 +1,27 @@
+    @font-face {
+      font-family: icomoon;
+      src: url('fonts/icomoon/icomoon.woff') format('woff'),
+           url('fonts/icomoon/icomoon.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+
+    [class^="icon-"], [class*=" icon-"] {
+      font-family: icomoon !important;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .icon-search:before       { content: "\e919"; }
+    .icon-location-map:before { content: "\e9db"; }
+    .icon-menu:before         { content: "\e90e"; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -83,7 +107,7 @@
     .nav-secondary {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 0;
       flex-shrink: 0;
     }
 
@@ -94,14 +118,46 @@
       line-height: 19.91px;
       text-align: center;
       letter-spacing: 0.32px;
+      padding: .3rem .8rem 0 0;
     }
 
-    .nav-search {
-      width: 20px;
-      height: 20px;
-      margin-left: 26px;
+    /* Icon links — combines li.p-2 (8px) + inner a (.3rem .8rem 0 0) from live site */
+    .nav-icon-link {
+      display: flex;
+      align-items: center;
       cursor: pointer;
+      padding: .8rem 1.3rem .5rem .5rem;
+      color: #000;
+      background: none;
+      border: none;
+      font-family: inherit;
     }
+
+    .nav-icon-link i {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    /* Search button fills nav height, matches #tas-open-search on live site */
+    button.nav-icon-link {
+      padding: 2.2rem 1.6rem 2.5rem;
+    }
+
+    .nav-wishlist-link {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      line-height: 0;
+      padding: .8rem 1.3rem .5rem .5rem;
+    }
+
+    .nav-wishlist-link svg path {
+      fill: #fff;
+      stroke: #000;
+    }
+
+    /* Hidden on desktop; shown only in mobile media query */
+    .nav-mobile-icons { display: none; }
 
     /* ─────────────────────────────────────────────
        HEADER AREA (breadcrumb + title + hero)
@@ -207,6 +263,7 @@
     .best-for-section {
       display: none;
     }
+
 
     .best-for-hero {
       margin: -32px var(--content-pad) 0;
@@ -1237,18 +1294,44 @@
       }
 
       /* ── Nav ── */
-      .nav { height: 60px; }
-      .nav-logo { width: 60px; height: 60px; }
-      .logo-img { width: 40px; height: auto; }
+      .nav { height: 72px; }
+      .nav-logo { width: 130px; height: 72px; }
+      .logo-img { width: 108px; height: auto; }
       .nav-main-links,
       .nav-secondary { display: none; }
-      .nav-inner { border-bottom-color: transparent; }
+      .nav-inner { border-bottom-color: transparent; padding: 0; }
+
+      /* Mobile icon bar — exact widths and padding from Figma (frame 10898:25491) */
+      .nav-mobile-icons {
+        display: flex;
+        align-items: center;
+        padding-left: 49px; /* gap between logo and first icon */
+      }
+      .nav-mob-item {
+        display: flex;
+        align-items: center;
+        height: 72px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #000;
+        font-family: inherit;
+        padding: 0;
+        line-height: 0;
+        flex-shrink: 0;
+      }
+      .nav-mob-item i { font-size: 20px; line-height: 1; }
+      /* Container widths match Figma exactly: 53+49+37+72 = 211px, total with gap = 260px */
+      .nav-mob-wishlist  { width: 53px; padding-left: 8px; }
+      .nav-mob-map       { width: 49px; padding-left: 8px; }
+      .nav-mob-search    { width: 37px; padding-left: 13px; }
+      .nav-mob-hamburger { width: 72px; padding-left: 26px; }
 
       /* ── Page header ── */
-      .breadcrumb { padding: 14px 20px 0; font-size: 13px; }
-      .page-title { padding: 20px 20px 20px; }
+      .breadcrumb { padding: 32px 24px 32px; font-size: 13px; }
+      .page-title { padding: 0 24px 32px; }
       .page-title h1 { font-size: 26px; line-height: 1.25; }
-      .hero-image { height: 220px; }
+      .hero-image { height: 232px; }
 
       /* ── Main layout: intro → map → itinerary ──
          .itinerary-section is moved out of .main-left via JS (mobile only)
@@ -1299,71 +1382,126 @@
       }
 
       /* ── Intro ── */
-      .intro-section { padding: 24px 20px 0; min-height: 0; padding-bottom: 0; }
+      .intro-section { background: var(--mint-bg); padding: 42px 24px 27px; min-height: 0; }
       .intro-section::before { display: none; }
-      .intro-headline { font-size: 20px; line-height: 1.35; margin-bottom: 16px; }
-      .intro-body { font-size: 15px; line-height: 1.6; margin-bottom: 24px; }
-      .intro-separator { margin: 0 0 24px; }
+      .intro-headline { font-size: 24px; line-height: 28px; margin-bottom: 37px; }
+      .intro-body { font-size: 16px; line-height: 21px; margin-bottom: 26px; }
+      .intro-separator { margin: 0 0 29px; }
 
-      .at-a-glance { margin-bottom: 24px; }
-      .at-a-glance h3 { font-size: 19px; margin-bottom: 20px; }
-      .glance-list { grid-template-columns: 1fr; gap: 14px; }
-      .glance-icon { width: 26px; height: 26px; }
-      .glance-item { font-size: 15px; gap: 14px; }
+      .at-a-glance { margin-bottom: 0; }
+      .at-a-glance h3 { font-size: 19.5px; margin-bottom: 20px; }
+      .glance-list { grid-template-columns: 1fr; gap: 15px; }
+      .glance-icon { width: 36px; height: 36px; }
+      .glance-item { font-size: 16px; gap: 20px; }
 
-      .best-for-hero { display: none !important; }
-      .best-for-section { display: block; background: var(--mint-bg); padding: 20px; margin: 0 20px 24px; }
+      /* Best-for hero: mobile vertical layout on dark red band
+         Matches Figma exactly: label at y=18, items from y=46, all centered at x=187.5 */
+      .best-for-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 0;
+        height: 132px;
+        padding: 18px 0 0;
+      }
+      .best-for-hero .best-for-label {
+        display: block;
+        text-align: center;
+        line-height: 22.58px;
+        margin-bottom: 5px;
+      }
+      .best-for-hero .best-for-item {
+        text-align: center;
+        font-size: 15px;
+        line-height: 24px;
+      }
+
+      .best-for-section { display: none; }
       .best-for-label { font-size: 15px; }
       .best-for-content { font-size: 15px; }
 
       /* ── Itinerary section ── */
-      .itinerary-section { margin-top: 32px; margin-bottom: 48px; padding: 0 20px 0 8px; }
+      /* x=8 left padding + 16px day-panel-wrap = x=24 content (matches Figma)
+         x=26 right padding = 375-349 right margin (matches Figma image w=325) */
+      .itinerary-section { margin-top: 27px; margin-bottom: 48px; padding: 0 26px 0 8px; }
       .itinerary-col { width: 100%; }
-
-      .location-details .loc-label { font-size: 14px; }
-      .location-details .loc-title { font-size: 32px; line-height: 40px; }
-
-      /* Drive connector */
-      .drive-connector { gap: 16px; min-height: 72px; padding: 14px 0; }
-      .connector-dots { width: 40px; padding-left: 20px; }
-      .drive-pill { font-size: 13px; padding: 5px 14px; gap: 6px; }
-
-      /* Day panel — margin-left 56px gives 8.5px clearance past the 46px halo right edge */
-      .day-panel-wrap { margin-left: 56px; }
-      .day-dot { left: -37px; top: 20px; }
-      .day-dot.is-active {
-        box-shadow:
-          0 0 0 4.75px #00A79A,
-          0 0 0 8.75px rgba(0, 167, 154, 0.30);
+      /* connector line: x=29 (8+21), dash [1,6], weight 1.5px — matches Figma Line 2 */
+      .itinerary-col::before {
+        left: 21px;
+        width: 1.5px;
+        background: repeating-linear-gradient(to bottom, #00A79A 0, #00A79A 1px, transparent 1px, transparent 7px);
       }
 
-      .day-panel-inner { padding: 12px 18px 0; }
-      .day-label { font-size: 14px; }
-      .day-title { font-size: 22px; margin-bottom: 10px; }
+      /* "Starts in" header — dot center at x=29 (8+16+5), text at x=55 (8+16+10+21) */
+      .location-header { gap: 21px; }
+      .location-start-dot { padding-left: 16px; padding-top: 4px; }
+      .location-dot { width: 10px; height: 10px; box-shadow: 0 0 0 3px rgba(0,167,154,0.30); }
+      .location-details .loc-label { font-size: 16px; }
+      .location-details .loc-title { font-size: 24px; line-height: 28px; }
+
+      /* Drive connector — 28px above/below matches Figma gap (y=1678 from loc bottom y=1650) */
+      .drive-connector { gap: 0; min-height: 0; padding: 28px 0; }
+      .connector-dots { width: 38px; padding-left: 20px; } /* pill starts at page x=46 (8+38) */
+      .drive-pill { font-size: 15px; padding: 5px 12px; gap: 8px; }
+
+      /* Day panel — content at x=24 from page (8 section + 16 wrap margin) */
+      .day-panel-wrap { margin-left: 16px; }
+      .day-dot { display: none; }
+      .day-panel { border: none; }
+      .day-panel-inner { padding: 0; }
+      .day-label { font-size: 16px; }
+      .day-title { font-size: 24px; line-height: 28px; margin-bottom: 8px; }
       .day-body {
-        font-size: 15px;
-        line-height: 1.55;
-        margin-bottom: 16px;
+        font-size: 16px;
+        line-height: 22px;
+        margin-bottom: 15px;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-
-      .carousel-img { height: 160px; }
+      .carousel-img { height: 198px; }
       .carousel-counter { font-size: 14px; }
 
-      /* Restore mobile card border */
-      .day-panel { border: 1px solid #00A79A; }
+      /* Day panel — allow explore-activities to break out full-width */
+      .day-panel { overflow: visible; }
 
-      /* Explore activities */
-      .explore-activities { padding: 10px 18px; gap: 16px; border-top: 1px solid #00A79A; border-bottom: none; }
-      .activities-toggle { font-size: 15px; }
+      /* Explore activities — full-bleed mint bg (Figma rect: x=-23 to x=398, bleeds past 375px frame)
+         margin-left: -24px (8 section + 16 wrap), margin-right: -26px (section right padding)
+         padding restores text alignment at x=24 from page left */
+      .explore-activities {
+        margin-top: 16px;
+        margin-left: -24px;
+        margin-right: -26px;
+        background-color: transparent;
+        background-image: linear-gradient(#000, #000);
+        background-size: calc(100% - 48px) 1px;
+        background-position: 24px 100%;
+        background-repeat: no-repeat;
+        padding: 16px 24px 24px;
+        gap: 16px;
+        border-top: none;
+        border-bottom: none;
+      }
+      .activities-toggle { font-size: 16px; font-weight: 500; }
 
-      .activity-img { height: 200px; }
-      .activity-title { font-size: 18px; }
-      .activity-desc { font-size: 15px; }
-      .activity-location { font-size: 13px; }
+      /* Plus / minus toggle icons — same pattern as desktop block */
+      .activities-toggle svg { display: none; }
+      .activities-toggle::after {
+        content: '+';
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .explore-activities.is-open .activities-toggle::after { content: '−'; }
+
+      /* Activity cards */
+      .activity-title { font-weight: 500; }
+      .activities-list { gap: 30px; }
+      .activity-img { height: 220px; }
+      .activity-desc { font-size: 16px; line-height: 22px; }
 
       /* ── Map view jump button ── */
       #map-view-btn {

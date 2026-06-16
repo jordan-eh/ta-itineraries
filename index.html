@@ -26,14 +26,37 @@
       <a href="#">Trip Ideas</a>
       <a href="#">Know Before You Go</a>
     </div>
+    <!-- Mobile-only icon bar (hidden on desktop via CSS) -->
+    <div class="nav-mobile-icons">
+      <a href="#" aria-label="wishlist" class="nav-mob-item nav-mob-wishlist">
+        <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.6447 20.622C11.5428 20.622 11.4408 20.5806 11.368 20.505L2.27398 10.8588C0.0745302 8.52286 0.0745301 4.72145 2.27884 2.39037C3.35186 1.24922 4.78175 0.625 6.30389 0.625C7.82603 0.625 9.25591 1.2541 10.3289 2.39281L11.6496 3.78999L12.9241 2.44158C13.9971 1.30286 15.427 0.678644 16.9467 0.678644C18.4664 0.678644 19.8987 1.30774 20.9718 2.44158C23.1761 4.77753 23.1761 8.57894 20.9718 10.9149L11.9215 20.505C11.8486 20.5806 11.7515 20.622 11.6447 20.622Z" fill="#fff" stroke="#000" stroke-width="1.6"/>
+        </svg>
+      </a>
+      <a href="#" aria-label="map" class="nav-mob-item nav-mob-map">
+        <i class="icon-location-map"></i>
+      </a>
+      <button aria-label="Search" class="nav-mob-item nav-mob-search">
+        <i class="icon-search"></i>
+      </button>
+      <button aria-label="Open navigation menu" class="nav-mob-item nav-mob-hamburger">
+        <i class="icon-menu"></i>
+      </button>
+    </div>
+
     <div class="nav-secondary">
       <span class="sec-link">Upcoming<br>Events</span>
       <span class="sec-link">Experience<br>Providers</span>
-      <!-- Search icon -->
-      <svg class="nav-search" viewBox="0 0 20 20" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
-        <circle cx="8.5" cy="8.5" r="6"/>
-        <line x1="13.5" y1="13.5" x2="19" y2="19"/>
-      </svg>
+      <!-- Wishlist — exact SVG from travelalberta.com -->
+      <a href="#" aria-label="wishlist" class="nav-wishlist-link">
+        <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.6447 20.622C11.5428 20.622 11.4408 20.5806 11.368 20.505L2.27398 10.8588C0.0745302 8.52286 0.0745301 4.72145 2.27884 2.39037C3.35186 1.24922 4.78175 0.625 6.30389 0.625C7.82603 0.625 9.25591 1.2541 10.3289 2.39281L11.6496 3.78999L12.9241 2.44158C13.9971 1.30286 15.427 0.678644 16.9467 0.678644C18.4664 0.678644 19.8987 1.30774 20.9718 2.44158C23.1761 4.77753 23.1761 8.57894 20.9718 10.9149L11.9215 20.505C11.8486 20.5806 11.7515 20.622 11.6447 20.622Z" stroke-width="1.25"/>
+        </svg>
+      </a>
+      <!-- Map — icomoon icon-location-map (U+E9DB) -->
+      <a href="#" aria-label="map" class="nav-icon-link"><i class="icon-location-map"></i></a>
+      <!-- Search — icomoon icon-search (U+E919) -->
+      <button aria-label="Search" class="nav-icon-link"><i class="icon-search"></i></button>
     </div>
   </div>
 </nav>
