@@ -485,7 +485,7 @@ map.on('load', () => {
     type: 'line',
     source: 'route-overview',
     layout: { 'line-join': 'round', 'line-cap': 'round', visibility: 'visible' },
-    paint: { 'line-color': '#9C0F00', 'line-width': 3, 'line-dasharray': [2, 3] },
+    paint: { 'line-color': '#9C0F00', 'line-width': 2, 'line-dasharray': [0.5, 3] },
   });
 
   // ── Overview markers — Option 1 (3 full featured pins + small dots for the rest) ──

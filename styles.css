@@ -655,13 +655,7 @@
       top: var(--line-top, 0);
       height: var(--line-height, 100%);
       width: 2px;
-      background: repeating-linear-gradient(
-        to bottom,
-        #00A79A 0,
-        #00A79A 5px,
-        transparent 5px,
-        transparent 12px
-      );
+      background: radial-gradient(circle 1.5px at 1px 1.5px, #00A79A 100%, transparent 100%) 0 0 / 2px 7px repeat-y;
     }
 
     /* "Starts in" header */
@@ -1430,7 +1424,7 @@
       .itinerary-col::before {
         left: 21px;
         width: 1.5px;
-        background: repeating-linear-gradient(to bottom, #00A79A 0, #00A79A 1px, transparent 1px, transparent 7px);
+        background: radial-gradient(circle 1.25px at 0.75px 1.25px, #00A79A 100%, transparent 100%) 0 0 / 1.5px 7px repeat-y;
       }
 
       /* "Starts in" header — dot center at x=29 (8+16+5), text at x=55 (8+16+10+21) */
