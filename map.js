@@ -602,7 +602,7 @@ map.on('load', () => {
   // ── Per-day markers (hidden initially) ──
   DAYS.forEach((day, i) => {
     const markers = day.stops.map((stop, j) => {
-      const color = j === 0 ? '#9C0F00' : '#00A79A';
+      const color = j === 0 ? '#00A79A' : '#9C0F00';
       const el = makeMarkerEl(String(j + 1), color, stop.name);
       el.style.visibility = 'hidden';
       return new mgl.Marker({ element: el })
@@ -679,7 +679,7 @@ function setState(newState) {
   approachPinMarkers = [];
   if (!isOverview && dayData && dayData.approachFrom) {
     approachPinMarkers.push(
-      new mgl.Marker({ element: makeSmallMarkerEl('#00A79A') })
+      new mgl.Marker({ element: makeSmallMarkerEl('#9C0F00') })
         .setLngLat(dayData.approachFrom.lnglat).addTo(map)
     );
   }
