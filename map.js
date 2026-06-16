@@ -448,6 +448,7 @@ let overviewMarkersOpt1 = [];
 let overviewMarkersOpt2 = [];
 let dayMarkers = [];
 let segmentPillMarkers = [];
+let pillZoomThreshold = 0;
 let approachPinMarkers = [];
 let activityMarkers = [];
 let activityClusterMarkers = [];
@@ -459,6 +460,14 @@ let scrollLocked = false;
 
 function updateLabelVisibility() {
   map.getContainer().classList.toggle('zoom-labels', map.getZoom() > defaultZoom + 0.3);
+}
+
+function updateMobilePillVisibility() {
+  if (!window.matchMedia('(max-width: 430px)').matches) return;
+  const show = map.getZoom() >= pillZoomThreshold;
+  segmentPillMarkers.forEach(({ marker }) => {
+    marker.getElement().style.display = show ? '' : 'none';
+  });
 }
 const destPillEl = document.querySelector('.map-destinations-pill');
 
@@ -616,6 +625,7 @@ map.on('load', () => {
   let zoomTicking = false;
   map.on('zoom', (e) => {
     updateLabelVisibility();
+    updateMobilePillVisibility();
     if (!e.originalEvent) return; // skip programmatic zooms (fitBounds animation)
     if (zoomTicking) return;
     zoomTicking = true;
@@ -657,7 +667,9 @@ function setState(newState) {
   const bounds = isOverview ? OVERVIEW_BOUNDS : (dayData ? dayData.bounds : null);
   if (bounds) {
     const isMobile = window.matchMedia('(max-width: 430px)').matches;
-    const pad = (isOverview && isMobile) ? 20 : 60;
+    const pad = isMobile
+      ? (isOverview ? 20 : { top: 50, right: 30, bottom: 50, left: 30 })
+      : 60;
     map.fitBounds(bounds, { padding: pad, duration: 900 });
     map.once('moveend', () => { defaultZoom = map.getZoom(); updateLabelVisibility(); clusterActivityMarkers(); });
   }
@@ -683,7 +695,11 @@ function setState(newState) {
       segmentPillMarkers.push({ marker, a, b });
     };
     dayData.segments.forEach((seg, i) => addPill(dayData.stops[i].lnglat, dayData.stops[i + 1].lnglat, seg.time, seg.dist));
-    map.once('moveend', resolveSegmentPillOverlaps);
+    map.once('moveend', () => {
+      resolveSegmentPillOverlaps();
+      pillZoomThreshold = map.getZoom() + 1.0;
+      updateMobilePillVisibility();
+    });
   }
 
   // Destinations pill (overview only)
@@ -732,6 +748,26 @@ function initScrollDetection() {
     return active;
   }
 
+  function getMobileActiveDay() {
+    const triggerY = window.innerHeight * TRIGGER;
+    const panels = Array.from(document.querySelectorAll('.day-panel[data-day]'));
+    let active = 0;
+    panels.forEach((panel, i) => {
+      const dayNum = parseInt(panel.dataset.day, 10);
+      if (i === 0) {
+        // Overview → Day 1: day 1 panel top crosses the trigger line
+        if (panel.getBoundingClientRect().top <= triggerY) active = dayNum;
+      } else {
+        // Day N: previous day's explore-activities bottom crosses the trigger line
+        const prevExplore = panels[i - 1].querySelector('.explore-activities');
+        const ref = prevExplore || panels[i - 1];
+        if (ref.getBoundingClientRect().bottom <= triggerY) active = dayNum;
+      }
+    });
+    return active;
+  }
+
+  const isMobile = window.matchMedia('(max-width: 430px)').matches;
   const dayDotEls = Array.from(document.querySelectorAll('.day-dot'));
   let lastActiveDotDay = 0;
 
@@ -743,7 +779,7 @@ function initScrollDetection() {
 
   function update() {
     if (scrollLocked) return;
-    const day = getActiveDay();
+    const day = isMobile ? getMobileActiveDay() : getActiveDay();
     setState(day === 0 ? 'overview' : day);
     updateDotStates(day);
   }
