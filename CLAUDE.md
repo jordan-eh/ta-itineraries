@@ -55,7 +55,7 @@ No build step. No dependencies required for the static site — `server.js` is o
 3. **Main two-column layout** (`.main-layout`) — wraps the intro and itinerary sections in a single `display: flex; gap: 80px; padding: 80px 112px 0` container. Left column (`.main-left`, `flex: 1`) holds the intro content and day cards stacked. Right column (`.main-right`, `width: 524px; position: sticky; top: 24px`) holds `#dynamic-map`.
    - **Intro content** (`.intro-section` inside `.main-left`): full-width mint (`#E6F7F5`) background via `::before` pseudo-element (desktop only, hidden on mobile). Contains headline (36.3px bold), body (20.2px), "At a glance" section, and on mobile the "Itinerary best for" block.
    - **"Itinerary best for" bar** (`.best-for-hero`): desktop-only red bar (`#9C0F00`, 56px tall) that overlaps the bottom of the hero image by 32px (`margin-top: -32px`). Items span full bar width via `justify-content: space-between`, padding `0 143px 0 96px`. Hidden on mobile — a plain `.best-for-section` block inside `.intro-left` is shown instead.
-   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 67px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed. The `.itinerary-col` has a teal dashed connector line via `::before` at `left: 25px`. Each `.day-panel-wrap` has a small 11px `.day-dot` absolutely positioned on the connector line, vertically aligned with the destination title (`top: 60px` desktop). Day panels offset `margin-left: 80px` (desktop) / `56px` (mobile) from column left. No carousel nav or counter on any card except Day 1.
+   - **Itinerary section** (`.itinerary-section` inside `.main-left`, `margin-top: 67px`): "Starts in Calgary" header → drive connectors → 11 day panels. Each has an accordion "Explore activities (N)" drawer. Day 1 starts open; Days 2–11 start collapsed. The `.itinerary-col` has a teal dashed connector line via `::before` at `left: 25px`. Each `.day-panel-wrap` has a `.day-dot` absolutely positioned on the connector line (`top: 60px; left: -60px` desktop, `top: 4px; left: 3px` mobile). Desktop: 11×11px, aligned with destination title. Mobile: 5×5px, centered on line at page x≈29.5. Day panels offset `margin-left: 80px` (desktop) / `16px` (mobile, via wrap `margin-left`) from column left. No carousel nav or counter on any card except Day 1.
 4. **Discover more** — 3-card grid at 214px padding. Heading 36px bold. Cards: image 366px tall, "X DAYS" red badge (bottom-right, letter-spacing 3px), title 16.6px bold, desc 15px, "Learn more →" link. Grid gap 36px.
 5. **Know before you go** — Mint bg, 214px padding, 3×2 grid (gap 48px 0) of teal icon links.
 6. **Footer** — Dark navy `#073142`, 214px padding. "Travel Alberta" italic logo, 4 link columns, territorial acknowledgement, copyright. Teal "Back to Top" button (top-right, padding 9px 12px).
@@ -242,10 +242,10 @@ The vertical teal dashed connector runs via `.itinerary-col::before`:
 ### Day dots (`.day-dot`)
 
 - **Desktop** (`@media (min-width: 431px)`): `left: -60px; top: 60px` — centers dot on connector line, aligned vertically with the destination title
-- **Mobile**: `left: -37px; top: 20px` — aligned with the "Day X" label
-- Inactive: plain 11×11 teal circle
-- **Active state** (`.day-dot.is-active`): `box-shadow: 0 0 0 9.5px #00A79A, 0 0 0 17.5px rgba(0,167,154,0.30)` — 30px inner / 46px outer halo
-- Mobile active halo halved: `box-shadow: 0 0 0 4.75px #00A79A, 0 0 0 8.75px rgba(0,167,154,0.30)`
+- **Mobile**: `left: 3px; top: 4px; width: 5px; height: 5px` — 5×5px dot, centered on connector line (page x≈29.5), positioned within `.day-panel-wrap` (which has `padding-top: 18px` to prevent margin collapse with `.day-panel`)
+- Inactive: plain teal circle (11×11px desktop, 5×5px mobile)
+- **Active state desktop** (`.day-dot.is-active`): `box-shadow: 0 0 0 9.5px #00A79A, 0 0 0 17.5px rgba(0,167,154,0.30)` — 30px inner / 46px outer halo
+- **Active state mobile**: `box-shadow: 0 0 0 2.5px #00A79A, 0 0 0 5.5px rgba(0,167,154,0.30)` — expands 5px dot to match "Starts in Calgary" dot size: 2.5px solid ring → 10px total, 3px translucent ring → 16px total visual diameter
 - Active class toggled by `updateDotStates(day)` inside `initScrollDetection` → `update()`, exactly in sync with map state change
 
 ## Mobile Preview (`frame.html`)
@@ -294,14 +294,16 @@ Overrides applied only on desktop (not affecting mobile):
 ### Mobile CSS (`styles.css` — `@media (max-width: 430px)`)
 
 Key mobile-only rules:
-- Timeline: `itinerary-section` left padding `8px` — moves connector line closer to screen edge
+- Timeline: `itinerary-section` left padding `8px` — moves connector line closer to screen edge; connector at `left: 21px` (page x=29), `width: 1.5px`, dash pattern 1px on / 6px gap
 - Scrollbar hidden: `::-webkit-scrollbar { display: none }` + `scrollbar-width: none`
 - Layout: single-column, map sticky at top (280px, full-width), itinerary below
-- Day cards: `margin-left: 56px`, dot `left: -37px; top: 20px`
-- Card border restored: `border: 1px solid #00A79A`
-- Explore activities: `padding: 10px 18px`, `border-top: 1px solid #00A79A`, `border-bottom: none`
-- Drive connector: `gap: 16px`, `connector-dots` 40px wide, no left padding
-- Day panel inner: `padding: 12px 18px 0`
+- Day panel wrap: `margin-left: 16px; padding-top: 18px` — padding-top prevents CSS margin collapse (without it, `.day-panel`'s margin-top would collapse outward, placing the dot inside the card)
+- Day dot: `left: 3px; top: 4px; width: 5px; height: 5px` — centered on connector line at page x≈29.5
+- Day dot active: `box-shadow: 0 0 0 2.5px #00A79A, 0 0 0 5.5px rgba(0,167,154,0.30)` — matches "Starts in" dot size (16px total)
+- Day panel: `border: none; overflow: visible` — no margin-top (wrap padding-top handles the gap)
+- Day panel inner: `padding: 0`
+- Drive connector: `padding: 28px 0 11px` — top 28px matches gap from previous section; bottom 11px positions next dot at 15px below drive pill (matching Figma)
+- Explore activities: full-bleed with negative margins (`-24px` / `-26px`), transparent bg, bottom border via `background-image` gradient at 24px inset, `+`/`−` toggle via `::after`
 - Nav collapses to logo only
 - Map markers: `.map-city-pin` 22×22px, `.map-city-label` font 10px / padding 3px 7px, `.map-segment-pill` font 10px / padding 3px 7px / svg 12×12
 
