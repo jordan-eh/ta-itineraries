@@ -18,6 +18,14 @@
 
 ---
 
+### 3. [Comment] — Andrew
+**Element:** `body > div:nth-child(3) > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > p:nth-child(3)`
+**Created:** 2026-06-17 22:39
+
+> asdf
+
+---
+
 <!-- DATA:COMMENTS -->
 ```json
 [
@@ -49,6 +57,21 @@
     "author": "Andrew",
     "createdAt": "2026-06-17T22:39:06.898Z",
     "updatedAt": "2026-06-17T22:39:11.639Z",
+    "region": null
+  },
+  {
+    "id": "mqinlxygvya7",
+    "page": "index",
+    "selector": "body > div:nth-child(3) > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > p:nth-child(3)",
+    "tagName": "P",
+    "textPreview": "On day 1, enjoy Banff... Yorem ipsum dolor sit amet, consect",
+    "x": 65.3,
+    "y": 28.8,
+    "text": "asdf",
+    "type": "Comment",
+    "author": "Andrew",
+    "createdAt": "2026-06-17T22:39:56.968Z",
+    "updatedAt": "2026-06-17T22:39:58.650Z",
     "region": null
   }
 ]
