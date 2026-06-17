@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <!-- Designer-notes review tools (gate must load first, in <head>) -->
+  <script src="designer-notes/gate.js"></script>
 </head>
 <body>
 
@@ -1486,5 +1488,7 @@
     });
   }
 </script>
+<!-- Designer-notes comment overlay (loads last; boots on DOM ready) -->
+<script src="designer-notes/comments.js"></script>
 </body>
 </html>
