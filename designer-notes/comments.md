@@ -26,6 +26,14 @@
 
 ---
 
+### 4. [Comment] — Andrew
+**Element:** `#dynamic-map > div.maplibregl-canvas-container.maplibregl-interactive:nth-child(2)`
+**Created:** 2026-06-17 22:40
+
+> test
+
+---
+
 <!-- DATA:COMMENTS -->
 ```json
 [
@@ -72,6 +80,21 @@
     "author": "Andrew",
     "createdAt": "2026-06-17T22:39:56.968Z",
     "updatedAt": "2026-06-17T22:39:58.650Z",
+    "region": null
+  },
+  {
+    "id": "mqinmdugxtaa",
+    "page": "index",
+    "selector": "#dynamic-map > div.maplibregl-canvas-container.maplibregl-interactive:nth-child(2)",
+    "tagName": "DIV",
+    "textPreview": "1 hr 23 min",
+    "x": 43.3,
+    "y": null,
+    "text": "test",
+    "type": "Comment",
+    "author": "Andrew",
+    "createdAt": "2026-06-17T22:40:17.560Z",
+    "updatedAt": "2026-06-17T22:40:18.801Z",
     "region": null
   }
 ]
