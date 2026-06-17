@@ -28,6 +28,14 @@
 
 ---
 
+### 4. [Comment] — Andrew
+**Element:** `#dynamic-map > div.maplibregl-canvas-container.maplibregl-interactive:nth-child(2) > div.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(35)`
+**Created:** 2026-06-17 22:51
+
+> test on the sticky map
+
+---
+
 <!-- DATA:COMMENTS -->
 ```json
 [
@@ -72,6 +80,20 @@
     "author": "Andrew",
     "createdAt": "2026-06-17T22:51:27.463Z",
     "updatedAt": "2026-06-17T22:51:29.199Z"
+  },
+  {
+    "id": "mqio0x0o75xl",
+    "page": "index-mobile",
+    "selector": "#dynamic-map > div.maplibregl-canvas-container.maplibregl-interactive:nth-child(2) > div.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(35)",
+    "tagName": "DIV",
+    "textPreview": "Columbia Icefield",
+    "x": 77.4,
+    "y": 10.7,
+    "text": "test on the sticky map",
+    "type": "Comment",
+    "author": "Andrew",
+    "createdAt": "2026-06-17T22:51:35.592Z",
+    "updatedAt": "2026-06-17T22:51:39.379Z"
   }
 ]
 ```
