@@ -18,6 +18,7 @@ GitHub repo: https://github.com/jordan-eh/ta-itineraries
 | `main.js` | Accordion toggle — click listener toggles `is-open` on `.explore-activities` |
 | `map.js` | Dynamic map — MapLibre GL JS init, per-day state data, scroll detection, `setState()` transitions |
 | `pin-test.html` | Static pin style test page — 18 options (A–R) for map pin visual design review |
+| `toggle-test.html` | Static mobile map toggle test page — 10 options (A–J) for hide/show map UI review |
 | `images/logo-text.png` | Canada's Alberta logo (white text, exported from Figma node `10699:19252` at 2×) |
 | `images/logo.svg` | SVG version of the full logo block (red bg + white text) |
 | `images/logo.png` | Full logo with red background |
@@ -113,7 +114,7 @@ Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itinerarie
 - **Tile style:** `https://tiles.openfreemap.org/styles/liberty`
 - **Container:** `<div id="dynamic-map">` — 524×753px, `border-radius: 24px`, `overflow: hidden`. Lives inside `.main-right` in normal document flow (not `position: fixed`).
 - **Layout:** `.main-right { width: 524px; position: sticky; top: 24px; align-self: flex-start }` — sticks below the viewport top as the user scrolls through day cards, then scrolls away naturally after the last section.
-- **Attribution:** Compact `©` button in the bottom-right corner via `mgl.AttributionControl({ compact: true })`. The MapLibre/Mapbox logo (bottom-left) is removed on load.
+- **Attribution:** Removed entirely — `attributionControl: false` in the Map constructor, and the `addControl` call was removed. The MapLibre/Mapbox logo (bottom-left) is also removed on load.
 - **Scroll zoom:** Enabled on desktop (scroll wheel / trackpad). Touch pinch zoom always available. `resolveSegmentPillOverlaps` re-runs only on user-initiated zoom (`e.originalEvent` guard) — not during programmatic `fitBounds` animations.
 - **Swap to Mapbox:** The library is aliased as `const mgl = typeof mapboxgl !== 'undefined' ? mapboxgl : maplibregl`. To switch: swap the CDN tags, set `mapboxgl.accessToken = 'pk...'`, and change the style URL to `'mapbox://styles/mapbox/streets-v12'`. No other code changes required.
 - **No fade-out:** the map is always visible once the page loads; there is no opacity or visibility toggle based on scroll position.
@@ -160,21 +161,30 @@ Each entry in `OVERVIEW_STOPS` has a `day` property used for click-to-scroll:
 
 ### Activity pins
 
-- **Default:** hidden (`showActivities = false`). Enabled via the **Route / Activities** toggle (dark pill, bottom-right, desktop only — hidden on mobile via `display: none !important`).
+- **Default:** on (`showActivities = true`). The Activities button starts with `is-active`. Disabled via the **Route / Activities** toggle (dark pill, bottom-right, desktop only — hidden on mobile via `display: none !important`).
 - **Distance label:** each activity pin label shows `name · X km` where X is the haversine distance to the nearest route stop for that day. Computed in `setActivityMarkers` using `haversineKm(a, b)`.
-- **Zoom-dependent labels:** `.activity-pin-label` has `opacity: 0` by default. `#dynamic-map.zoom-labels .activity-pin-label { opacity: 1 }` reveals them. The `zoom-labels` class is toggled by `updateLabelVisibility()` when `map.getZoom() > defaultZoom + 0.3` (i.e., the user has manually zoomed beyond the auto-fit level).
+- **Zoom-dependent labels:** `.activity-pin-label` has `opacity: 0` by default. `#dynamic-map.zoom-labels .activity-pin-label { opacity: 1 }` reveals them. The `zoom-labels` class is toggled by `updateLabelVisibility()` when `map.getZoom() > defaultZoom + 0.3`.
 - **`defaultZoom`:** captured in `map.once('moveend', ...)` after each `fitBounds` call in `setState`, and immediately after the initial `fitBounds` in `map.on('load')`.
 - `makeActivityMarkerEl(name, distKm)` — teal-outline white dot (`.activity-pin-dot`) + name+distance label pill (`.activity-pin-label`)
-- `setActivityMarkers(day)` — clears `activityMarkers[]`, then places new markers if `showActivities === true`, `day ≥ 1`, and not mobile. Called from `setState()` on every state change.
-- Mobile: activities never placed (media query check in `setActivityMarkers`); toggle hidden in CSS.
+- `setActivityMarkers(day)` — clears `activityMarkers[]`, then places new markers if `showActivities === true` and `day ≥ 1`. Now runs on both desktop and mobile. Calls `clusterActivityMarkers()` immediately after placing markers.
+- Mobile: activities are placed and clustered (mobile exclusion removed). Toggle is still hidden in CSS on mobile (`display: none !important`).
+
+### Activity clusters
+
+- `makeActivityClusterEl(count)` — 40px teal circle badge showing `+N`.
+- `clusterActivityMarkers()` — groups activity markers within 32px of each other, hides the individual pins, and places a cluster marker at the group centroid.
+  - **Click to zoom:** each cluster element has a click handler that calls `map.fitBounds()` on the group's lnglat bounds (`maxZoom: 14`, `duration: 600`), then fires `clusterActivityMarkers()` on `moveend` to re-evaluate at the new zoom level.
+  - **Nudge from pins/labels:** after computing the centroid, clusters are pushed away from visible destination pins using a repulsion calculation. Each destination contributes 4 virtual repulsion points: pin centre (r: 48) + label left/centre/right (all r: 34, spaced ±40px horizontally at 34px below pin centre). This prevents clusters from overlapping both the pin circle and the name pill.
+  - **Mobile zoom threshold:** on mobile, clusters (and individual activity pins) are hidden when `map.getZoom() <= clusterZoomThreshold`. `clusterZoomThreshold` is set to `map.getZoom()` in the `moveend` callback after each `fitBounds`, and initialised to `Infinity`. Any user zoom-in reveals clusters.
+- `clusterActivityMarkers()` is called: on every user-initiated zoom (via `zoom` event + `requestAnimationFrame`), after `moveend` in `setState`, from `setActivityMarkers()`, and after cluster click zoom.
 
 ### Per-segment drive pills
 
-- Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with the `drive_eta_24px` Figma car icon (18×18px, `#69727A` fill), time, and distance (km only, miles stripped)
+- Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with the car icon, time, and full distance string (e.g. `127 km (79 mi)` — miles no longer stripped)
 - Placed at the geographic midpoint of each segment using a `mgl.Marker` with `anchor: 'center'`
 - Stored in `segmentPillMarkers` as `[{ marker, a, b }]` (segment endpoints needed for overlap resolution)
-- After `map.fitBounds` animates, `map.once('moveend', ...)` resolves overlaps, then on mobile sets `pillZoomThreshold = map.getZoom() + 1.0`
-- **Mobile zoom visibility:** pills are hidden (`display: none`) on mobile until the user zooms in 1.0 level past the default day zoom (`pillZoomThreshold`). `updateMobilePillVisibility()` runs on every zoom event. On desktop pills always show.
+- After `map.fitBounds` animates, `map.once('moveend', ...)` resolves overlaps, then sets `pillZoomThreshold = map.getZoom()`
+- **Mobile zoom visibility:** pills are hidden (`display: none`) on mobile when `map.getZoom() <= pillZoomThreshold` (strict `>` check — hidden at default zoom, visible as soon as user zooms in). `updateMobilePillVisibility()` runs on every zoom event. On desktop pills always show.
 - `resolveSegmentPillOverlaps` also fires on user-initiated zoom events (guarded by `e.originalEvent`); uses mobile-aware dimensions: `PILL_W = isMob ? 80 : 120`, `PILL_H = isMob ? 18 : 22`
 - Mobile: pill font 10px, padding 3px 7px, svg 12×12px
 
@@ -223,8 +233,8 @@ Both controls live in `.bottom-right-controls` — a `position: fixed; bottom: 2
 ### Route / Activities toggle (`.map-view-toggle`)
 
 - Dark glass pill matching the view switcher style
-- **Route** (default, `showActivities = false`): no activity pins shown
-- **Activities** (`showActivities = true`): activity pins placed for the active day
+- **Activities** (default, `showActivities = true`): activity pins and clusters shown for the active day; Activities button starts with `is-active` in HTML
+- **Route** (`showActivities = false`): activity pins hidden
 - Desktop only — hidden on mobile via `display: none !important` in the mobile media query
 - Buttons: `.map-view-btn` — 28px tall, `font-size: 12px`, transparent background, `rgba(255,255,255,0.14)` when active
 
@@ -233,6 +243,23 @@ Both controls live in `.bottom-right-controls` — a `position: fixed; bottom: 2
 - Desktop icon: navigates to `index.html`. Mobile icon: navigates to `frame.html`.
 - Navigation uses a 220ms fade-out → navigate → fade-in pattern.
 - Hidden inside iframes via `window === window.top` guard.
+
+### Zoom controls (`.map-zoom-controls`)
+
+- Custom `+` / `−` stacked button group, positioned `position: absolute` inside `#dynamic-map` (bottom-right corner).
+- **Desktop:** 36×36px buttons, 8px border-radius, `bottom: 24px; right: 16px`.
+- **Mobile:** 32×32px buttons, 6px border-radius, `bottom: 44px; right: 12px` (raised to clear the hide-map tab).
+- White background, `box-shadow: 0 2px 10px rgba(0,0,0,0.22)`, thin `#e2e2e2` divider between buttons.
+- Click handlers: `map.zoomIn({ duration: 300 })` / `map.zoomOut({ duration: 300 })`.
+- Hidden on desktop/mobile via base CSS `display: none`; shown inside map styles block.
+
+### Mobile map hide/show toggle
+
+- **Mobile only** — both elements are `display: none` at base level; the mobile media query enables them.
+- **`.map-collapse-tab`** (`#map-collapse-tab`): white corner tab at `bottom: 0; right: 0` of `#dynamic-map` with `border-top-left-radius: 10px`. Chevron-down icon + "Hide" label.
+- **`.map-show-strip`** (`#map-show-strip`): full-width light-grey strip between `#dynamic-map` and the itinerary content. Hidden by default; shown with `.is-visible` class. Chevron-up icon + "Show map" label.
+- **Collapse:** clicking the tab adds `map-hidden` to `#dynamic-map` (`height: 0 !important`, `transition: height 0.35s`) and adds `is-visible` to the strip.
+- **Expand:** clicking the strip removes both classes; `setTimeout(() => map.resize(), 360)` fires after the animation to ensure the MapLibre canvas renders correctly at full size.
 
 ## Connector Line (`updateConnectorLine`)
 
@@ -271,13 +298,15 @@ A self-contained device preview wrapper. Open at `http://localhost:3000/frame.ht
 
 ### Map behaviour toggle (Option 1 / Option 2)
 
+The toggle UI (`.map-mode-toggle`) is **hidden** (`style="display:none"`). Option 2 (Map Sticky) is the permanent default — `currentMapMode = 'sticky'` in the script and the sticky button has `is-active`.
+
 Both options are in `frame.html`'s `applyMapMode(mode, iframeDoc)` which injects a `<style id="map-mode-override">` into the iframe:
 
-**Option 1 — Map Fixed (default, `data-mode="relative"`):**
+**Option 1 — Map Fixed (`data-mode="relative"`):**
 - `.main-right { margin-bottom: 64px !important; }` — map scrolls with content
 - Timeline, dots, and cards at normal mobile layout
 
-**Option 2 — Map Sticky (`data-mode="sticky"`):**
+**Option 2 — Map Sticky (`data-mode="sticky"`, default):**
 - `.main-right { position: sticky !important; top: 0 !important; }` — map sticks at top
 - `.day-dot { display: none !important }` — day dots hidden; start dot (`.location-dot`, `.location-start-dot`) remains visible
 - Connector line runs from start dot center to bottom of last card (via `updateConnectorLine` dot-hidden branch)
@@ -313,6 +342,8 @@ Key mobile-only rules:
 - Explore activities: full-bleed with negative margins (`-24px` / `-26px`), transparent bg, bottom border via `background-image` gradient at 24px inset, `+`/`−` toggle via `::after`
 - Nav collapses to logo only
 - Map markers: `.map-city-pin` 22×22px, `.map-city-label` font 10px / padding 3px 7px, `.map-segment-pill` font 10px / padding 3px 7px / svg 12×12
+- Zoom controls: 32×32px buttons, `bottom: 44px; right: 12px`, 6px border-radius
+- Map hide/show: `.map-collapse-tab` corner tab (bottom-right of map) + `.map-show-strip` strip below map; `#dynamic-map.map-hidden { height: 0 !important }` with 0.35s transition
 
 ### View switcher
 

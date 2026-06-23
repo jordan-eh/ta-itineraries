@@ -441,7 +441,7 @@
     #dynamic-map {
       width: 524px;
       height: 753px;
-      border-radius: 24px;
+      border-radius: 0;
       overflow: hidden;
     }
 
