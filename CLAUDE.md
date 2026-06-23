@@ -17,6 +17,7 @@ GitHub repo: https://github.com/jordan-eh/ta-itineraries
 | `server.js` | Zero-dep Node.js dev server (`node server.js` → `http://localhost:3000`) |
 | `main.js` | Accordion toggle — click listener toggles `is-open` on `.explore-activities` |
 | `map.js` | Dynamic map — MapLibre GL JS init, per-day state data, scroll detection, `setState()` transitions |
+| `pin-test.html` | Static pin style test page — 18 options (A–R) for map pin visual design review |
 | `images/logo-text.png` | Canada's Alberta logo (white text, exported from Figma node `10699:19252` at 2×) |
 | `images/logo.svg` | SVG version of the full logo block (red bg + white text) |
 | `images/logo.png` | Full logo with red background |
@@ -84,7 +85,7 @@ Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itinerarie
 
 | Day | Count | Titles |
 |---|---|---|
-| Day 1 — Banff | 5 | Banff National Park · Mt. Norquay Via Ferrata · Lake Minnewanka Cruise · Banff Trail Riders · The Fairmont Banff Springs Hotel |
+| Day 1 — Banff | 5 | Banff National Park · Tunnel Mountain · Mt. Norquay Via Ferrata · Lake Minnewanka Cruise · Banff Trail Riders |
 | Day 2 — Lake Louise, Icefield Parkway and Jasper | 5 | The Fairmont Chateau Lake Louise · Columbia Icefield Skywalk · Columbia Icefield Adventure · Fairmont Jasper Park Lodge · Jasper Planetarium & Telescope Experience |
 | Day 3 — Jasper and Canmore | 3 | Maligne Lake Cruise · Jasper SkyTram · Drive to Canmore along the Icefield Parkway |
 | Day 4 — Canmore and Calgary | 5 | Canmore Cave Tours · Carter-Ryan Gallery and Live Art Venue · Yamnuska Wolfdog Sanctuary · WinSport's Canada Olympic Park · Alt Hotel Calgary East Village |
@@ -117,12 +118,16 @@ Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itinerarie
 - **Swap to Mapbox:** The library is aliased as `const mgl = typeof mapboxgl !== 'undefined' ? mapboxgl : maplibregl`. To switch: swap the CDN tags, set `mapboxgl.accessToken = 'pk...'`, and change the style URL to `'mapbox://styles/mapbox/streets-v12'`. No other code changes required.
 - **No fade-out:** the map is always visible once the page loads; there is no opacity or visibility toggle based on scroll position.
 - **Overview state:** Calgary full pin (no number) + small teal dots for all 15 stops + full dotted route line + "15 destinations" pill. Active before any day card hits the 40% scroll trigger.
-- **Day state:** triggered when a `.day-panel[data-day]` top edge ≤ 40% viewport height; shows only that day's stops, route segment(s), per-segment drive pills, and approach route/pill if applicable.
-- **Scroll detection:** throttled `scroll` listener + `requestAnimationFrame` in `map.js` → `update()` → `setState('overview' | 1–11)`. `update()` is also called immediately on map load (no waiting for first scroll event).
+- **Day state:** triggered by scroll detection (see below); shows only that day's stops, route segment(s), per-segment drive pills, and approach route/pill if applicable.
+- **Scroll detection (desktop):** `getActiveDay()` — triggers when a `.day-panel[data-day]` top edge ≤ 40% viewport height.
+- **Scroll detection (mobile):** `getMobileActiveDay()` — Overview→Day 1 triggers when Day 1 panel top ≤ 40% viewport. Day N→Day N+1 triggers when the **bottom of Day N's `.explore-activities` section** crosses the 40% trigger line. This makes transitions feel natural as the previous day's content scrolls out of view.
+- `update()` is also called immediately on map load (no waiting for first scroll event).
 - **scrollLocked:** a module-level flag that pauses scroll-triggered `setState` calls during programmatic smooth-scroll (e.g. from overview pin clicks). Set to `true` before scrolling, cleared on `scrollend` (or 1200ms timeout fallback).
-- **Initial fitBounds:** `currentState = 'overview'` causes `setState('overview')` to return early on load. An explicit `map.fitBounds(OVERVIEW_BOUNDS, { padding: 60, duration: 0 })` call in `map.on('load')` compensates.
+- **Initial fitBounds:** `currentState = 'overview'` causes `setState('overview')` to return early on load. An explicit `map.fitBounds(OVERVIEW_BOUNDS, { padding: isMobile ? 20 : 60, duration: 0 })` call in `map.on('load')` compensates.
+- **Mobile fitBounds padding:** overview uses `20` (uniform); day view uses `{ top: 50, right: 30, bottom: 50, left: 30 }` for balanced pin breathing room. Desktop uses `60` uniform for both.
 - **Marker toggling:** `visibility: hidden/visible` (not `display: none/flex`) — preserves the flex-column wrapper layout so the name pill always renders correctly when shown.
-- **Pin labels (`.map-city-pin` / `.map-city-label`):** each marker is a flex-column wrapper — numbered circle on top, city name pill below. Classes added so mobile CSS can override inline sizes. On mobile: pin 22×22px, label font 10px / padding 3px 7px.
+- **Pin labels (`.map-city-pin` / `.map-city-label`):** each marker is a flex-column wrapper — plain circle (no number) on top, city name pill below. Classes added so mobile CSS can override inline sizes. On mobile: pin 22×22px, label font 10px / padding 3px 7px.
+- **Pin colours:** starting destination (`j===0`) is **teal** (`#00A79A`); following destinations (`j>0`) are **red** (`#9C0F00`). The small approach dot at `approachFrom.lnglat` is also red.
 - **Swap to Mapbox:** replace the OpenFreeMap style URL with `'mapbox://styles/mapbox/streets-v12'` and add `accessToken` to the Map constructor.
 
 ### Overview interactivity (desktop only)
@@ -168,7 +173,8 @@ Each entry in `OVERVIEW_STOPS` has a `day` property used for click-to-scroll:
 - Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with the `drive_eta_24px` Figma car icon (18×18px, `#69727A` fill), time, and distance (km only, miles stripped)
 - Placed at the geographic midpoint of each segment using a `mgl.Marker` with `anchor: 'center'`
 - Stored in `segmentPillMarkers` as `[{ marker, a, b }]` (segment endpoints needed for overlap resolution)
-- After `map.fitBounds` animates, `map.once('moveend', resolveSegmentPillOverlaps)` nudges pills perpendicularly off the route to avoid overlap with stops and each other
+- After `map.fitBounds` animates, `map.once('moveend', ...)` resolves overlaps, then on mobile sets `pillZoomThreshold = map.getZoom() + 1.0`
+- **Mobile zoom visibility:** pills are hidden (`display: none`) on mobile until the user zooms in 1.0 level past the default day zoom (`pillZoomThreshold`). `updateMobilePillVisibility()` runs on every zoom event. On desktop pills always show.
 - `resolveSegmentPillOverlaps` also fires on user-initiated zoom events (guarded by `e.originalEvent`); uses mobile-aware dimensions: `PILL_W = isMob ? 80 : 120`, `PILL_H = isMob ? 18 : 22`
 - Mobile: pill font 10px, padding 3px 7px, svg 12×12px
 
@@ -177,7 +183,7 @@ Each entry in `OVERVIEW_STOPS` has a `day` property used for click-to-scroll:
 Days 2, 6, and 11 start somewhere different from where the previous day ended. Each has:
 - A dashed red route layer (`layer-approach-day-N`) pre-built in `map.on('load')`, shown only when that day is active
 - An approach segment pill showing the travel time/distance from the previous day's location
-- A small teal dot (`makeSmallMarkerEl('#00A79A')`) at the `approachFrom.lnglat` location (the previous day's end point), created/destroyed in `setState`
+- A small red dot (`makeSmallMarkerEl('#9C0F00')`) at the `approachFrom.lnglat` location (the previous day's end point), created/destroyed in `setState`
 
 | Day | approachFrom | Approach segment |
 |---|---|---|
@@ -230,8 +236,9 @@ Both controls live in `.bottom-right-controls` — a `position: fixed; bottom: 2
 
 ## Connector Line (`updateConnectorLine`)
 
-The vertical teal dashed connector runs via `.itinerary-col::before`:
-- `left: 25px`, `width: 2px`, `background: repeating-linear-gradient(...)` — 5px dash / 7px gap, `#00A79A`
+The vertical teal dotted connector runs via `.itinerary-col::before`:
+- **Desktop:** `left: 25px`, `width: 2px`, `background: radial-gradient(circle 1.5px at 1px 1.5px, #00A79A 100%, transparent 100%) 0 0 / 2px 7px repeat-y` — 3px circular dots / 4px gap, matching Figma `strokeWeight:2, dashPattern:[1,6], strokeCap:ROUND`
+- **Mobile:** `left: 21px`, `width: 1.5px`, `background: radial-gradient(circle 1.25px at 0.75px 1.25px, #00A79A 100%, transparent 100%) 0 0 / 1.5px 7px repeat-y` — proportionally smaller circular dots
 - `top` and `height` driven by CSS custom properties `--line-top` / `--line-height`
 - **Normal mode (dots visible):** measures from `.location-dot` center to last `.day-dot` center
 - **Option 2 mode (day dots hidden):** `getComputedStyle(dayDots[0]).display === 'none'` → measures from `.location-dot` center (if visible) to bottom of last `.day-panel-wrap`; falls back to top of first card if start dot is also hidden

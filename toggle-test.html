@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map Toggle Options</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #1A1A1A;
+      min-height: 100vh;
+      padding: 48px 24px 80px;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px 40px;
+      justify-content: center;
+    }
+
+    .option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .option-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .option-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+    }
+
+    .states {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .state-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .state-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ── Phone shell ── */
+    .phone {
+      width: 200px;
+      background: #fff;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 3px solid #333;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    /* Map area mockup */
+    .mock-map {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #b8d8d4 0%, #8ec5bf 40%, #6bb3ac 70%, #c5dce0 100%);
+      position: relative;
+      overflow: hidden;
+      transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
+      flex-shrink: 0;
+    }
+
+    .mock-map.hidden {
+      height: 0;
+    }
+
+    /* Map grid lines */
+    .mock-map::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Mock map pin */
+    .mock-pin {
+      position: absolute;
+      top: 55px;
+      left: 80px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #00A79A;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .mock-pin2 {
+      position: absolute;
+      top: 90px;
+      left: 120px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #9C0F00;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Content area below map */
+    .mock-content {
+      background: #fff;
+      padding: 12px 12px 16px;
+    }
+
+    .mock-day-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 6px;
+    }
+
+    .mock-line {
+      height: 7px;
+      border-radius: 4px;
+      background: #e8e8e8;
+      margin-bottom: 5px;
+    }
+    .mock-line.short { width: 60%; }
+    .mock-line.med   { width: 80%; }
+
+
+    /* ════════════════════════════════════════
+       OPTION A — Bottom pill "Hide Map"
+    ════════════════════════════════════════ */
+    .opt-a .map-pill-btn {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18,18,18,0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: none;
+      border-radius: 100px;
+      padding: 5px 12px 5px 8px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+
+    .opt-a .map-pill-btn svg {
+      width: 12px;
+      height: 12px;
+      opacity: 0.8;
+    }
+
+    /* Show Map pill — floats below collapsed map */
+    .opt-a .show-map-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px auto 0;
+      width: fit-content;
+      background: #00A79A;
+      border: none;
+      border-radius: 100px;
+      padding: 5px 14px 5px 9px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      gap: 5px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .opt-a .show-map-pill svg {
+      width: 12px;
+      height: 12px;
+    }
+
+
+    /* ════════════════════════════════════════
+       OPTION B — Drag handle tab
+    ════════════════════════════════════════ */
+    .opt-b .drag-handle {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0 5px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(6px);
+      gap: 3px;
+      cursor: pointer;
+    }
+
+    .opt-b .drag-handle-bar {
+      width: 32px;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.7);
+    }
+
+    .opt-b .drag-handle-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .opt-b .show-handle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0 6px;
+      background: #f5f5f5;
+      cursor: pointer;
+      gap: 3px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .opt-b .show-handle-bar {
+      width: 32px;
+      height: 3px;
+      border-radius: 2px;
+      background: #ccc;
+    }
+
+    .opt-b .show-handle-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+
+    /* ════════════════════════════════════════
+       OPTION C — Corner chevron tab
+    ════════════════════════════════════════ */
+    .opt-c .chevron-tab {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #fff;
+      border: none;
+      border-top-left-radius: 10px;
+      padding: 6px 10px 5px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: -2px -2px 8px rgba(0,0,0,0.1);
+    }
+
+    .opt-c .chevron-tab svg {
+      width: 10px;
+      height: 10px;
+      color: #555;
+    }
+
+    .opt-c .chevron-tab span {
+      font-size: 9px;
+      font-weight: 600;
+      color: #555;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .opt-c .show-tab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 10px 6px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #e0e0e0;
+      cursor: pointer;
+      gap: 4px;
+    }
+
+    .opt-c .show-tab svg {
+      width: 10px;
+      height: 10px;
+      color: #555;
+    }
+
+    .opt-c .show-tab span {
+      font-size: 9px;
+      font-weight: 600;
+      color: #555;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+
+    /* ════════════════════════════════════════
+       OPTION D — Floating icon button (top-right of map)
+    ════════════════════════════════════════ */
+    .opt-d .float-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+    }
+
+    .opt-d .float-btn svg {
+      width: 12px;
+      height: 12px;
+      color: #333;
+    }
+
+    .opt-d .show-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #f7f7f7;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .opt-d .show-banner span {
+      font-size: 10px;
+      font-weight: 600;
+      color: #444;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .opt-d .show-banner svg {
+      width: 12px;
+      height: 12px;
+      color: #555;
+    }
+
+
+    /* ════════════════════════════════════════
+       OPTION E — Full-width collapse bar
+    ════════════════════════════════════════ */
+    .opt-e .collapse-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
+      background: #073142;
+      cursor: pointer;
+      gap: 6px;
+    }
+
+    .opt-e .collapse-bar svg {
+      width: 10px;
+      height: 10px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .opt-e .collapse-bar span {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .opt-e .expand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
+      background: #073142;
+      cursor: pointer;
+      gap: 6px;
+    }
+
+    .opt-e .expand-bar svg {
+      width: 10px;
+      height: 10px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .opt-e .expand-bar span {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+
+    /* ════════════════════════════════════════
+       OPTION F — Map label + eye icon toggle
+    ════════════════════════════════════════ */
+    .opt-f .eye-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .opt-f .eye-bar-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    .opt-f .eye-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .opt-f .eye-toggle svg {
+      width: 14px;
+      height: 14px;
+      color: #00A79A;
+    }
+
+    .opt-f .eye-toggle span {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #00A79A;
+    }
+
+    .divider-label {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Map Toggle Options — Mobile</h1>
+
+<div class="grid">
+
+  <!-- ── OPTION A: Pill button ── -->
+  <div class="option opt-a">
+    <div class="option-label">Option A</div>
+    <div class="option-title">Floating pill</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+            <button class="map-pill-btn">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Hide map
+            </button>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="mock-content" style="padding-top:0">
+            <button class="show-map-pill">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/></svg>
+              Show map
+            </button>
+          </div>
+          <div class="mock-content" style="border-top:1px solid #eee">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION B: Drag handle ── -->
+  <div class="option opt-b">
+    <div class="option-label">Option B</div>
+    <div class="option-title">Drag handle</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+            <div class="drag-handle">
+              <div class="drag-handle-bar"></div>
+              <div class="drag-handle-label">Hide</div>
+            </div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="show-handle">
+            <div class="show-handle-bar"></div>
+            <div class="show-handle-label">Show map</div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION C: Corner chevron tab ── -->
+  <div class="option opt-c">
+    <div class="option-label">Option C</div>
+    <div class="option-title">Corner tab</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+            <div class="chevron-tab">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M2 3l3 4 3-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Hide</span>
+            </div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="show-tab">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M2 7l3-4 3 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Show map</span>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION D: Floating icon (top-right) ── -->
+  <div class="option opt-d">
+    <div class="option-label">Option D</div>
+    <div class="option-title">Floating icon button</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+            <button class="float-btn">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M1 7s2.5-4 6-4 6 4 6 4-2.5 4-6 4-6-4-6-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.3"/></svg>
+            </button>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="show-banner">
+            <span>Show map</span>
+            <svg viewBox="0 0 14 14" fill="none"><path d="M1 7s2.5-4 6-4 6 4 6 4-2.5 4-6 4-6-4-6-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.3"/></svg>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION E: Full-width collapse bar ── -->
+  <div class="option opt-e">
+    <div class="option-label">Option E</div>
+    <div class="option-title">Full-width bar</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+          </div>
+          <div class="collapse-bar">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M2 3l3 4 3-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Hide map</span>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="expand-bar">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M2 7l3-4 3 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Show map</span>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION F: Eye icon label bar ── -->
+  <div class="option opt-f">
+    <div class="option-label">Option F</div>
+    <div class="option-title">Eye icon + label bar</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="eye-bar">
+            <span class="eye-bar-label">Map</span>
+            <button class="eye-toggle">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M1 8s3-4.5 7-4.5S15 8 15 8s-3 4.5-7 4.5S1 8 1 8z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg>
+              <span>Hide</span>
+            </button>
+          </div>
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="eye-bar">
+            <span class="eye-bar-label">Map</span>
+            <button class="eye-toggle">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M1 8s3-4.5 7-4.5S15 8 15 8s-3 4.5-7 4.5S1 8 1 8z" stroke="currentColor" stroke-width="1.3"/><line x1="3" y1="13" x2="13" y2="3" stroke="currentColor" stroke-width="1.3"/></svg>
+              <span>Show</span>
+            </button>
+          </div>
+          <div class="mock-map hidden"></div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION G: iOS-style toggle switch row ── -->
+  <div class="option opt-g">
+    <div class="option-label">Option G</div>
+    <div class="option-title">Toggle switch</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="g-bar g-bar--on">
+            <span class="g-bar-label">Map</span>
+            <div class="g-switch g-switch--on">
+              <div class="g-thumb"></div>
+            </div>
+          </div>
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="g-bar g-bar--off">
+            <span class="g-bar-label">Map</span>
+            <div class="g-switch g-switch--off">
+              <div class="g-thumb"></div>
+            </div>
+          </div>
+          <div class="mock-map hidden"></div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION H: Centered chevron notch ── -->
+  <div class="option opt-h">
+    <div class="option-label">Option H</div>
+    <div class="option-title">Centred notch</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map" style="position:relative">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+          </div>
+          <div class="h-notch-wrap">
+            <div class="h-notch">
+              <svg viewBox="0 0 16 8" fill="none"><path d="M2 2l6 5 6-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="h-notch-wrap h-notch-wrap--hidden">
+            <div class="h-notch">
+              <svg viewBox="0 0 16 8" fill="none"><path d="M2 6l6-5 6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION I: Teal text link ── -->
+  <div class="option opt-i">
+    <div class="option-label">Option I</div>
+    <div class="option-title">Text link</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+          </div>
+          <div class="i-link-row">
+            <button class="i-link">
+              <svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 5 4-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Hide map
+            </button>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="i-link-row">
+            <button class="i-link">
+              <svg viewBox="0 0 12 12" fill="none"><path d="M2 8l4-5 4 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Show map
+            </button>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTION J: Teal banner strip ── -->
+  <div class="option opt-j">
+    <div class="option-label">Option J</div>
+    <div class="option-title">Teal banner</div>
+    <div class="states">
+      <div class="state-wrap">
+        <div class="state-label">Map shown</div>
+        <div class="phone">
+          <div class="mock-map">
+            <div class="mock-pin"></div>
+            <div class="mock-pin2"></div>
+          </div>
+          <div class="j-banner">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 5 4-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Hide map</span>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-wrap">
+        <div class="state-label">Map hidden</div>
+        <div class="phone">
+          <div class="mock-map hidden"></div>
+          <div class="j-banner">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 8l4-5 4 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Show map</span>
+          </div>
+          <div class="mock-content">
+            <div class="mock-day-title">Day 1 — Calgary to Banff</div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  /* ── Option G: Toggle switch ── */
+  .g-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 12px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  .g-bar-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #888;
+    font-family: 'Outfit', sans-serif;
+  }
+  .g-switch {
+    width: 36px;
+    height: 20px;
+    border-radius: 100px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .g-switch--on  { background: #00A79A; }
+  .g-switch--off { background: #ccc; }
+  .g-thumb {
+    position: absolute;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: left 0.2s;
+  }
+  .g-switch--on  .g-thumb { left: 18px; }
+  .g-switch--off .g-thumb { left: 2px; }
+
+  /* ── Option H: Centred notch ── */
+  .h-notch-wrap {
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    margin-top: -1px;
+    border-bottom: 1px solid #eee;
+  }
+  .h-notch-wrap--hidden {
+    border-top: 1px solid #eee;
+    border-bottom: none;
+  }
+  .h-notch {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    padding: 2px 16px 4px;
+    cursor: pointer;
+  }
+  .h-notch-wrap--hidden .h-notch {
+    border: 1px solid #e0e0e0;
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    padding: 4px 16px 2px;
+  }
+  .h-notch svg { width: 16px; height: 8px; color: #aaa; display: block; }
+
+  /* ── Option I: Text link ── */
+  .i-link-row {
+    display: flex;
+    justify-content: center;
+    padding: 6px 0;
+    background: #fafafa;
+    border-bottom: 1px solid #efefef;
+  }
+  .i-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #00A79A;
+  }
+  .i-link svg { width: 12px; height: 12px; }
+
+  /* ── Option J: Teal banner ── */
+  .j-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 0;
+    background: #00A79A;
+    cursor: pointer;
+  }
+  .j-banner svg { width: 12px; height: 12px; color: rgba(255,255,255,0.85); }
+  .j-banner span {
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+</style>
+
+</body>
+</html>

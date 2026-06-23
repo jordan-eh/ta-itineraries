@@ -8,7 +8,6 @@ const map = new mgl.Map({
   attributionControl: false,
 });
 
-map.addControl(new mgl.AttributionControl({ compact: true }));
 
 const OVERVIEW_BOUNDS = [[-118.5, 48.7], [-110.2, 53.2]];
 
@@ -280,12 +279,11 @@ function screenPerp(a, b) {
 function makeSegmentPillEl(time, dist) {
   const pill = document.createElement('div');
   pill.className = 'map-segment-pill';
-  const km = dist.replace(/ \(.*\)/, '');
   pill.innerHTML =
     '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
       '<path d="M11.6671 2.66667C12.107 2.66667 12.4802 2.94659 12.6136 3.33981L13.9267 7.11974C13.9734 7.25974 14.0003 7.41321 14.0003 7.55987V12.3329C14.0003 12.8863 13.5465 13.3333 12.9999 13.3333C12.4468 13.3331 12.0005 12.8794 12.0005 12.3329V11.9995H4.00052V12.3329C4.00052 12.8861 3.55428 13.3331 3.00117 13.3333C2.44785 13.3333 2.00078 12.8863 2.00078 12.3329V7.55987C2.00078 7.40654 2.02764 7.25974 2.0743 7.11974L3.38744 3.33981C3.52748 2.94659 3.89408 2.66669 4.33398 2.66667H11.6671ZM4.33398 8C3.78083 8.00002 3.33382 8.44625 3.33359 8.99935C3.33359 9.55265 3.78069 9.99972 4.33398 9.99974C4.88729 9.99974 5.33437 9.55267 5.33437 8.99935C5.33414 8.44623 4.88715 8 4.33398 8ZM11.6671 8C11.1139 8.00002 10.6669 8.44624 10.6667 8.99935C10.6667 9.55265 11.1138 9.99972 11.6671 9.99974C12.2204 9.99974 12.6674 9.55267 12.6674 8.99935C12.6672 8.44623 12.2202 8 11.6671 8ZM4.8145 3.66706C4.52795 3.66706 4.27413 3.85312 4.18071 4.11961L3.33359 6.66615H12.6674L11.8203 4.11961C11.727 3.85327 11.4739 3.66726 11.1876 3.66706H4.8145Z" fill="#69727A"/>' +
     '</svg>' +
-    `<span class="seg-time">${time}</span><span class="seg-dist">${km}</span>`;
+    `<span class="seg-time">${time}</span><span class="seg-dist">${dist}</span>`;
   return pill;
 }
 
@@ -406,12 +404,32 @@ function clusterActivityMarkers() {
   activityClusterMarkers = [];
   if (!activityMarkers.length) return;
 
+  const isMobCluster = window.matchMedia('(max-width: 430px)').matches;
+  if (isMobCluster && map.getZoom() <= clusterZoomThreshold) {
+    activityMarkers.forEach(m => { m.getElement().style.visibility = 'hidden'; });
+    return;
+  }
+
   const RADIUS = 32;
   const items = activityMarkers.map(m => ({
     marker: m,
     p: map.project(m.getLngLat()),
     used: false,
   }));
+
+  const dayIdx = typeof currentState === 'number' ? currentState - 1 : -1;
+  const destPts = (dayIdx >= 0 ? dayMarkers[dayIdx] || [] : [])
+    .filter(m => m.getElement().style.visibility !== 'hidden')
+    .flatMap(m => {
+      const p = map.project(m.getLngLat());
+      const ly = p.y + 34;
+      return [
+        { p, r: 48 },                                  // pin circle
+        { p: { x: p.x - 40, y: ly }, r: 34 },         // label left
+        { p: { x: p.x,       y: ly }, r: 34 },         // label centre
+        { p: { x: p.x + 40,  y: ly }, r: 34 },         // label right
+      ];
+    });
 
   // Reset all individual markers to visible
   items.forEach(item => { item.marker.getElement().style.visibility = 'visible'; });
@@ -437,9 +455,27 @@ function clusterActivityMarkers() {
     const cx = group.reduce((s, g) => s + g.p.x, 0) / group.length;
     const cy = group.reduce((s, g) => s + g.p.y, 0) / group.length;
     const lnglat = map.unproject([cx, cy]);
+    const groupLngLats = group.map(g => g.marker.getLngLat());
+    const clusterEl = makeActivityClusterEl(group.length);
+    clusterEl.style.cursor = 'pointer';
+    clusterEl.addEventListener('click', () => {
+      const lngs = groupLngLats.map(ll => ll.lng);
+      const lats = groupLngLats.map(ll => ll.lat);
+      const sw = [Math.min(...lngs), Math.min(...lats)];
+      const ne = [Math.max(...lngs), Math.max(...lats)];
+      const isMob = window.matchMedia('(max-width: 430px)').matches;
+      map.fitBounds([sw, ne], { padding: isMob ? 60 : 80, maxZoom: 14, duration: 600 });
+      map.once('moveend', () => clusterActivityMarkers());
+    });
+    let ox = 0, oy = 0;
+    destPts.forEach(({ p: dp, r: MIN_SEP }) => {
+      const dx = cx - dp.x, dy = cy - dp.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d > 0 && d < MIN_SEP) { ox += (dx / d) * (MIN_SEP - d); oy += (dy / d) * (MIN_SEP - d); }
+    });
     activityClusterMarkers.push(
-      new mgl.Marker({ element: makeActivityClusterEl(group.length), anchor: 'center' })
-        .setLngLat(lnglat).addTo(map)
+      new mgl.Marker({ element: clusterEl, anchor: 'center' })
+        .setLngLat(lnglat).setOffset([ox, oy]).addTo(map)
     );
   });
 }
@@ -449,10 +485,11 @@ let overviewMarkersOpt2 = [];
 let dayMarkers = [];
 let segmentPillMarkers = [];
 let pillZoomThreshold = 0;
+let clusterZoomThreshold = Infinity;
 let approachPinMarkers = [];
 let activityMarkers = [];
 let activityClusterMarkers = [];
-let showActivities = false;
+let showActivities = true;
 let currentState = 'overview';
 let activeOverviewOption = 2;
 let defaultZoom = 0;
@@ -464,7 +501,7 @@ function updateLabelVisibility() {
 
 function updateMobilePillVisibility() {
   if (!window.matchMedia('(max-width: 430px)').matches) return;
-  const show = map.getZoom() >= pillZoomThreshold;
+  const show = map.getZoom() > pillZoomThreshold;
   segmentPillMarkers.forEach(({ marker }) => {
     marker.getElement().style.display = show ? '' : 'none';
   });
@@ -475,14 +512,6 @@ map.on('load', () => {
   // Remove MapLibre logo only; keep bottom-right attribution tooltip (force-closed on load)
   const logoCtrl = map.getContainer().querySelector('.maplibregl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-left');
   if (logoCtrl) logoCtrl.remove();
-  // Ensure attribution tooltip starts collapsed on all viewport sizes
-  const forceCloseAttrib = () => {
-    map.getContainer().querySelectorAll(
-      '.maplibregl-ctrl-attrib, .mapboxgl-ctrl-attrib'
-    ).forEach(el => el.classList.remove('maplibregl-compact-show', 'mapboxgl-compact-show'));
-  };
-  forceCloseAttrib();
-  setTimeout(forceCloseAttrib, 0);
   // ── Overview route layer ──
   map.addSource('route-overview', {
     type: 'geojson',
@@ -671,7 +700,7 @@ function setState(newState) {
       ? (isOverview ? 20 : { top: 50, right: 30, bottom: 50, left: 30 })
       : 60;
     map.fitBounds(bounds, { padding: pad, duration: 900 });
-    map.once('moveend', () => { defaultZoom = map.getZoom(); updateLabelVisibility(); clusterActivityMarkers(); });
+    map.once('moveend', () => { defaultZoom = map.getZoom(); clusterZoomThreshold = map.getZoom(); updateLabelVisibility(); clusterActivityMarkers(); });
   }
 
   // Approach origin pin (small teal dot at previous day's last location)
@@ -697,7 +726,7 @@ function setState(newState) {
     dayData.segments.forEach((seg, i) => addPill(dayData.stops[i].lnglat, dayData.stops[i + 1].lnglat, seg.time, seg.dist));
     map.once('moveend', () => {
       resolveSegmentPillOverlaps();
-      pillZoomThreshold = map.getZoom() + 1.0;
+      pillZoomThreshold = map.getZoom();
       updateMobilePillVisibility();
     });
   }
@@ -717,7 +746,7 @@ function setActivityMarkers(day) {
   activityMarkers = [];
   activityClusterMarkers.forEach(m => m.remove());
   activityClusterMarkers = [];
-  if (!showActivities || day < 1 || window.matchMedia('(max-width: 430px)').matches) return;
+  if (!showActivities || day < 1) return;
   const stops = (DAYS[day - 1] || {}).stops || [];
   (ACTIVITIES[day - 1] || []).forEach(act => {
     const nearest = stops.length
@@ -730,6 +759,7 @@ function setActivityMarkers(day) {
         .setLngLat(act.lnglat).addTo(map)
     );
   });
+  clusterActivityMarkers();
 }
 
 function initScrollDetection() {
@@ -844,6 +874,23 @@ function updateConnectorLine() {
   col.style.setProperty('--line-height', (lineEnd - lineTop) + 'px');
 }
 
+document.getElementById('map-zoom-in').addEventListener('click', () => map.zoomIn({ duration: 300 }));
+document.getElementById('map-zoom-out').addEventListener('click', () => map.zoomOut({ duration: 300 }));
+
+const mapCollapseTab = document.getElementById('map-collapse-tab');
+const mapShowStrip   = document.getElementById('map-show-strip');
+const dynamicMapEl   = document.getElementById('dynamic-map');
+
+mapCollapseTab.addEventListener('click', () => {
+  dynamicMapEl.classList.add('map-hidden');
+  mapShowStrip.classList.add('is-visible');
+});
+mapShowStrip.addEventListener('click', () => {
+  dynamicMapEl.classList.remove('map-hidden');
+  mapShowStrip.classList.remove('is-visible');
+  setTimeout(() => map.resize(), 360);
+});
+
 window.appUpdateConnectorLine = updateConnectorLine;
 
 updateConnectorLine();
@@ -860,4 +907,5 @@ document.querySelectorAll('.map-view-btn').forEach(btn => {
     const day = typeof currentState === 'number' ? currentState : 0;
     setActivityMarkers(day);
   });
+  if (btn.dataset.view === 'activities') btn.classList.add('is-active');
 });

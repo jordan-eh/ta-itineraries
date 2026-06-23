@@ -317,14 +317,14 @@
     </div>
   </div>
 
-  <div class="map-mode-toggle">
+  <div class="map-mode-toggle" style="display:none">
     <div class="map-mode-label">Map behaviour</div>
     <div class="map-mode-btns">
-      <button class="map-mode-btn is-active" data-mode="relative">
+      <button class="map-mode-btn" data-mode="relative">
         <span class="btn-opt">Option 1</span>
         <span class="btn-desc">Map Fixed</span>
       </button>
-      <button class="map-mode-btn" data-mode="sticky">
+      <button class="map-mode-btn is-active" data-mode="sticky">
         <span class="btn-opt">Option 2</span>
         <span class="btn-desc">Map Sticky</span>
       </button>
@@ -362,7 +362,7 @@
     });
 
     // Map mode toggle
-    var currentMapMode = 'relative';
+    var currentMapMode = 'sticky';
 
     function applyMapMode(mode, iframeDoc) {
       var existing = iframeDoc.getElementById('map-mode-override');
