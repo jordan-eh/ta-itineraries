@@ -855,19 +855,15 @@
     .drive-pill {
       background: rgba(196, 66, 138, 0.10);
       border-radius: 122px;
-      padding: 5px 20px;
-      font-size: 15.3px;
+      padding: 5px 12px;
+      font-size: 16px;
       font-weight: 400;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 3px;
       white-space: nowrap;
     }
-
-    .drive-pill .dist {
-      color: inherit;
-      margin-left: 2px;
-    }
+    .drive-pill strong { font-weight: 500; }
 
     /* Day panel */
     .day-panel {
@@ -1353,6 +1349,7 @@
        DESKTOP-ONLY toggle icon overrides (> 430px)
     ═══════════════════════════════════════════════ */
     @media (min-width: 431px) {
+      .map-view-toggle { display: none !important; }
       .day-panel { border-radius: 0; }
       .explore-activities { margin-top: 16px; }
 
@@ -1591,7 +1588,7 @@
       /* Drive connector — 28px above/below matches Figma gap (y=1678 from loc bottom y=1650) */
       .drive-connector { gap: 0; min-height: 0; padding: 28px 0 11px; }
       .connector-dots { width: 38px; padding-left: 20px; } /* pill starts at page x=46 (8+38) */
-      .drive-pill { font-size: 15px; padding: 5px 12px; gap: 8px; }
+      .drive-pill { font-size: 14px; padding: 5px 12px; gap: 3px; }
 
       /* Day panel — content at x=24 from page (8 section + 16 wrap margin) */
       .day-panel-wrap { margin-left: 16px; padding-top: 18px; }

@@ -45,7 +45,7 @@ No build step. No dependencies required for the static site — `server.js` is o
 | Footer navy | `#073142` — also used for Reset Map button |
 | Gray text | `#69727A` |
 | Border/separator | `#E2E8ED` (CSS var `--border`) |
-| Drive pill background | `rgba(196, 66, 138, 0.10)` — 10% opacity mauve |
+| Drive pill background | `rgba(196, 66, 138, 0.10)` — 10% opacity mauve; `border-radius: 122px; padding: 5px 12px; font-size: 16px; gap: 3px` |
 | Activity cluster badge | 40px circle, `#F6C7E1` fill, black border, no shadow — matches Figma |
 | Content padding (most sections) | `112px` (CSS var `--content-pad`) |
 | Content padding (discover/kbyg/footer) | `214px` (CSS var `--wide-pad`) |
@@ -186,12 +186,12 @@ Each entry in `OVERVIEW_STOPS` has a `day` property used for click-to-scroll:
 
 ### Per-segment drive pills
 
-- Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with the car icon, time, and full distance string (e.g. `127 km (79 mi)` — miles no longer stripped)
+- Created in `setState` via `makeSegmentPillEl(time, dist)` — a small white pill with the car icon, time, and full distance string (e.g. `127 km (79 mi)`)
 - Placed at the geographic midpoint of each segment using a `mgl.Marker` with `anchor: 'center'`
 - Stored in `segmentPillMarkers` as `[{ marker, a, b }]` (segment endpoints needed for overlap resolution)
-- After `map.fitBounds` animates, `map.once('moveend', ...)` resolves overlaps, then sets `pillZoomThreshold = map.getZoom()`
-- **Mobile zoom visibility:** pills are hidden (`display: none`) on mobile when `map.getZoom() <= pillZoomThreshold` (strict `>` check — hidden at default zoom, visible as soon as user zooms in). `updateMobilePillVisibility()` runs on every zoom event. On desktop pills always show.
-- `resolveSegmentPillOverlaps` also fires on user-initiated zoom events (guarded by `e.originalEvent`); uses mobile-aware dimensions: `PILL_W = isMob ? 80 : 120`, `PILL_H = isMob ? 18 : 22`
+- After `map.fitBounds` animates, `map.once('moveend', ...)` resolves overlaps
+- Always visible on both desktop and mobile (no zoom-based hiding — `updateMobilePillVisibility` removed)
+- `resolveSegmentPillOverlaps` fires on user-initiated zoom events (guarded by `e.originalEvent`); uses mobile-aware dimensions: `PILL_W = isMob ? 80 : 120`, `PILL_H = isMob ? 18 : 22`
 - Mobile: pill font 10px, padding 3px 7px, svg 12×12px
 
 ### Approach routes (between-day connectors)
@@ -241,7 +241,7 @@ Both controls live in `.bottom-right-controls` — a `position: fixed; bottom: 2
 - Dark glass pill matching the view switcher style
 - **Activities** (default, `showActivities = true`): activity pins and clusters shown for the active day; Activities button starts with `is-active` in HTML
 - **Route** (`showActivities = false`): activity pins hidden
-- Desktop only — hidden on mobile via `display: none !important` in the mobile media query
+- Hidden on both desktop (`display: none !important` in `@media (min-width: 431px)`) and mobile (`display: none !important` in `@media (max-width: 430px)`) — toggle is currently not shown on any breakpoint
 - Buttons: `.map-view-btn` — 28px tall, `font-size: 12px`, transparent background, `rgba(255,255,255,0.14)` when active
 
 ### View switcher (`.view-switcher`)
@@ -329,9 +329,21 @@ Both options are in `frame.html`'s `applyMapMode(mode, iframeDoc)` which injects
 - Compact card sizing: `day-panel-inner` padding 10px 14px, `day-label` 12px, `day-title` 18px, `day-body` 13px (2-line clamp), `carousel-img` 120px, `explore-activities` padding 8px 14px, `drive-pill` 12px
 - After CSS injection, calls `win.appMap.resize()`, `win.appMap.fitBounds(...)`, and `win.appUpdateConnectorLine()`
 
+### Itinerary drive connectors (`.drive-connector` / `.drive-pill`)
+
+Sit between each day panel and carry the drive time from the previous stop to the next day.
+
+- **Text format:** `<strong>Drive to day N: </strong>time, distance` — label half is `font-weight: 500` (Futura PT Demi), time/distance is `font-weight: 400` (Book). Matches Figma mixed-style text exactly.
+- **Single span:** label + time + distance are all in one `<span>` (no separate `.dist` span). The `<strong>` tag wraps only `"Drive to day N: "` including the trailing space and colon.
+- **Icon:** car SVG (`fill="#000000"`, 18×18px) — same as the map segment pill icon.
+- **CSS:** `background: rgba(196,66,138,0.10); border-radius: 122px; padding: 5px 12px; font-size: 16px; gap: 3px` — matches Figma dimensions exactly.
+- **Desktop:** `padding-left: 80px` on `.drive-connector` aligns pill with card left edge.
+- **Mobile:** `font-size: 14px; padding: 5px 12px; gap: 3px` (scaled slightly smaller).
+
 ### Desktop-only CSS (`styles.css` — `@media (min-width: 431px)`)
 
 Overrides applied only on desktop (not affecting mobile):
+- `.map-view-toggle { display: none !important; }` — Route/Activities toggle hidden on desktop
 - `.day-panel { border-radius: 0; }` — square card corners
 - `.day-panel-wrap { margin-left: 80px; }` — cards 80px from column left
 - `.day-dot { left: -60px; top: 60px; }` — dot on timeline, aligned with destination title
