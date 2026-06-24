@@ -9,7 +9,7 @@ const map = new mgl.Map({
 });
 
 
-const OVERVIEW_BOUNDS = [[-118.5, 48.7], [-110.2, 53.2]];
+const OVERVIEW_BOUNDS = [[-119.0, 49.0], [-110.0, 54.5]];
 
 // Expose for cross-frame access (frame.html mode toggle)
 window.appMap = map;
@@ -334,25 +334,18 @@ function resolveSegmentPillOverlaps() {
   pills.forEach(({ marker, perp, t }) => marker.setOffset([perp[0] * t, perp[1] * t]));
 }
 
-function makeSmallMarkerEl(color) {
+function makeSmallMarkerEl(color, size = 12) {
   const dot = document.createElement('div');
-  dot.style.cssText = `width:12px;height:12px;border-radius:50%;background:${color};` +
+  dot.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${color};` +
     'border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);cursor:default;';
   return dot;
 }
 
-function makeMarkerEl(label, color, name) {
+function makeMarkerEl(label, color, name, w = 35, h = 57) {
   const wrapper = document.createElement('div');
-  wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;';
+  wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;cursor:default;';
 
-  const pin = document.createElement('div');
-  pin.className = 'map-city-pin';
-  pin.style.cssText = 'width:32px;height:32px;border-radius:50%;border:3px solid #fff;' +
-    `background:${color};box-shadow:0 2px 8px rgba(0,0,0,0.3);` +
-    'display:flex;align-items:center;justify-content:center;' +
-    "color:#fff;font-size:12px;font-weight:700;font-family:'Outfit',sans-serif;cursor:default;";
-  wrapper.appendChild(pin);
-
+  // Name pill sits ABOVE the pin so anchor:'bottom' puts the needle tip at the coordinate
   if (name) {
     const namePill = document.createElement('div');
     namePill.className = 'map-city-label';
@@ -363,6 +356,37 @@ function makeMarkerEl(label, color, name) {
     wrapper.appendChild(namePill);
   }
 
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', String(w));
+  svg.setAttribute('height', String(h));
+  svg.setAttribute('viewBox', '0 0 35 57');
+  svg.setAttribute('class', 'map-city-pin');
+  svg.style.cssText = 'display:block;overflow:visible;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.28));';
+
+  // Stem — drawn first so circle sits on top
+  const stem = document.createElementNS(ns, 'rect');
+  stem.setAttribute('x', '16');
+  stem.setAttribute('y', '33');
+  stem.setAttribute('width', '3');
+  stem.setAttribute('height', '24');
+  stem.setAttribute('rx', '1.5');
+  stem.setAttribute('fill', color);
+  stem.setAttribute('stroke', '#fff');
+  stem.setAttribute('stroke-width', '1.47');
+  svg.appendChild(stem);
+
+  // Circle — r=16.76 so outer edge of 1.47px stroke reaches exactly x=0/35 and y=0/35
+  const circle = document.createElementNS(ns, 'circle');
+  circle.setAttribute('cx', '17.5');
+  circle.setAttribute('cy', '17.5');
+  circle.setAttribute('r', '16.76');
+  circle.setAttribute('fill', color);
+  circle.setAttribute('stroke', '#fff');
+  circle.setAttribute('stroke-width', '1.47');
+  svg.appendChild(circle);
+
+  wrapper.appendChild(svg);
   return wrapper;
 }
 
@@ -529,12 +553,13 @@ map.on('load', () => {
   OVERVIEW_STOPS.forEach((stop) => {
     const featuredIdx = OVERVIEW_STOPS_OPT1.findIndex(s => s.name === stop.name);
     const el = featuredIdx === 0
-      ? makeMarkerEl('1', '#00A79A', stop.name)
+      ? makeMarkerEl('1', '#C44289', stop.name)
       : featuredIdx > 0
-        ? makeMarkerEl('', '#00A79A', stop.name)
-        : makeSmallMarkerEl('#00A79A');
+        ? makeMarkerEl('', '#C44289', stop.name)
+        : makeSmallMarkerEl('#C44289', 11);
     el.style.visibility = 'hidden';
-    const m = new mgl.Marker({ element: el })
+    const anchor = featuredIdx >= 0 ? 'bottom' : 'center';
+    const m = new mgl.Marker({ element: el, anchor })
       .setLngLat(stop.lnglat)
       .setPopup(new mgl.Popup({ offset: 20 }).setText(stop.name))
       .addTo(map);
@@ -549,8 +574,8 @@ map.on('load', () => {
 
   OVERVIEW_STOPS.forEach((stop, i) => {
     const el = i === 0
-      ? makeMarkerEl('', '#00A79A', stop.name)
-      : makeSmallMarkerEl('#00A79A');
+      ? makeMarkerEl('', '#C44289', stop.name, isDesktop ? 35 : 22, isDesktop ? 57 : 36)
+      : makeMarkerEl('', '#C44289', null, isDesktop ? 12 : 8, isDesktop ? 20 : 13);
     el.style.visibility = 'visible';
 
     if (isDesktop) {
@@ -590,7 +615,7 @@ map.on('load', () => {
       });
     }
 
-    const m = new mgl.Marker({ element: el })
+    const m = new mgl.Marker({ element: el, anchor: 'bottom' })
       .setLngLat(stop.lnglat)
       .addTo(map);
     overviewMarkersOpt2.push(m);
@@ -631,10 +656,12 @@ map.on('load', () => {
   // ── Per-day markers (hidden initially) ──
   DAYS.forEach((day, i) => {
     const markers = day.stops.map((stop, j) => {
-      const color = j === 0 ? '#00A79A' : '#9C0F00';
-      const el = makeMarkerEl(String(j + 1), color, stop.name);
+      const color = '#C44289';
+      const el = j === 0
+        ? makeMarkerEl(String(j + 1), color, stop.name, isDesktop ? 47 : 30, isDesktop ? 77 : 48)
+        : makeMarkerEl(String(j + 1), color, stop.name, isDesktop ? 35 : 22, isDesktop ? 57 : 36);
       el.style.visibility = 'hidden';
-      return new mgl.Marker({ element: el })
+      return new mgl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat(stop.lnglat)
         .addTo(map);
     });
@@ -708,7 +735,7 @@ function setState(newState) {
   approachPinMarkers = [];
   if (!isOverview && dayData && dayData.approachFrom) {
     approachPinMarkers.push(
-      new mgl.Marker({ element: makeSmallMarkerEl('#9C0F00') })
+      new mgl.Marker({ element: makeSmallMarkerEl('#C44289') })
         .setLngLat(dayData.approachFrom.lnglat).addTo(map)
     );
   }

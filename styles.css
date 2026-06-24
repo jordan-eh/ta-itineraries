@@ -1445,13 +1445,7 @@
         font-family: var(--font);
       }
 
-      /* Smaller city pins and labels on mobile */
-      .map-city-pin {
-        width: 22px !important;
-        height: 22px !important;
-        font-size: 10px !important;
-        border-width: 2px !important;
-      }
+      /* Pin sizes handled per-type in JS — only labels need mobile override */
       .map-city-label {
         font-size: 10px !important;
         padding: 3px 7px !important;
