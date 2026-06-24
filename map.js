@@ -341,7 +341,7 @@ function makeSmallMarkerEl(color, size = 12) {
   return dot;
 }
 
-function makeMarkerEl(label, color, name, w = 35, h = 57) {
+function makeMarkerEl(label, color, name, w = 35, h = 57, stemW = 3) {
   const wrapper = document.createElement('div');
   wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;cursor:default;';
 
@@ -366,11 +366,11 @@ function makeMarkerEl(label, color, name, w = 35, h = 57) {
 
   // Stem — drawn first so circle sits on top
   const stem = document.createElementNS(ns, 'rect');
-  stem.setAttribute('x', '16');
+  stem.setAttribute('x', String(17.5 - stemW / 2));
   stem.setAttribute('y', '33');
-  stem.setAttribute('width', '3');
+  stem.setAttribute('width', String(stemW));
   stem.setAttribute('height', '24');
-  stem.setAttribute('rx', '1.5');
+  stem.setAttribute('rx', String(stemW / 2));
   stem.setAttribute('fill', color);
   stem.setAttribute('stroke', '#fff');
   stem.setAttribute('stroke-width', '1.47');
@@ -619,7 +619,7 @@ map.on('load', () => {
   OVERVIEW_STOPS.forEach((stop, i) => {
     const el = i === 0
       ? makeMarkerEl('', '#C44289', stop.name, isDesktop ? 35 : 22, isDesktop ? 57 : 36)
-      : makeMarkerEl('', '#C44289', null, isDesktop ? 12 : 8, isDesktop ? 20 : 13);
+      : makeMarkerEl('', '#C44289', null, isDesktop ? 13 : 8, isDesktop ? 21 : 14, 7);
     el.style.visibility = 'visible';
 
     if (isDesktop) {

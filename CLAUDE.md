@@ -119,7 +119,7 @@ Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itinerarie
 - **Scroll zoom:** Enabled on desktop (scroll wheel / trackpad). Touch pinch zoom always available. `resolveSegmentPillOverlaps` re-runs only on user-initiated zoom (`e.originalEvent` guard) — not during programmatic `fitBounds` animations.
 - **Swap to Mapbox:** The library is aliased as `const mgl = typeof mapboxgl !== 'undefined' ? mapboxgl : maplibregl`. To switch: swap the CDN tags, set `mapboxgl.accessToken = 'pk...'`, and change the style URL to `'mapbox://styles/mapbox/streets-v12'`. No other code changes required.
 - **No fade-out:** the map is always visible once the page loads; there is no opacity or visibility toggle based on scroll position.
-- **Overview state:** Calgary full teardrop pin (35×57px, name label) + 14 smaller teardrop pins (12×20px, no labels) for all other stops + full dotted route line + "15 destinations" pill (teardrop SVG icon, `#C44289`). Active before any day card hits the 40% scroll trigger.
+- **Overview state:** Calgary full teardrop pin (35×57px, name label) + 14 smaller teardrop pins (13×21px desktop / 8×14px mobile, wider stem for legibility, no labels) for all other stops + full dotted route line + "15 destinations" pill (teardrop SVG icon, `#C44289`). Active before any day card hits the 40% scroll trigger.
 - **Day state:** triggered by scroll detection (see below); shows only that day's stops (starting pin 47×77px, following pins 35×57px), route segment(s), per-segment drive pills, and approach route/pill if applicable.
 - **Scroll detection (desktop):** `getActiveDay()` — triggers when a `.day-panel[data-day]` top edge ≤ 40% viewport height.
 - **Scroll detection (mobile):** `getMobileActiveDay()` — Overview→Day 1 triggers when Day 1 panel top ≤ 40% viewport. Day N→Day N+1 triggers when the **bottom of Day N's `.explore-activities` section** crosses the 40% trigger line. This makes transitions feel natural as the previous day's content scrolls out of view.
@@ -128,9 +128,10 @@ Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itinerarie
 - **Initial fitBounds:** `currentState = 'overview'` causes `setState('overview')` to return early on load. An explicit `map.fitBounds(OVERVIEW_BOUNDS, { padding: isMobile ? 20 : 60, duration: 0 })` call in `map.on('load')` compensates.
 - **Mobile fitBounds padding:** overview uses `20` (uniform); day view uses `{ top: 50, right: 30, bottom: 50, left: 30 }` for balanced pin breathing room. Desktop uses `60` uniform for both.
 - **Marker toggling:** `visibility: hidden/visible` (not `display: none/flex`) — preserves the flex-column wrapper layout so the name pill always renders correctly when shown.
-- **Pin design:** `makeMarkerEl(label, color, name, w=35, h=57)` — SVG teardrop (circle r=16.76 + rect stem, viewBox `0 0 35 57`). Name pill above the SVG; `anchor: 'bottom'` so the stem tip points to the coordinate. The `w`/`h` params scale the rendered size while keeping the same viewBox.
-- **Pin sizes (desktop):** overview starting pin 35×57, overview non-starting 12×20, day starting pin (`j===0`) 47×77, day following pins 35×57. All `#C44289`.
-- **Pin sizes (mobile, ~0.63× scale):** overview starting 22×36, overview non-starting 8×13, day starting 30×48, day following 22×36. Sizes passed directly to `makeMarkerEl` via `isDesktop` flag — no CSS override needed.
+- **Pin design:** `makeMarkerEl(label, color, name, w=35, h=57, stemW=3)` — SVG teardrop (circle r=16.76 + rect stem, viewBox `0 0 35 57`). Name pill above the SVG; `anchor: 'bottom'` so the stem tip points to the coordinate. The `w`/`h` params scale the rendered size; `stemW` sets the stem rect width in viewBox units (centered at x=17.5).
+- **Pin sizes (desktop):** overview starting pin 35×57, overview non-starting 13×21, day starting pin (`j===0`) 47×77, day following pins 35×57. All `#C44289`.
+- **Pin sizes (mobile, ~0.63× scale):** overview starting 22×36, overview non-starting 8×14, day starting 30×48, day following 22×36. Sizes passed directly to `makeMarkerEl` via `isDesktop` flag — no CSS override needed.
+- **Stem width:** default `stemW=3` (3px, used by all larger pins). Overview non-starting pins pass `stemW=7` for legibility at small rendered sizes.
 - **Approach dot:** `makeSmallMarkerEl('#C44289')` — small circle dot at `approachFrom.lnglat`.
 - **Swap to Mapbox:** replace the OpenFreeMap style URL with `'mapbox://styles/mapbox/streets-v12'` and add `accessToken` to the Map constructor.
 
