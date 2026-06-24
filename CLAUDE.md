@@ -39,13 +39,14 @@ No build step. No dependencies required for the static site — `server.js` is o
 | Token | Value |
 |---|---|
 | Primary red | `#9C0F00` |
-| Teal accent | `#00A79A` |
+| Pink/mauve accent | `#C44289` — all destination pins, activity pin outlines |
+| Timeline/dot pink | `#C4428A` — connector line, day dots, location dot |
 | Mint background | `#E6F7F5` |
-| Footer navy | `#073142` |
+| Footer navy | `#073142` — also used for Reset Map button |
 | Gray text | `#69727A` |
 | Border/separator | `#E2E8ED` (CSS var `--border`) |
 | Drive pill background | `rgba(196, 66, 138, 0.10)` — 10% opacity mauve |
-| Activity cluster badge | 40px circle, `#cfefec` fill, black border, bold font — matches travelalberta.com/map |
+| Activity cluster badge | 40px circle, `#F6C7E1` fill, black border, no shadow — matches Figma |
 | Content padding (most sections) | `112px` (CSS var `--content-pad`) |
 | Content padding (discover/kbyg/footer) | `214px` (CSS var `--wide-pad`) |
 | Primary font | Futura PT → Outfit (Google Fonts fallback) |
@@ -118,8 +119,8 @@ Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itinerarie
 - **Scroll zoom:** Enabled on desktop (scroll wheel / trackpad). Touch pinch zoom always available. `resolveSegmentPillOverlaps` re-runs only on user-initiated zoom (`e.originalEvent` guard) — not during programmatic `fitBounds` animations.
 - **Swap to Mapbox:** The library is aliased as `const mgl = typeof mapboxgl !== 'undefined' ? mapboxgl : maplibregl`. To switch: swap the CDN tags, set `mapboxgl.accessToken = 'pk...'`, and change the style URL to `'mapbox://styles/mapbox/streets-v12'`. No other code changes required.
 - **No fade-out:** the map is always visible once the page loads; there is no opacity or visibility toggle based on scroll position.
-- **Overview state:** Calgary full pin (no number) + small teal dots for all 15 stops + full dotted route line + "15 destinations" pill. Active before any day card hits the 40% scroll trigger.
-- **Day state:** triggered by scroll detection (see below); shows only that day's stops, route segment(s), per-segment drive pills, and approach route/pill if applicable.
+- **Overview state:** Calgary full teardrop pin (35×57px, name label) + 14 smaller teardrop pins (12×20px, no labels) for all other stops + full dotted route line + "15 destinations" pill (teardrop SVG icon, `#C44289`). Active before any day card hits the 40% scroll trigger.
+- **Day state:** triggered by scroll detection (see below); shows only that day's stops (starting pin 47×77px, following pins 35×57px), route segment(s), per-segment drive pills, and approach route/pill if applicable.
 - **Scroll detection (desktop):** `getActiveDay()` — triggers when a `.day-panel[data-day]` top edge ≤ 40% viewport height.
 - **Scroll detection (mobile):** `getMobileActiveDay()` — Overview→Day 1 triggers when Day 1 panel top ≤ 40% viewport. Day N→Day N+1 triggers when the **bottom of Day N's `.explore-activities` section** crosses the 40% trigger line. This makes transitions feel natural as the previous day's content scrolls out of view.
 - `update()` is also called immediately on map load (no waiting for first scroll event).
@@ -127,8 +128,10 @@ Titles match what appears on `travelalberta.com/trip-ideas/road-trips-itinerarie
 - **Initial fitBounds:** `currentState = 'overview'` causes `setState('overview')` to return early on load. An explicit `map.fitBounds(OVERVIEW_BOUNDS, { padding: isMobile ? 20 : 60, duration: 0 })` call in `map.on('load')` compensates.
 - **Mobile fitBounds padding:** overview uses `20` (uniform); day view uses `{ top: 50, right: 30, bottom: 50, left: 30 }` for balanced pin breathing room. Desktop uses `60` uniform for both.
 - **Marker toggling:** `visibility: hidden/visible` (not `display: none/flex`) — preserves the flex-column wrapper layout so the name pill always renders correctly when shown.
-- **Pin labels (`.map-city-pin` / `.map-city-label`):** each marker is a flex-column wrapper — plain circle (no number) on top, city name pill below. Classes added so mobile CSS can override inline sizes. On mobile: pin 22×22px, label font 10px / padding 3px 7px.
-- **Pin colours:** starting destination (`j===0`) is **teal** (`#00A79A`); following destinations (`j>0`) are **red** (`#9C0F00`). The small approach dot at `approachFrom.lnglat` is also red.
+- **Pin design:** `makeMarkerEl(label, color, name, w=35, h=57)` — SVG teardrop (circle r=16.76 + rect stem, viewBox `0 0 35 57`). Name pill above the SVG; `anchor: 'bottom'` so the stem tip points to the coordinate. The `w`/`h` params scale the rendered size while keeping the same viewBox.
+- **Pin sizes (desktop):** overview starting pin 35×57, overview non-starting 12×20, day starting pin (`j===0`) 47×77, day following pins 35×57. All `#C44289`.
+- **Pin sizes (mobile, ~0.63× scale):** overview starting 22×36, overview non-starting 8×13, day starting 30×48, day following 22×36. Sizes passed directly to `makeMarkerEl` via `isDesktop` flag — no CSS override needed.
+- **Approach dot:** `makeSmallMarkerEl('#C44289')` — small circle dot at `approachFrom.lnglat`.
 - **Swap to Mapbox:** replace the OpenFreeMap style URL with `'mapbox://styles/mapbox/streets-v12'` and add `accessToken` to the Map constructor.
 
 ### Overview interactivity (desktop only)
@@ -162,16 +165,18 @@ Each entry in `OVERVIEW_STOPS` has a `day` property used for click-to-scroll:
 ### Activity pins
 
 - **Default:** on (`showActivities = true`). The Activities button starts with `is-active`. Disabled via the **Route / Activities** toggle (dark pill, bottom-right, desktop only — hidden on mobile via `display: none !important`).
-- **Distance label:** each activity pin label shows `name · X km` where X is the haversine distance to the nearest route stop for that day. Computed in `setActivityMarkers` using `haversineKm(a, b)`.
+- **Distance label:** each activity pin label shows `name · X km (Y mi)` — km from haversine distance, miles converted inline (`km * 0.621371`). Computed in `setActivityMarkers`.
 - **Zoom-dependent labels:** `.activity-pin-label` has `opacity: 0` by default. `#dynamic-map.zoom-labels .activity-pin-label { opacity: 1 }` reveals them. The `zoom-labels` class is toggled by `updateLabelVisibility()` when `map.getZoom() > defaultZoom + 0.3`.
 - **`defaultZoom`:** captured in `map.once('moveend', ...)` after each `fitBounds` call in `setState`, and immediately after the initial `fitBounds` in `map.on('load')`.
-- `makeActivityMarkerEl(name, distKm)` — teal-outline white dot (`.activity-pin-dot`) + name+distance label pill (`.activity-pin-label`)
-- `setActivityMarkers(day)` — clears `activityMarkers[]`, then places new markers if `showActivities === true` and `day ≥ 1`. Now runs on both desktop and mobile. Calls `clusterActivityMarkers()` immediately after placing markers.
+- **Default dot:** 14px white circle, `2px solid #C44289` border (`.activity-pin-dot`). `pointer-events: auto` so clicks register.
+- **Active state (click):** dot is hidden; a pink teardrop SVG (25×37px, `#C44289` fill, white stroke, `anchor: 'top'`) replaces it. A black tooltip appears above showing the activity name + white right-arrow icon (Font Awesome `f061` equivalent SVG) with a downward CSS caret (`::after`). Click another pin or the map to dismiss. Clicking Reset Map also dismisses.
+- `makeActivityMarkerEl(name, distKm)` — builds: tooltip div → dot div → active SVG pin → label pill. Click listeners on dot and SVG toggle `.is-active` on the wrapper.
+- `setActivityMarkers(day)` — clears `activityMarkers[]`, then places new markers if `showActivities === true` and `day ≥ 1`. Runs on both desktop and mobile. Calls `clusterActivityMarkers()` immediately after placing markers.
 - Mobile: activities are placed and clustered (mobile exclusion removed). Toggle is still hidden in CSS on mobile (`display: none !important`).
 
 ### Activity clusters
 
-- `makeActivityClusterEl(count)` — 40px teal circle badge showing `+N`.
+- `makeActivityClusterEl(count)` — 40px circle badge showing `+N`. Fill `#F6C7E1` (light pink/mauve from Figma), black border, no shadow.
 - `clusterActivityMarkers()` — groups activity markers within 32px of each other, hides the individual pins, and places a cluster marker at the group centroid.
   - **Click to zoom:** each cluster element has a click handler that calls `map.fitBounds()` on the group's lnglat bounds (`maxZoom: 14`, `duration: 600`), then fires `clusterActivityMarkers()` on `moveend` to re-evaluate at the new zoom level.
   - **Nudge from pins/labels:** after computing the centroid, clusters are pushed away from visible destination pins using a repulsion calculation. Each destination contributes 4 virtual repulsion points: pin centre (r: 48) + label left/centre/right (all r: 34, spaced ±40px horizontally at 34px below pin centre). This prevents clusters from overlapping both the pin circle and the name pill.
@@ -244,6 +249,15 @@ Both controls live in `.bottom-right-controls` — a `position: fixed; bottom: 2
 - Navigation uses a 220ms fade-out → navigate → fade-in pattern.
 - Hidden inside iframes via `window === window.top` guard.
 
+### Reset Map button (`.map-reset-btn`)
+
+- Dark `#073142` pill, white text/icon, `position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%)` — centred at the bottom of the map.
+- Hidden by default (`display: none`). Shows with `.is-visible` class when `userZoomed === true` and state is not overview.
+- **Show trigger:** any user-initiated zoom in day state (`e.originalEvent` guard in the `zoom` event handler) sets `userZoomed = true` and adds `.is-visible`.
+- **Hide trigger:** clicking the button, switching day/state (`setState`), or clicking Reset Map. All also call `document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'))` to dismiss active activity pins.
+- **Click action:** `map.fitBounds(DAYS[dayIndex].bounds, { padding, duration: 600 })` — resets to the current day's initial bounds.
+- Icon: circular arrow-right SVG (Option F from reset-icon-test.html preview).
+
 ### Zoom controls (`.map-zoom-controls`)
 
 - Custom `+` / `−` stacked button group, positioned `position: absolute` inside `#dynamic-map` (bottom-right corner).
@@ -263,9 +277,9 @@ Both controls live in `.bottom-right-controls` — a `position: fixed; bottom: 2
 
 ## Connector Line (`updateConnectorLine`)
 
-The vertical teal dotted connector runs via `.itinerary-col::before`:
-- **Desktop:** `left: 25px`, `width: 2px`, `background: radial-gradient(circle 1.5px at 1px 1.5px, #00A79A 100%, transparent 100%) 0 0 / 2px 7px repeat-y` — 3px circular dots / 4px gap, matching Figma `strokeWeight:2, dashPattern:[1,6], strokeCap:ROUND`
-- **Mobile:** `left: 21px`, `width: 1.5px`, `background: radial-gradient(circle 1.25px at 0.75px 1.25px, #00A79A 100%, transparent 100%) 0 0 / 1.5px 7px repeat-y` — proportionally smaller circular dots
+The vertical dotted connector runs via `.itinerary-col::before`:
+- **Desktop:** `left: 25px`, `width: 2px`, `background: radial-gradient(circle 1.5px at 1px 1.5px, #C4428A 100%, transparent 100%) 0 0 / 2px 7px repeat-y` — 3px circular dots / 4px gap
+- **Mobile:** `left: 21px`, `width: 1.5px`, `background: radial-gradient(circle 1.25px at 0.75px 1.25px, #C4428A 100%, transparent 100%) 0 0 / 1.5px 7px repeat-y` — proportionally smaller circular dots
 - `top` and `height` driven by CSS custom properties `--line-top` / `--line-height`
 - **Normal mode (dots visible):** measures from `.location-dot` center to last `.day-dot` center
 - **Option 2 mode (day dots hidden):** `getComputedStyle(dayDots[0]).display === 'none'` → measures from `.location-dot` center (if visible) to bottom of last `.day-panel-wrap`; falls back to top of first card if start dot is also hidden
@@ -277,9 +291,9 @@ The vertical teal dotted connector runs via `.itinerary-col::before`:
 
 - **Desktop** (`@media (min-width: 431px)`): `left: -60px; top: 60px` — centers dot on connector line, aligned vertically with the destination title
 - **Mobile**: `left: 3px; top: 4px; width: 5px; height: 5px` — 5×5px dot, centered on connector line (page x≈29.5), positioned within `.day-panel-wrap` (which has `padding-top: 18px` to prevent margin collapse with `.day-panel`)
-- Inactive: plain teal circle (11×11px desktop, 5×5px mobile)
-- **Active state desktop** (`.day-dot.is-active`): `box-shadow: 0 0 0 9.5px #00A79A, 0 0 0 17.5px rgba(0,167,154,0.30)` — 30px inner / 46px outer halo
-- **Active state mobile**: `box-shadow: 0 0 0 2.5px #00A79A, 0 0 0 5.5px rgba(0,167,154,0.30)` — expands 5px dot to match "Starts in Calgary" dot size: 2.5px solid ring → 10px total, 3px translucent ring → 16px total visual diameter
+- Inactive: solid `#C4428A` circle (11×11px desktop, 5×5px mobile)
+- **Active state desktop** (`.day-dot.is-active`): `box-shadow: 0 0 0 9.5px #C4428A, 0 0 0 17.5px rgba(196,66,138,0.30)` — 30px inner / 46px outer halo (matches Figma Group 294722)
+- **Active state mobile**: `box-shadow: 0 0 0 2.5px #C4428A, 0 0 0 5.5px rgba(196,66,138,0.30)` — expands 5px dot to ~16px total visual diameter
 - Active class toggled by `updateDotStates(day)` inside `initScrollDetection` → `update()`, exactly in sync with map state change
 
 ## Mobile Preview (`frame.html`)
@@ -335,13 +349,14 @@ Key mobile-only rules:
 - Layout: single-column, map sticky at top (280px, full-width), itinerary below
 - Day panel wrap: `margin-left: 16px; padding-top: 18px` — padding-top prevents CSS margin collapse (without it, `.day-panel`'s margin-top would collapse outward, placing the dot inside the card)
 - Day dot: `left: 3px; top: 4px; width: 5px; height: 5px` — centered on connector line at page x≈29.5
-- Day dot active: `box-shadow: 0 0 0 2.5px #00A79A, 0 0 0 5.5px rgba(0,167,154,0.30)` — matches "Starts in" dot size (16px total)
+- Day dot active: `box-shadow: 0 0 0 2.5px #C4428A, 0 0 0 5.5px rgba(196,66,138,0.30)` — matches "Starts in" dot size (16px total)
 - Day panel: `border: none; overflow: visible` — no margin-top (wrap padding-top handles the gap)
 - Day panel inner: `padding: 0`
 - Drive connector: `padding: 28px 0 11px` — top 28px matches gap from previous section; bottom 11px positions next dot at 15px below drive pill (matching Figma)
 - Explore activities: full-bleed with negative margins (`-24px` / `-26px`), transparent bg, bottom border via `background-image` gradient at 24px inset, `+`/`−` toggle via `::after`
 - Nav collapses to logo only
-- Map markers: `.map-city-pin` 22×22px, `.map-city-label` font 10px / padding 3px 7px, `.map-segment-pill` font 10px / padding 3px 7px / svg 12×12
+- Map pin sizes set in JS per type (not CSS override) — see pin sizes table above
+- `.map-city-label` font 10px / padding 3px 7px (mobile override), `.map-segment-pill` font 10px / padding 3px 7px / svg 12×12
 - Zoom controls: 32×32px buttons, `bottom: 44px; right: 12px`, 6px border-radius
 - Map hide/show: `.map-collapse-tab` corner tab (bottom-right of map) + `.map-show-strip` strip below map; `#dynamic-map.map-hidden { height: 0 !important }` with 0.35s transition
 

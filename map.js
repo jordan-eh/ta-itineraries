@@ -557,7 +557,6 @@ let overviewMarkersOpt1 = [];
 let overviewMarkersOpt2 = [];
 let dayMarkers = [];
 let segmentPillMarkers = [];
-let pillZoomThreshold = 0;
 let clusterZoomThreshold = Infinity;
 let approachPinMarkers = [];
 let activityMarkers = [];
@@ -567,6 +566,7 @@ let currentState = 'overview';
 let activeOverviewOption = 2;
 let defaultZoom = 0;
 let userZoomed = false;
+let activitiesRevealed = false;
 const resetBtnEl = document.getElementById('map-reset-btn');
 let scrollLocked = false;
 
@@ -574,13 +574,6 @@ function updateLabelVisibility() {
   map.getContainer().classList.toggle('zoom-labels', map.getZoom() > defaultZoom + 0.3);
 }
 
-function updateMobilePillVisibility() {
-  if (!window.matchMedia('(max-width: 430px)').matches) return;
-  const show = map.getZoom() > pillZoomThreshold;
-  segmentPillMarkers.forEach(({ marker }) => {
-    marker.getElement().style.display = show ? '' : 'none';
-  });
-}
 const destPillEl = document.querySelector('.map-destinations-pill');
 
 map.on('load', () => {
@@ -732,11 +725,14 @@ map.on('load', () => {
   let zoomTicking = false;
   map.on('zoom', (e) => {
     updateLabelVisibility();
-    updateMobilePillVisibility();
     if (!e.originalEvent) return; // skip programmatic zooms (fitBounds animation)
     if (currentState !== 'overview' && !userZoomed) {
       userZoomed = true;
       resetBtnEl.classList.add('is-visible');
+    }
+    if (currentState !== 'overview' && !activitiesRevealed) {
+      activitiesRevealed = true;
+      if (showActivities) setActivityMarkers(currentState);
     }
     if (zoomTicking) return;
     zoomTicking = true;
@@ -749,6 +745,7 @@ function setState(newState) {
   if (newState === currentState) return;
   currentState = newState;
   userZoomed = false;
+  activitiesRevealed = false;
   resetBtnEl.classList.remove('is-visible');
 
   const isOverview = newState === 'overview';
@@ -810,8 +807,6 @@ function setState(newState) {
     dayData.segments.forEach((seg, i) => addPill(dayData.stops[i].lnglat, dayData.stops[i + 1].lnglat, seg.time, seg.dist));
     map.once('moveend', () => {
       resolveSegmentPillOverlaps();
-      pillZoomThreshold = map.getZoom();
-      updateMobilePillVisibility();
     });
   }
 
@@ -822,7 +817,7 @@ function setState(newState) {
     destPillEl.classList.add('hidden');
   }
 
-  setActivityMarkers(isOverview ? 0 : newState);
+  setActivityMarkers(0);
 }
 
 function setActivityMarkers(day) {
@@ -967,8 +962,10 @@ document.getElementById('map-zoom-out').addEventListener('click', () => map.zoom
 
 resetBtnEl.addEventListener('click', () => {
   userZoomed = false;
+  activitiesRevealed = false;
   resetBtnEl.classList.remove('is-visible');
   document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'));
+  setActivityMarkers(0);
   const dayIndex = typeof currentState === 'number' ? currentState - 1 : -1;
   const bounds = dayIndex >= 0 && DAYS[dayIndex] ? DAYS[dayIndex].bounds : OVERVIEW_BOUNDS;
   const isMobile = window.matchMedia('(max-width: 430px)').matches;
@@ -1003,7 +1000,7 @@ document.querySelectorAll('.map-view-btn').forEach(btn => {
     if (activating === showActivities) return;
     showActivities = activating;
     document.querySelectorAll('.map-view-btn').forEach(b => b.classList.toggle('is-active', b === btn));
-    const day = typeof currentState === 'number' ? currentState : 0;
+    const day = typeof currentState === 'number' && activitiesRevealed ? currentState : 0;
     setActivityMarkers(day);
   });
   if (btn.dataset.view === 'activities') btn.classList.add('is-active');
