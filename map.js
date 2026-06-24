@@ -406,7 +406,7 @@ function haversineKm(a, b) {
   return R * 2 * Math.asin(Math.sqrt(sd * sd + Math.cos(lat1) * Math.cos(lat2) * sl * sl));
 }
 
-function makeActivityMarkerEl(name, distKm) {
+function makeActivityMarkerEl(name, distKm, onActivate) {
   const wrap = document.createElement('div');
   wrap.className = 'activity-pin';
 
@@ -457,7 +457,10 @@ function makeActivityMarkerEl(name, distKm) {
     e.stopPropagation();
     const wasActive = wrap.classList.contains('is-active');
     document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'));
-    if (!wasActive) wrap.classList.add('is-active');
+    if (!wasActive) {
+      wrap.classList.add('is-active');
+      if (onActivate) onActivate();
+    }
   };
   dot.addEventListener('click', activate);
   svg.addEventListener('click', activate);
@@ -832,7 +835,13 @@ function setActivityMarkers(day) {
       ? Math.min(...stops.map(s => haversineKm(act.lnglat, s.lnglat)))
       : null;
     const distKm = nearest !== null ? Math.round(nearest * 10) / 10 : null;
-    const el = makeActivityMarkerEl(act.name, distKm);
+    const el = makeActivityMarkerEl(act.name, distKm, () => {
+      if (!userZoomed) {
+        userZoomed = true;
+        resetBtnEl.classList.add('is-visible');
+      }
+      map.easeTo({ center: act.lnglat, zoom: Math.max(map.getZoom(), 13), duration: 600 });
+    });
     activityMarkers.push(
       new mgl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat(act.lnglat).addTo(map)

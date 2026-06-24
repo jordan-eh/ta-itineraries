@@ -570,6 +570,7 @@
       border: 2px solid #C44289;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
       flex-shrink: 0;
+      cursor: pointer;
     }
 
     .activity-pin-label {
