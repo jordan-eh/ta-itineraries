@@ -563,11 +563,11 @@
     }
 
     .activity-pin-dot {
-      width: 10px;
-      height: 10px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       background: #fff;
-      border: 2px solid var(--teal);
+      border: 2px solid #C44289;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
       flex-shrink: 0;
     }
@@ -590,11 +590,52 @@
       opacity: 1;
     }
 
+    /* Active teardrop pin — hidden until .is-active */
+    .activity-pin-active {
+      display: none;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.28));
+      cursor: pointer;
+    }
+    .activity-pin.is-active .activity-pin-dot   { display: none; }
+    .activity-pin.is-active .activity-pin-active { display: block; }
+    .activity-pin.is-active .activity-pin-label  { opacity: 0 !important; }
+
+    /* Tooltip above pin */
+    .activity-tooltip {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: #000;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      white-space: nowrap;
+      border-radius: 6px;
+      padding: 7px 12px;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      margin-bottom: 2px;
+    }
+    .activity-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 7px solid #000;
+    }
+    .activity-pin.is-active .activity-tooltip { display: flex; }
+
     .activity-cluster {
       width: 40px;
       height: 40px;
       border-radius: 100%;
-      background: #cfefec;
+      background: #F6C7E1;
       color: #000;
       font-size: 12px;
       font-weight: 700;
@@ -603,10 +644,37 @@
       align-items: center;
       justify-content: center;
       border: 1px solid #000;
-      box-shadow: 0 4px 4px rgba(0,0,0,0.19);
+      box-shadow: none;
       cursor: default;
       transition: all 0.15s;
     }
+
+    .map-reset-btn {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      align-items: center;
+      gap: 7px;
+      background: #073142;
+      border: none;
+      border-radius: 100px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+      z-index: 2;
+      white-space: nowrap;
+      transition: background 0.12s;
+    }
+    .map-reset-btn.is-visible { display: flex; }
+    .map-reset-btn:hover { background: #0e4a60; }
+    .map-reset-btn:active { background: #052535; }
+    .map-reset-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
 
     .map-zoom-controls {
       position: absolute;
@@ -688,7 +756,7 @@
       top: var(--line-top, 0);
       height: var(--line-height, 100%);
       width: 2px;
-      background: radial-gradient(circle 1.5px at 1px 1.5px, #00A79A 100%, transparent 100%) 0 0 / 2px 7px repeat-y;
+      background: radial-gradient(circle 1.5px at 1px 1.5px, #C4428A 100%, transparent 100%) 0 0 / 2px 7px repeat-y;
     }
 
     /* "Starts in" header */
@@ -713,7 +781,7 @@
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: #00A79A;
+      background: #C4428A;
       flex-shrink: 0;
       position: relative;
       z-index: 1;
@@ -762,7 +830,7 @@
       margin-left: 60px;
     }
 
-    /* Small teal dot aligned with the "Day X" label */
+    /* Small dot aligned with the "Day X" label */
     .day-dot {
       position: absolute;
       left: -40px;   /* centers 11px dot on the line at left:26px of .itinerary-col (60-20.5≈40) */
@@ -770,17 +838,17 @@
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: #00A79A;
+      background: #C4428A;
       flex-shrink: 0;
       z-index: 2;
       transition: box-shadow 0.2s ease;
     }
 
-    /* Active state: 30px solid inner + 46px outer halo (matching Figma Group 294722) */
+    /* Active state: solid fill + 30px solid ring + 46px outer halo (matching Figma) */
     .day-dot.is-active {
       box-shadow:
-        0 0 0 9.5px #00A79A,
-        0 0 0 17.5px rgba(0, 167, 154, 0.30);
+        0 0 0 9.5px #C4428A,
+        0 0 0 17.5px rgba(196, 66, 138, 0.30);
     }
 
     .drive-pill {
@@ -1509,13 +1577,13 @@
       .itinerary-col::before {
         left: 21px;
         width: 1.5px;
-        background: radial-gradient(circle 1.25px at 0.75px 1.25px, #00A79A 100%, transparent 100%) 0 0 / 1.5px 7px repeat-y;
+        background: radial-gradient(circle 1.25px at 0.75px 1.25px, #C4428A 100%, transparent 100%) 0 0 / 1.5px 7px repeat-y;
       }
 
       /* "Starts in" header — dot center at x=29 (8+16+5), text at x=55 (8+16+10+21) */
       .location-header { gap: 21px; }
       .location-start-dot { padding-left: 16px; padding-top: 4px; }
-      .location-dot { width: 10px; height: 10px; box-shadow: 0 0 0 3px rgba(0,167,154,0.30); }
+      .location-dot { width: 10px; height: 10px; box-shadow: 0 0 0 3px rgba(196,66,138,0.30); }
       .location-details .loc-label { font-size: 16px; }
       .location-details .loc-title { font-size: 24px; line-height: 28px; }
 
@@ -1527,7 +1595,7 @@
       /* Day panel — content at x=24 from page (8 section + 16 wrap margin) */
       .day-panel-wrap { margin-left: 16px; padding-top: 18px; }
       .day-dot { left: 3px; top: 4px; width: 5px; height: 5px; }
-      .day-dot.is-active { box-shadow: 0 0 0 2.5px #00A79A, 0 0 0 5.5px rgba(0,167,154,0.30); }
+      .day-dot.is-active { box-shadow: 0 0 0 2.5px #C4428A, 0 0 0 5.5px rgba(196,66,138,0.30); }
       .day-panel { border: none; }
       .day-panel-inner { padding: 0; }
       .day-label { font-size: 16px; }

@@ -409,10 +409,59 @@ function haversineKm(a, b) {
 function makeActivityMarkerEl(name, distKm) {
   const wrap = document.createElement('div');
   wrap.className = 'activity-pin';
-  const dist = distKm !== null ? ' · ' + distKm + ' km' : '';
-  wrap.innerHTML =
-    '<div class="activity-pin-dot"></div>' +
-    '<div class="activity-pin-label">' + name + dist + '</div>';
+
+  // Tooltip — shown above pin in active state
+  const tooltip = document.createElement('div');
+  tooltip.className = 'activity-tooltip';
+  const tooltipText = document.createElement('span');
+  tooltipText.textContent = name;
+  tooltip.appendChild(tooltipText);
+  const tooltipArrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  tooltipArrow.setAttribute('width', '14'); tooltipArrow.setAttribute('height', '14');
+  tooltipArrow.setAttribute('viewBox', '0 0 14 14'); tooltipArrow.setAttribute('fill', 'none');
+  tooltipArrow.innerHTML = '<path d="M1 7h12M8 2l5 5-5 5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+  tooltip.appendChild(tooltipArrow);
+  wrap.appendChild(tooltip);
+
+  // Default dot
+  const dot = document.createElement('div');
+  dot.className = 'activity-pin-dot';
+  dot.style.pointerEvents = 'auto';
+  wrap.appendChild(dot);
+
+  // Active teardrop SVG — shown in place of dot when active
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', '25'); svg.setAttribute('height', '37');
+  svg.setAttribute('viewBox', '0 0 25 37');
+  svg.setAttribute('class', 'activity-pin-active');
+  svg.style.pointerEvents = 'auto';
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', 'M12.5 35.5C6 26 1.5 20.5 1.5 12.5a11 11 0 0 1 22 0C23.5 20.5 19 26 12.5 35.5z');
+  path.setAttribute('fill', '#C4428A');
+  path.setAttribute('stroke', '#fff');
+  path.setAttribute('stroke-width', '1.5');
+  svg.appendChild(path);
+  wrap.appendChild(svg);
+
+  // Label pill (zoom-in state)
+  const distMi = distKm !== null ? Math.round(distKm * 0.621371 * 10) / 10 : null;
+  const dist = distKm !== null ? ' · ' + distKm + ' km (' + distMi + ' mi)' : '';
+  const lbl = document.createElement('div');
+  lbl.className = 'activity-pin-label';
+  lbl.textContent = name + dist;
+  wrap.appendChild(lbl);
+
+  // Click to activate / deactivate
+  const activate = (e) => {
+    e.stopPropagation();
+    const wasActive = wrap.classList.contains('is-active');
+    document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'));
+    if (!wasActive) wrap.classList.add('is-active');
+  };
+  dot.addEventListener('click', activate);
+  svg.addEventListener('click', activate);
+
   return wrap;
 }
 
@@ -517,6 +566,8 @@ let showActivities = true;
 let currentState = 'overview';
 let activeOverviewOption = 2;
 let defaultZoom = 0;
+let userZoomed = false;
+const resetBtnEl = document.getElementById('map-reset-btn');
 let scrollLocked = false;
 
 function updateLabelVisibility() {
@@ -683,6 +734,10 @@ map.on('load', () => {
     updateLabelVisibility();
     updateMobilePillVisibility();
     if (!e.originalEvent) return; // skip programmatic zooms (fitBounds animation)
+    if (currentState !== 'overview' && !userZoomed) {
+      userZoomed = true;
+      resetBtnEl.classList.add('is-visible');
+    }
     if (zoomTicking) return;
     zoomTicking = true;
     requestAnimationFrame(() => { resolveSegmentPillOverlaps(); clusterActivityMarkers(); zoomTicking = false; });
@@ -693,6 +748,8 @@ map.on('load', () => {
 function setState(newState) {
   if (newState === currentState) return;
   currentState = newState;
+  userZoomed = false;
+  resetBtnEl.classList.remove('is-visible');
 
   const isOverview = newState === 'overview';
   const dayIndex = isOverview ? -1 : newState - 1;
@@ -901,8 +958,23 @@ function updateConnectorLine() {
   col.style.setProperty('--line-height', (lineEnd - lineTop) + 'px');
 }
 
+map.on('click', () => {
+  document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'));
+});
+
 document.getElementById('map-zoom-in').addEventListener('click', () => map.zoomIn({ duration: 300 }));
 document.getElementById('map-zoom-out').addEventListener('click', () => map.zoomOut({ duration: 300 }));
+
+resetBtnEl.addEventListener('click', () => {
+  userZoomed = false;
+  resetBtnEl.classList.remove('is-visible');
+  document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'));
+  const dayIndex = typeof currentState === 'number' ? currentState - 1 : -1;
+  const bounds = dayIndex >= 0 && DAYS[dayIndex] ? DAYS[dayIndex].bounds : OVERVIEW_BOUNDS;
+  const isMobile = window.matchMedia('(max-width: 430px)').matches;
+  const pad = isMobile ? { top: 50, right: 30, bottom: 50, left: 30 } : 60;
+  map.fitBounds(bounds, { padding: pad, duration: 600 });
+});
 
 const mapCollapseTab = document.getElementById('map-collapse-tab');
 const mapShowStrip   = document.getElementById('map-show-strip');
