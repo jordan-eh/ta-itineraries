@@ -1,0 +1,16 @@
+name = "ta-dn-proxy"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Workers Logs + traces in the Cloudflare dashboard (off by default)
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Cloudflare KV stores the comments + access log. The id below is the currently
+# deployed namespace. To run this on your OWN Cloudflare account, create a fresh
+# namespace and replace the id:
+#   npx wrangler kv namespace create DN
+[[kv_namespaces]]
+binding = "DN"
+id = "5ef427201e3c4ccdac1c0c8eae03ac73"

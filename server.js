@@ -15,7 +15,10 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  const urlPath = req.url === '/' ? '/index.html' : req.url;
+  // Strip query string / hash so deep links like ?logout and ?chrome=off resolve
+  // to the file path (GitHub Pages does this natively; the naive dev server didn't).
+  let urlPath = req.url.split('?')[0].split('#')[0];
+  if (urlPath === '/') urlPath = '/index.html';
   const filePath = path.join(__dirname, urlPath);
   const ext = path.extname(filePath);
   const contentType = MIME_TYPES[ext] || 'text/plain';
