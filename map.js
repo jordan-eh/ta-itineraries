@@ -426,7 +426,7 @@ function makeActivityMarkerEl(name, distKm, onActivate) {
   // Default dot
   const dot = document.createElement('div');
   dot.className = 'activity-pin-dot';
-  dot.style.pointerEvents = 'auto';
+
   wrap.appendChild(dot);
 
   // Active teardrop SVG — shown in place of dot when active
@@ -435,7 +435,7 @@ function makeActivityMarkerEl(name, distKm, onActivate) {
   svg.setAttribute('width', '25'); svg.setAttribute('height', '37');
   svg.setAttribute('viewBox', '0 0 25 37');
   svg.setAttribute('class', 'activity-pin-active');
-  svg.style.pointerEvents = 'auto';
+  svg.style.pointerEvents = 'none';
   const path = document.createElementNS(ns, 'path');
   path.setAttribute('d', 'M12.5 35.5C6 26 1.5 20.5 1.5 12.5a11 11 0 0 1 22 0C23.5 20.5 19 26 12.5 35.5z');
   path.setAttribute('fill', '#C4428A');
