@@ -452,18 +452,8 @@ function makeActivityMarkerEl(name, distKm, onActivate) {
   lbl.textContent = name + dist;
   wrap.appendChild(lbl);
 
-  // Click to activate / deactivate
-  const activate = (e) => {
-    e.stopPropagation();
-    const wasActive = wrap.classList.contains('is-active');
-    document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'));
-    if (!wasActive) {
-      wrap.classList.add('is-active');
-      if (onActivate) onActivate();
-    }
-  };
-  dot.addEventListener('click', activate);
-  svg.addEventListener('click', activate);
+  dot.addEventListener('click', e => e.stopPropagation());
+  svg.addEventListener('click', e => e.stopPropagation());
 
   return wrap;
 }
@@ -835,13 +825,7 @@ function setActivityMarkers(day) {
       ? Math.min(...stops.map(s => haversineKm(act.lnglat, s.lnglat)))
       : null;
     const distKm = nearest !== null ? Math.round(nearest * 10) / 10 : null;
-    const el = makeActivityMarkerEl(act.name, distKm, () => {
-      if (!userZoomed) {
-        userZoomed = true;
-        resetBtnEl.classList.add('is-visible');
-      }
-      map.easeTo({ center: act.lnglat, zoom: Math.max(map.getZoom(), 13), duration: 600 });
-    });
+    const el = makeActivityMarkerEl(act.name, distKm);
     activityMarkers.push(
       new mgl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat(act.lnglat).addTo(map)

@@ -169,9 +169,9 @@ Each entry in `OVERVIEW_STOPS` has a `day` property used for click-to-scroll:
 - **Distance label:** each activity pin label shows `name · X km (Y mi)` — km from haversine distance, miles converted inline (`km * 0.621371`). Computed in `setActivityMarkers`.
 - **Zoom-dependent labels:** `.activity-pin-label` has `opacity: 0` by default. `#dynamic-map.zoom-labels .activity-pin-label { opacity: 1 }` reveals them. The `zoom-labels` class is toggled by `updateLabelVisibility()` when `map.getZoom() > defaultZoom + 0.3`.
 - **`defaultZoom`:** captured in `map.once('moveend', ...)` after each `fitBounds` call in `setState`, and immediately after the initial `fitBounds` in `map.on('load')`.
-- **Default dot:** 14px white circle, `2px solid #C44289` border, `cursor: pointer` (`.activity-pin-dot`). `pointer-events: auto` so clicks register.
-- **Active state (click):** dot is hidden; a pink teardrop SVG (25×37px, `#C44289` fill, white stroke, `cursor: pointer`) replaces it. A black tooltip appears above showing the activity name + white right-arrow icon (Font Awesome `f061` equivalent SVG) with a downward CSS caret (`::after`). Map eases to the activity at `zoom: Math.max(currentZoom, 13)` with 600ms duration. Reset Map button appears. Click another pin or the map to dismiss. Clicking Reset Map also dismisses.
-- `makeActivityMarkerEl(name, distKm, onActivate)` — builds: tooltip div → dot div → active SVG pin → label pill. Click listeners on dot and SVG toggle `.is-active` on the wrapper and call `onActivate()` when activating. `setActivityMarkers` passes an `onActivate` that fires `map.easeTo` and shows the Reset Map button.
+- **Default dot:** 14px white circle, `2px solid #C44289` border (`.activity-pin-dot`). `pointer-events: auto` so clicks register. Active state is disabled — pins always remain in the default dot state regardless of clicks.
+- **Active state (CSS exists but not triggered):** the `.is-active` class, tooltip, and teardrop SVG markup remain in the DOM but click handlers no longer add `.is-active`. Dot and SVG click listeners only call `e.stopPropagation()` to prevent map click bleed-through.
+- `makeActivityMarkerEl(name, distKm)` — builds: tooltip div → dot div → active SVG pin → label pill. No `onActivate` callback — active state is intentionally disabled on both desktop and mobile.
 - `setActivityMarkers(day)` — clears `activityMarkers[]`, then places new markers if `showActivities === true` and `day ≥ 1`. Runs on both desktop and mobile. Calls `clusterActivityMarkers()` immediately after placing markers.
 - Mobile: activities are placed and clustered (mobile exclusion removed). Toggle is still hidden in CSS on mobile (`display: none !important`).
 
@@ -255,7 +255,7 @@ Both controls live in `.bottom-right-controls` — a `position: fixed; bottom: 2
 - Dark `#073142` pill, white text/icon, `position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%)` — centred at the bottom of the map.
 - Hidden by default (`display: none`). Shows with `.is-visible` class when `userZoomed === true` and state is not overview.
 - **Show trigger:** any user-initiated zoom in day state (`e.originalEvent` guard in the `zoom` event handler) sets `userZoomed = true` and adds `.is-visible`.
-- **Hide trigger:** clicking the button, switching day/state (`setState`), or clicking Reset Map. All also call `document.querySelectorAll('.activity-pin.is-active').forEach(p => p.classList.remove('is-active'))` to dismiss active activity pins.
+- **Hide trigger:** clicking the button or switching day/state (`setState`).
 - **Click action:** `map.fitBounds(DAYS[dayIndex].bounds, { padding, duration: 600 })` — resets to the current day's initial bounds.
 - Icon: circular arrow-right SVG (Option F from reset-icon-test.html preview).
 
